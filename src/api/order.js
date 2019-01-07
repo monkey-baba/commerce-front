@@ -1,4 +1,4 @@
-import request from '@/utils/fixrequest'
+import request from '@/utils/request'
 
 export function getOrders(query) {
   return request({
