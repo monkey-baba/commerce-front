@@ -8,7 +8,9 @@ const app = {
     },
     device: 'desktop',
     language: Cookies.get('language') || 'en',
-    size: Cookies.get('size') || 'medium'
+    size: Cookies.get('size') || 'medium',
+    appId: 'auth-front',
+    appSecret: 'auth-front'
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {

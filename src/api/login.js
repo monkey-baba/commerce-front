@@ -1,14 +1,18 @@
 import request from '@/utils/request'
+import store from '../store'
 
 export function loginByUsername(username, password) {
   const data = {
     username,
-    password
+    password,
+    grant_type: 'password',
+    client_id: store.getters.appId,
+    client_secret: store.getters.appId
   }
   return request({
-    url: '/user/login',
+    url: '/oauth2/oauth/token',
     method: 'post',
-    data
+    params: data
   })
 }
 
@@ -24,10 +28,13 @@ export function logout(token) {
 }
 
 export function getUserInfo(token) {
+  const data = {
+    access_token: token.access_token
+  }
   return request({
-    url: '/user/info',
+    url: '/auth/api/v1/user/info',
     method: 'get',
-    params: { token }
+    params: data
   })
 }
 

@@ -11,6 +11,7 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    auth: [],
     setting: {
       articlePlatform: []
     }
@@ -40,6 +41,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_AUTH: (state, auth) => {
+      state.auth = auth
     }
   },
 
@@ -47,15 +51,19 @@ const user = {
     // 用户名登录
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
+      if (getToken()) {
+        return new Promise(resolve => resolve())
+      }
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          const resp = response.data
-          const data = resp.data
-          if (!resp.success) {
+          console.log(JSON.stringify(response))
+          const data = response.data
+          if (response.status !== 200) {
             reject('error')
           }
-          commit('SET_TOKEN', data.token)
-          setToken(data.token)
+          commit('SET_TOKEN', data)
+          setToken(data)
+          setInterval(removeToken, (data.expires_in - 60) * 1000)
           resolve()
         }).catch(error => {
           reject(error)
@@ -67,9 +75,8 @@ const user = {
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
-          const resp = response.data
-          const data = resp.data
-          if (!resp.success) { // 由于mockjs 不支持自定义状态码只能这样hack
+          const data = response.data
+          if (response.status !== 200) {
             reject('error')
           }
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
@@ -77,10 +84,12 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          if (data.authorities && data.authorities.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_AUTH', data.authorities)
+          }
+          commit('SET_NAME', data.username)
+          commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+          commit('SET_INTRODUCTION', data.name)
           resolve(response)
         }).catch(error => {
           reject(error)
