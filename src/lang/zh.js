@@ -65,7 +65,12 @@ export default {
     orderManage: '订单管理',
     OrderList: '订单列表',
     ConsignmentList: '发货单列表',
-    OrderDetail: '订单详情'
+    OrderDetail: '订单详情',
+    stockManage: '库存管理',
+    StockList: '库存管理',
+    WarehouseList: '仓库管理',
+    customerManage: '客户管理',
+    CustomerList: '客户管理'
   },
   navbar: {
     logOut: '退出登录',

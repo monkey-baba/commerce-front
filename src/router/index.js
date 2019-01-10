@@ -117,6 +117,46 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/stock',
+    component: Layout,
+    name: 'StockManage',
+    meta: {
+      title: 'stockManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/stocks/StockList'),
+        name: 'StockList',
+        meta: { title: 'StockList' }
+      },
+      {
+        path: 'list1',
+        component: () => import('@/views/warehouses/WarehouseList'),
+        name: 'WarehouseList',
+        meta: { title: 'WarehouseList' }
+      }
+    ]
+  },
+  {
+    path: '/customers',
+    component: Layout,
+    name: 'CustomerManage',
+    meta: {
+      title: 'customerManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/customers/CustomerList'),
+        name: 'CustomerList',
+        meta: { title: 'CustomerList' }
+      }
+    ]
+  },
+  {
     path: '/error',
     component: Layout,
     redirect: 'noredirect',
