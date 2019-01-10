@@ -1,4 +1,4 @@
-FROM node:8.12-alpine
+FROM node:10.15-alpine
 MAINTAINER ZQian<zqiannnn@gmail.com>
 
 WORKDIR /app
