@@ -66,6 +66,8 @@ export default {
     OrderList: '订单列表',
     ConsignmentList: '发货单列表',
     OrderDetail: '订单详情',
+    account: '账户管理',
+    accountUser: '用户管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
