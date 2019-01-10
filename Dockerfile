@@ -13,6 +13,6 @@ EXPOSE 9527
 
 ENTRYPOINT ["npm"]
 
-CMD ["run", "dev"]
+CMD ["run", "sit"]
 
 
