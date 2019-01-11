@@ -9,7 +9,8 @@ RUN rm -rf /app/node_modules
 
 RUN npm install
 
-ENV BACKEND=zuul
+ENV BACKEND_HOST=zuul
+ENV BACKEND_PORT=5555
 ENV PORT=80
 
 
