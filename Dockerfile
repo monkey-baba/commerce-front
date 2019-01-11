@@ -8,6 +8,8 @@ COPY . /app/
 RUN rm -rf node_modules
 RUN npm install
 
+ENV BACKEND=zuul
+
 
 EXPOSE 9527
 
