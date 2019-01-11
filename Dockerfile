@@ -5,7 +5,8 @@ WORKDIR /app
 
 COPY . /app/
 
-RUN rm -rf node_modules
+RUN rm -rf /app/node_modules
+
 RUN npm install
 
 ENV BACKEND=zuul
