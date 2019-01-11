@@ -9,9 +9,10 @@ RUN rm -rf node_modules
 RUN npm install
 
 ENV BACKEND=zuul
+ENV PORT=80
 
 
-EXPOSE 9527
+EXPOSE 80
 
 ENTRYPOINT ["npm"]
 
