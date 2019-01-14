@@ -64,9 +64,10 @@ service.interceptors.response.use(
   // },
   error => {
     console.log('err:' + JSON.stringify(error)) // for debug
-    if (error.response.status >= 500) {
+    const response = error.response
+    if (response.status >= 500) {
       Message({
-        message: error.message,
+        message: response.data.message !== undefined ? response.data.message : error.message,
         type: 'error',
         duration: 5 * 1000
       })

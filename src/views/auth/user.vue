@@ -54,37 +54,42 @@
       @selection-change="handleSelectionChange"
     >
       <ElTableColumn type="selection" width="50px" />
+      <ElTableColumn :label="$t('general.index')" type="index" />
       <ElTableColumn :label="$t('user.username.label')" prop="username" width="100px" />
-      <ElTableColumn :label="$t('user.nick.label')" prop="nick" />
-      <ElTableColumn :label="$t('user.roles.label')" prop="roles" />
-      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled">
+      <ElTableColumn :label="$t('user.name.label')" prop="name" width="100px" />
+      <ElTableColumn :label="$t('user.mobileNumber.label')" prop="mobileNumber" width="200px" />
+      <ElTableColumn :label="$t('user.email.label')" prop="email" />
+      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled" width="100px">
         <template slot-scope="scope">
           <ElTag :type="scope.row.enabled | enableFilter">
             {{ scope.row.enabled ? '启用' : '禁用' }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.encodePassword.label')" prop="encodePassword">
+      <ElTableColumn :label="$t('user.groups.label')" prop="enabled" width="100px">
         <template slot-scope="scope">
-          <ElTag
-            v-if="scope.row.roles.indexOf('ROLE_CLIENT') !== -1"
-            type="primary"
-            @click.native="showPassword(scope.row.encodePassword)"
-          >
-            点击查看密码
+          <ElTag v-for="g in scope.row.groups" :key="g" type="primary">
+            {{ g }}
+          </ElTag>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('user.roles.label')" prop="enabled" width="100px">
+        <template slot-scope="scope">
+          <ElTag v-for="r in scope.row.roles" :key="r" type="primary">
+            {{ r }}
           </ElTag>
         </template>
       </ElTableColumn>
       <ElTableColumn label="操作">
         <template slot-scope="scope">
           <ElButton type="primary" size="mini" @click="handleChangePwd(scope.row.username)">
-            修改密码
+            角色分配
           </ElButton>
           <ElButton type="success" size="mini" @click="handleEnable(scope.row, true)">
-            启用
+            用户组分配
           </ElButton>
-          <ElButton type="danger" size="mini" @click="handleEnable(scope.row, false)">
-            禁用
+          <ElButton type="info" size="mini" @click="handleEnable(scope.row, false)">
+            修改密码
           </ElButton>
         </template>
       </ElTableColumn>
@@ -194,7 +199,7 @@
 </template>
 
 <script>
-// import { getUsers, getUserTotal, createUser, enableUser, passwordUser } from '@/api/user'
+import { getUsers } from '@/api/user'
 
 export default {
   name: 'User',
@@ -220,14 +225,14 @@ export default {
         username: '',
         name: '',
         mobileNumber: '',
-        pageNum: 0,
+        pageNum: 1,
         pageSize: 10
       },
       search: {
         loading: false
       },
       pagination: {
-        page: 0,
+        page: 1,
         total: 0,
         background: false,
         pageSizes: [10, 20, 50]
@@ -297,29 +302,15 @@ export default {
     },
     getData() {
       this.table.loading = true
-      // let userLoading = true
-      // let totalLoading = true
-      // getUsers(this.userQuery).then(response => {
-      //   this.table.data = response.data
-      //
-      //   userLoading = false
-      //   this.table.loading = userLoading || totalLoading
-      //   this.search.loading = userLoading || totalLoading
-      // }).catch(() => {
-      //   userLoading = false
-      //   this.table.loading = userLoading || totalLoading
-      //   this.search.loading = userLoading || totalLoading
-      // })
-      // getUserTotal(this.userQuery).then(response => {
-      //   this.pagination.total = response.data
-      //   totalLoading = false
-      //   this.table.loading = userLoading || totalLoading
-      //   this.search.loading = userLoading || totalLoading
-      // }).catch(() => {
-      //   totalLoading = false
-      //   this.table.loading = userLoading || totalLoading
-      //   this.search.loading = userLoading || totalLoading
-      // })
+      getUsers(this.userQuery).then(response => {
+        this.table.data = response.data.list
+        this.pagination.total = response.data.total
+        this.table.loading = false
+        this.search.loading = false
+      }).catch((e) => {
+        this.table.loading = false
+        this.search.loading = false
+      })
     },
     query() {
       this.search.loading = true

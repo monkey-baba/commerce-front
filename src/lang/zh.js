@@ -193,6 +193,21 @@ export default {
     },
     mobileNumber: {
       label: '手机号'
+    },
+    email: {
+      label: '邮箱'
+    },
+    enabled: {
+      label: '是否启用'
+    },
+    groups: {
+      label: '用户组'
+    },
+    roles: {
+      label: '角色'
     }
+  },
+  general: {
+    index: '序号'
   }
 }
