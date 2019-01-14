@@ -2,8 +2,10 @@
 
 @mixin colorBtn($color) {
   background: $color;
+  border-color: #FFF;
   &:hover {
-    color: $color;
+    background: $color;
+    border-color: $color;
     &:before,
     &:after {
       background: $color;
@@ -43,6 +45,9 @@
 }
 .blue-btn {
   @include colorBtn(rgb(51, 122, 183))
+}
+.gray-btn {
+  @include colorBtn($gray)
 }
 
 .pan-btn {

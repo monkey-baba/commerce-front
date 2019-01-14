@@ -183,5 +183,16 @@ export default {
       LGT: '立购台',
       DMS: 'DMS'
     }
+  },
+  user: {
+    username: {
+      label: '登录名'
+    },
+    name: {
+      label: '用户姓名'
+    },
+    mobileNumber: {
+      label: '手机号'
+    }
   }
 }

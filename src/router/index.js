@@ -182,6 +182,33 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/auth',
+    component: Layout,
+    name: 'Auth',
+    meta: {
+      icon: 'user',
+      title: 'account'
+    },
+    children: [
+      {
+        path: 'user',
+        name: 'authUser',
+        component: () => import('@/views/auth/user'),
+        meta: {
+          title: 'accountUser'
+        }
+      },
+      {
+        path: 'group',
+        name: 'authGroup',
+        component: () => import('@/views/auth/user'),
+        meta: {
+          title: 'accountGroup'
+        }
+      }
+    ]
+  },
+  {
     path: 'external-link',
     component: Layout,
     children: [
