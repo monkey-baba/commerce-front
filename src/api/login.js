@@ -27,14 +27,13 @@ export function logout(token) {
   })
 }
 
-export function getUserInfo(token) {
-  const data = {
-    access_token: token.access_token
-  }
+export function getUserInfo() {
+  // const data = {
+  //   access_token: token.access_token
+  // }
   return request({
     url: '/auth/api/v1/user/info',
-    method: 'get',
-    params: data
+    method: 'get'
   })
 }
 

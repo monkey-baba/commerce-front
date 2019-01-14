@@ -56,13 +56,12 @@ const user = {
       }
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          console.log(JSON.stringify(response))
           const data = response.data
           if (response.status !== 200) {
             reject('error')
           }
-          commit('SET_TOKEN', data)
-          setToken(data)
+          commit('SET_TOKEN', data.access_token)
+          setToken(data.access_token)
           setInterval(removeToken, (data.expires_in - 60) * 1000)
           resolve()
         }).catch(error => {
