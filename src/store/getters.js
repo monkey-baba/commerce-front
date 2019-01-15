@@ -16,6 +16,7 @@ const getters = {
   addRouters: state => state.permission.addRouters,
   errorLogs: state => state.errorLog.logs,
   appId: state => state.app.appId,
-  appSecret: state => state.app.appSecret
+  appSecret: state => state.app.appSecret,
+  currentUserId: state => state.user.id
 }
 export default getters

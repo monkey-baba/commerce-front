@@ -53,44 +53,89 @@
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
-      <ElTableColumn type="selection" width="50px" />
+      <ElTableColumn type="selection" />
       <ElTableColumn :label="$t('general.index')" type="index" />
-      <ElTableColumn :label="$t('user.username.label')" prop="username" width="100px" />
-      <ElTableColumn :label="$t('user.name.label')" prop="name" width="100px" />
-      <ElTableColumn :label="$t('user.mobileNumber.label')" prop="mobileNumber" width="200px" />
-      <ElTableColumn :label="$t('user.email.label')" prop="email" />
-      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled" width="100px">
+      <ElTableColumn :label="$t('user.username.label')" prop="username" >
+        <template slot-scope="scope">
+          <el-input v-if="scope.row.edit" v-model="scope.row.username" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.username }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('user.name.label')" prop="name" >
+        <template slot-scope="scope">
+          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.name }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('user.mobileNumber.label')" prop="mobileNumber" >
+        <template slot-scope="scope">
+          <el-input v-if="scope.row.edit" v-model="scope.row.mobileNumber" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.mobileNumber }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('user.email.label')" prop="email" >
+        <template slot-scope="scope">
+          <el-input v-if="scope.row.edit" v-model="scope.row.email" class="edit-input" size="mini" />
+          <template v-else>
+            {{ scope.row.email }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled" >
         <template slot-scope="scope">
           <ElTag :type="scope.row.enabled | enableFilter">
             {{ scope.row.enabled ? '启用' : '禁用' }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.groups.label')" prop="enabled" width="100px">
+      <ElTableColumn :label="$t('user.groups.label')" prop="enabled" >
         <template slot-scope="scope">
           <ElTag v-for="g in scope.row.groups" :key="g" type="primary">
             {{ g }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.roles.label')" prop="enabled" width="100px">
+      <ElTableColumn :label="$t('user.roles.label')" prop="enabled" >
         <template slot-scope="scope">
           <ElTag v-for="r in scope.row.roles" :key="r" type="primary">
             {{ r }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn label="操作">
+      <ElTableColumn label="操作" min-width="200px">
         <template slot-scope="scope">
-          <ElButton type="primary" size="mini" @click="handleChangePwd(scope.row.username)">
-            角色分配
-          </ElButton>
-          <ElButton type="success" size="mini" @click="handleEnable(scope.row, true)">
-            用户组分配
-          </ElButton>
-          <ElButton type="info" size="mini" @click="handleEnable(scope.row, false)">
-            修改密码
-          </ElButton>
+          <div>
+            <template v-if="scope.row.edit">
+              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">保存</ElButton>
+              <ElButton class="cancel-btn" size="mini" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</ElButton>
+            </template>
+            <template v-else>
+              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</ElButton>
+              <ElButton type="success" size="mini" @click="handleChangePwd(scope.row.username)">
+                角色分配
+              </ElButton>
+              <ElButton type="success" size="mini" @click="handleEnable(scope.row, true)">
+                用户组分配
+              </ElButton>
+            </template>
+          </div>
+          <div style="margin-top: 10px">
+            <ElButton type="info" size="mini" @click="handleChangePwd(scope.row)">
+              修改密码
+            </ElButton>
+            <ElButton v-if="!scope.row.enabled" type="success" size="mini" @click="handleEnable(scope.row, true)">
+              启用
+            </ElButton>
+            <ElButton v-else type="danger" size="mini" @click="handleEnable(scope.row, false)">
+              禁用
+            </ElButton>
+          </div>
         </template>
       </ElTableColumn>
     </ElTable>
@@ -161,7 +206,7 @@
         :rules="changePwd.rules"
         :model="changePwd.form"
         label-position="left"
-        label-width="70px"
+        label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
         <ElFormItem :label="$t('user.changePwd.username.label')" prop="username">
@@ -199,7 +244,9 @@
 </template>
 
 <script>
-import { getUsers } from '@/api/user'
+import { getUsers, updateUser, passwordUser, enableUser } from '@/api/user'
+import { isvalidUsername, isEmpty, isEmail, isMobilePhone } from '@/utils/validate'
+import store from '../../store'
 
 export default {
   name: 'User',
@@ -215,7 +262,7 @@ export default {
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value !== this.changePwd.form.password) {
-        callback(new Error('The confirm password must equals password '))
+        callback(new Error('确认新密码必须与新密码相同'))
       } else {
         callback()
       }
@@ -271,10 +318,10 @@ export default {
         rules: {
           password: [{
             type: 'string',
-            min: 8,
+            min: 5,
             max: 16,
             required: true,
-            message: 'The password required 8 to 16 digits '
+            message: '密码必须在5-16位'
           }],
           confirmPassword: [{
             type: 'string',
@@ -303,7 +350,12 @@ export default {
     getData() {
       this.table.loading = true
       getUsers(this.userQuery).then(response => {
-        this.table.data = response.data.list
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
         this.pagination.total = response.data.total
         this.table.loading = false
         this.search.loading = false
@@ -315,6 +367,77 @@ export default {
     query() {
       this.search.loading = true
       this.getData()
+    },
+    cancelEdit(row) {
+      const originRow = JSON.parse(row.original)
+      row.username = originRow.username
+      row.name = originRow.name
+      row.email = originRow.email
+      row.mobileNumber = originRow.mobileNumber
+      row.edit = false
+    },
+    confirmEdit(row) {
+      if (!isvalidUsername(row.username)) {
+        this.$message({
+          message: '请输入正确的登录名',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      if (isEmpty(row.name)) {
+        this.$message({
+          message: '用户姓名不能为空',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      if (!isEmpty(row.email) && !isEmail(row.email)) {
+        this.$message({
+          message: '请输入正确的邮箱',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      if (!isEmpty(row.mobileNumber) && !isMobilePhone(row.mobileNumber)) {
+        this.$message({
+          message: '请输入正确的手机号',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      updateUser(row).then(response => {
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+        if (JSON.parse(row.original).id === store.getters.currentUserId &&
+          JSON.parse(row.original).username !== row.username) {
+          setTimeout(() => {
+            store.dispatch('FedLogOut').then(() => {
+              this.$message({
+                message: '登录已过期，请重新登录',
+                type: 'error',
+                duration: 5 * 1000
+              })
+              this.$router.push({ path: '/login' })
+            })
+          }, 1000)
+        }
+        row.original = JSON.stringify(row)
+        row.edit = false
+      }).catch(e => {
+        const response = e.response
+        this.$message({
+          message: response !== undefined ? response.data : e.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        this.cancelEdit(row)
+      })
     },
     handleCreate() {
       this.userCreate.form = {
@@ -351,32 +474,32 @@ export default {
       })
     },
     handleEnable(row, enable) {
-      this.userCreate.form = Object.assign({}, row)
-      this.userCreate.form.enabled = enable
-      // enableUser(this.userCreate.form).then(
-      //   () => {
-      //     for (const v of this.table.data) {
-      //       if (v.username === this.userCreate.form.username) {
-      //         const index = this.table.data.indexOf(v)
-      //         this.table.data.splice(index, 1, this.userCreate.form)
-      //         break
-      //       }
-      //     }
-      //     this.$notify({
-      //       title: '成功',
-      //       message: '更新成功',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //   }
-      // ).catch(() => {
-      //   this.$notify({
-      //     title: '失败',
-      //     message: '更新失败',
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      // })
+      const userEnableForm = Object.assign({}, row)
+      userEnableForm.enabled = enable
+      enableUser(userEnableForm).then(
+        () => {
+          for (const v of this.table.data) {
+            if (v.id === userEnableForm.id) {
+              const index = this.table.data.indexOf(v)
+              this.table.data.splice(index, 1, userEnableForm)
+              break
+            }
+          }
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      ).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '更新失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
     },
     handleSelectionChange(val) {
       this.table.select = val
@@ -401,33 +524,34 @@ export default {
       //   })
       // })
     },
-    handleChangePwd(username) {
-      this.changePwd.form.username = username
+    handleChangePwd(row) {
+      this.changePwd.form = {
+        password: undefined,
+        confirmPassword: undefined
+      }
+      this.changePwd.form.username = row.username
       this.changePwd.visible = true
       this.$nextTick(() => {
         this.$refs['changePwdForm'].clearValidate()
       })
     },
     changePassword() {
-      // passwordUser(this.changePwd.form).then(() => {
-      //   this.changePwd.visible = false
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '更新成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      // }).catch(() => {
-      //   this.$notify({
-      //     title: '失败',
-      //     message: '更新失败',
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      // })
-    },
-    showPassword(password) {
-      this.$alert(password, '客户端密码')
+      passwordUser(this.changePwd.form).then(() => {
+        this.changePwd.visible = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '更新失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
 
   }

@@ -8,3 +8,30 @@ export function getUsers(userQuery) {
     params: param
   })
 }
+
+export function updateUser(user) {
+  const data = user
+  return request({
+    url: '/auth/api/v1/user/update',
+    method: 'post',
+    data
+  })
+}
+
+export function passwordUser(user) {
+  const data = user
+  return request({
+    url: '/auth/api/v1/user/changePwd',
+    method: 'post',
+    data
+  })
+}
+
+export function enableUser(user) {
+  const data = user
+  return request({
+    url: '/auth/api/v1/user/enable',
+    method: 'post',
+    data
+  })
+}

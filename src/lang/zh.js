@@ -205,6 +205,21 @@ export default {
     },
     roles: {
       label: '角色'
+    },
+    changePwd: {
+      title: '修改密码',
+      username: {
+        label: '用户名',
+        placeholder: '请输入用户名'
+      },
+      password: {
+        label: '新密码',
+        placeholder: '请输入新密码'
+      },
+      confirmPassword: {
+        label: '确认新密码',
+        placeholder: '确认新密码'
+      }
     }
   },
   general: {

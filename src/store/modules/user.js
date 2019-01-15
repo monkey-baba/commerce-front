@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
+    id: '',
     user: '',
     status: '',
     code: '',
@@ -44,6 +45,9 @@ const user = {
     },
     SET_AUTH: (state, auth) => {
       state.auth = auth
+    },
+    SET_ID: (state, id) => {
+      state.id = id
     }
   },
 
@@ -86,6 +90,7 @@ const user = {
           if (data.authorities && data.authorities.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_AUTH', data.authorities)
           }
+          commit('SET_ID', data.id)
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
           commit('SET_INTRODUCTION', data.name)

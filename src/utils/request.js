@@ -1,6 +1,5 @@
 import axios from 'axios'
 import store from '@/store'
-import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
@@ -64,14 +63,14 @@ service.interceptors.response.use(
   // },
   error => {
     console.log('err:' + JSON.stringify(error)) // for debug
-    const response = error.response
-    if (response.status >= 500) {
-      Message({
-        message: response.data.message !== undefined ? response.data.message : error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-    }
+    // const response = error.response
+    // if (response.status >= 500) {
+    //   Message({
+    //     message: response.data.message !== undefined ? response.data.message : error.message,
+    //     type: 'error',
+    //     duration: 5 * 1000
+    //   })
+    // }
     return Promise.reject(error)
   }
 )
