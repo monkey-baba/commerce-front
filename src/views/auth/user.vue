@@ -34,8 +34,11 @@
       <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">
         创建
       </ElButton>
-      <ElButton type="primary" class="gray-btn" size="small" @click="handleEnables(true)">
-        删除
+      <ElButton type="success" size="small" @click="handleEnables(true)">
+        启用
+      </ElButton>
+      <ElButton type="danger" size="small" @click="handleEnables(false)">
+        禁用
       </ElButton>
       <ElButton type="primary" class="green-btn" size="small" @click="handleEnables(false)">
         保存
@@ -476,7 +479,7 @@ export default {
     handleEnable(row, enable) {
       const userEnableForm = Object.assign({}, row)
       userEnableForm.enabled = enable
-      enableUser(userEnableForm).then(
+      enableUser([userEnableForm]).then(
         () => {
           for (const v of this.table.data) {
             if (v.id === userEnableForm.id) {
@@ -505,24 +508,32 @@ export default {
       this.table.select = val
     },
     handleEnables(enable) {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择用户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
       this.table.select.forEach((v) => {
         v.enabled = enable
       })
-      // enableUser(this.table.select).then(
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '更新成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      // ).catch(() => {
-      //   this.$notify({
-      //     title: '失败',
-      //     message: '更新失败',
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      // })
+      enableUser(this.table.select).then(
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      ).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '更新失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
     },
     handleChangePwd(row) {
       this.changePwd.form = {
