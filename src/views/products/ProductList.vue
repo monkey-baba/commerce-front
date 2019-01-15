@@ -86,10 +86,8 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        'CHECK': 'success',
-        'APPROVED': 'success',
-        'CREATED': 'warning',
-        'PENDING': 'primary'
+        'APPROVED': 'approved',
+        'UNAPPROVED': 'unapproved'
       }
       return statusMap[status]
     }
@@ -115,9 +113,7 @@ export default {
       table: {
         loading: false,
         data: null
-      },
-      statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
-      platforms: ['TM', 'JD', 'DMS', 'LGT']
+      }
     }
   },
   created() {
