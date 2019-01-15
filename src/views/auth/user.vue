@@ -251,6 +251,8 @@
         </ElButton>
       </div>
     </ElDialog>
+
+    <ElDialog :visible.sync="changeGroup.visible" :title="$t('user.changeGroup.title')"/>
   </div>
 </template>
 
@@ -352,6 +354,9 @@ export default {
             validator: validatePassword
           }]
         }
+      },
+      changeGroup: {
+        visible: false
       }
     }
   },

@@ -64,9 +64,9 @@ const user = {
           if (response.status !== 200) {
             reject('error')
           }
-          commit('SET_TOKEN', data.access_token)
-          setToken(data.access_token)
-          setInterval(removeToken, (data.expires_in - 60) * 1000)
+          commit('SET_TOKEN', data.value)
+          setToken(data.value)
+          setInterval(removeToken, (data.expiresIn - 60) * 1000)
           resolve()
         }).catch(error => {
           reject(error)

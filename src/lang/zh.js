@@ -252,6 +252,9 @@ export default {
         label: '邮箱',
         placeholder: '请输入邮箱'
       }
+    },
+    changeGroup: {
+      title: '选择用户组'
     }
   },
   general: {
