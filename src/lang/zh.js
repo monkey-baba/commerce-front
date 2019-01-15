@@ -224,6 +224,34 @@ export default {
         label: '确认新密码',
         placeholder: '确认新密码'
       }
+    },
+    create: {
+      title: '创建用户',
+      username: {
+        label: '登录名',
+        placeholder: '请输入用户名'
+      },
+      password: {
+        label: '密码',
+        placeholder: '请输入密码'
+      },
+      enabled: {
+        label: '是否启用',
+        yes: '启用',
+        no: '禁用'
+      },
+      name: {
+        label: '用户姓名',
+        placeholder: '请输入用户姓名'
+      },
+      mobileNumber: {
+        label: '手机号',
+        placeholder: '请输入手机号'
+      },
+      email: {
+        label: '邮箱',
+        placeholder: '请输入邮箱'
+      }
     }
   },
   general: {

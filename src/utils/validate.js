@@ -4,7 +4,7 @@
 import validator from 'validator'
 
 export function isvalidUsername(str) {
-  return validator.matches(str, /^[a-zA-Z]+$/)
+  return validator.matches(str, /^[a-zA-Z0-9]{5,20}$/)
 }
 
 export function isEmpty(str) {

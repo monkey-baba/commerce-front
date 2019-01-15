@@ -35,3 +35,13 @@ export function enableUser(user) {
     data
   })
 }
+
+export function createUser(user) {
+  const data = user
+  return request({
+    url: '/auth/api/v1/user/create',
+    method: 'post',
+    data
+  })
+}
+

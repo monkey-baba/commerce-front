@@ -41,9 +41,6 @@
         禁用
       </ElButton>
       <ElButton type="primary" class="green-btn" size="small" @click="handleEnables(false)">
-        保存
-      </ElButton>
-      <ElButton type="primary" class="green-btn" size="small" @click="handleEnables(false)">
         导出
       </ElButton>
     </div>
@@ -177,20 +174,31 @@
             type="password"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('user.create.roles.label')">
-          <ElTag type="success">
-            ROLE_CLIENT
-          </ElTag>
-        </ElFormItem>
         <ElFormItem :label="$t('user.create.enabled.label')">
           <ElRadio v-model="userCreate.form.enabled" label="true">
-            {{ $t('user.create.enabled.yes')
-            }}
+            {{ $t('user.create.enabled.yes') }}
           </ElRadio>
           <ElRadio v-model="userCreate.form.enabled" label="false">
-            {{ $t('user.create.enabled.no')
-            }}
+            {{ $t('user.create.enabled.no') }}
           </ElRadio>
+        </ElFormItem>
+        <ElFormItem :label="$t('user.create.name.label')" prop="name">
+          <ElInput
+            v-model="userCreate.form.name"
+            :placeholder="$t('user.create.name.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('user.create.mobileNumber.label')" prop="mobileNumber">
+          <ElInput
+            v-model="userCreate.form.mobileNumber"
+            :placeholder="$t('user.create.mobileNumber.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('user.create.email.label')" prop="email">
+          <ElInput
+            v-model="userCreate.form.email"
+            :placeholder="$t('user.create.email.placeholder')"
+          />
         </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
@@ -247,7 +255,7 @@
 </template>
 
 <script>
-import { getUsers, updateUser, passwordUser, enableUser } from '@/api/user'
+import { getUsers, updateUser, passwordUser, enableUser, createUser } from '@/api/user'
 import { isvalidUsername, isEmpty, isEmail, isMobilePhone } from '@/utils/validate'
 import store from '../../store'
 
@@ -266,6 +274,20 @@ export default {
     const validatePassword = (rule, value, callback) => {
       if (value !== this.changePwd.form.password) {
         callback(new Error('确认新密码必须与新密码相同'))
+      } else {
+        callback()
+      }
+    }
+    const validateMobileNumber = (rule, value, callback) => {
+      if (!isEmpty(value) && !isMobilePhone(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+    const validateEmail = (rule, value, callback) => {
+      if (!isEmpty(value) && !isEmail(value)) {
+        callback(new Error('请输入正确的邮箱'))
       } else {
         callback()
       }
@@ -297,19 +319,17 @@ export default {
         rules: {
           username: [{
             type: 'string',
-            pattern: '[0-9]+',
+            pattern: '[a-zA-Z0-9]{5,20}',
             required: true,
-            message: 'username is number',
+            message: '用户名必须是5-20位字母与数字',
             trigger: 'change'
           }],
-          password: [{ required: true, message: 'password is required', trigger: 'change' }],
-          enable: [{ required: true, message: 'enable is required', trigger: 'blur' }]
+          password: [{ type: 'string', min: 5, max: 16, required: true, message: '密码必须在5-16位', trigger: 'change' }],
+          enable: [{ required: true, message: '是否启用必输', trigger: 'change' }],
+          mobileNumber: [{ required: false, validator: validateMobileNumber, trigger: 'change' }],
+          email: [{ required: false, validator: validateEmail, trigger: 'change' }]
         },
-        form: {
-          username: '',
-          password: '',
-          enabled: true
-        }
+        form: {}
       },
       changePwd: {
         visible: false,
@@ -446,6 +466,9 @@ export default {
       this.userCreate.form = {
         username: '',
         password: '',
+        name: '',
+        email: '',
+        mobileNumber: '',
         enabled: 'true'
       }
       this.userCreate.visible = true
@@ -456,23 +479,23 @@ export default {
     createData() {
       this.$refs['createUserForm'].validate((valid) => {
         if (valid) {
-          // createUser(this.userCreate.form).then((response) => {
-          //   this.table.data.unshift(response.data)
-          //   this.userCreate.visible = false
-          //   this.$notify({
-          //     title: '成功',
-          //     message: '创建成功',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // }).catch(() => {
-          //   this.$notify({
-          //     title: '失败',
-          //     message: '用户名已存在',
-          //     type: 'error',
-          //     duration: 2000
-          //   })
-          // })
+          createUser(this.userCreate.form).then((response) => {
+            this.table.data.unshift(response.data)
+            this.userCreate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '登录名已存在',
+              type: 'error',
+              duration: 2000
+            })
+          })
         }
       })
     },

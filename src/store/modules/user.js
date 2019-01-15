@@ -82,12 +82,12 @@ const user = {
           if (response.status !== 200) {
             reject('error')
           }
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+          if (data.roles && data.roles.length >= 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-          if (data.authorities && data.authorities.length > 0) { // 验证返回的roles是否是一个非空数组
+          if (data.authorities && data.authorities.length >= 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_AUTH', data.authorities)
           }
           commit('SET_ID', data.id)
@@ -96,6 +96,7 @@ const user = {
           commit('SET_INTRODUCTION', data.name)
           resolve(response)
         }).catch(error => {
+          console.log(error)
           reject(error)
         })
       })
@@ -133,6 +134,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SET_ID', '')
         removeToken()
         resolve()
       })
