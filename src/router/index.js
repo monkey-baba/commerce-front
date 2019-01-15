@@ -157,6 +157,37 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/product',
+    component: Layout,
+    name: 'productManage',
+    meta: {
+      title: 'productManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'productlist',
+        component: () => import('@/views/products/ProductList'),
+        name: 'ProductList',
+        meta: { title: 'ProductList' }
+      },
+      {
+        path: 'categorylist',
+        component: () => import('@/views/products/CategoryList'),
+        name: 'CategoryList',
+        meta: { title: 'CategoryList' }
+      },
+      {
+        path: ':productdetail',
+        hidden: true,
+        name: 'ProductDetail',
+        component: () => import('@/views/products/ProductDetail'),
+        meta: {
+          title: 'ProductDetail'
+        }
+      }]
+  },
+  {
     path: '/error',
     component: Layout,
     redirect: 'noredirect',

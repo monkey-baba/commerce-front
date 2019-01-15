@@ -72,7 +72,11 @@ export default {
     StockList: '库存管理',
     WarehouseList: '仓库管理',
     customerManage: '客户管理',
-    CustomerList: '客户管理'
+    CustomerList: '客户管理',
+    productManage: '产品管理',
+    ProductList: '产品列表',
+    CategoryList: '分类列表',
+    ProductDetail: '产品详情'
   },
   navbar: {
     logOut: '退出登录',
@@ -224,5 +228,27 @@ export default {
   },
   general: {
     index: '序号'
+  },
+  product: {
+    code: {
+      name: '商品编号',
+      placeholder: '请输入商品编码'
+    },
+    name: {
+      name: '商品名称',
+      placeholder: '请输入商品名称'
+    },
+    category: {
+      name: '商品分类',
+      placeholder: '请选择商品分类'
+    },
+    channel: {
+      name: '销售渠道',
+      placeholder: '请选择销售渠道'
+    },
+    approvalStatus: {
+      name: '销售渠道',
+      placeholder: '请选择销售渠道'
+    }
   }
 }
