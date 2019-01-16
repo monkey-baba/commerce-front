@@ -5,13 +5,13 @@
         <ElRow>
           <ElCol>
             <ElFormItem :label=" $t('user.username.label')+':' " prop="username">
-              <ElInput v-model="userQuery.username" auto-complete="on" />
+              <ElInput v-model="userQuery.username" auto-complete="on"/>
             </ElFormItem>
             <ElFormItem :label=" $t('user.name.label')+':' " prop="name">
-              <ElInput v-model="userQuery.name" auto-complete="on" />
+              <ElInput v-model="userQuery.name" auto-complete="on"/>
             </ElFormItem>
             <ElFormItem :label=" $t('user.mobileNumber.label')+':' " prop="mobileNumber">
-              <ElInput v-model="userQuery.mobileNumber" auto-complete="on" />
+              <ElInput v-model="userQuery.mobileNumber" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -40,7 +40,7 @@
       <ElButton type="danger" size="small" @click="handleEnables(false)">
         禁用
       </ElButton>
-      <ElButton type="primary" class="green-btn" size="small" @click="handleEnables(false)">
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
         导出
       </ElButton>
     </div>
@@ -53,9 +53,9 @@
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
-      <ElTableColumn type="selection" />
-      <ElTableColumn :label="$t('general.index')" type="index" />
-      <ElTableColumn :label="$t('user.username.label')" prop="username" >
+      <ElTableColumn type="selection"/>
+      <ElTableColumn :label="$t('general.index')" type="index"/>
+      <ElTableColumn :label="$t('user.username.label')" prop="username">
         <template slot-scope="scope">
           <el-input v-if="scope.row.edit" v-model="scope.row.username" class="edit-input" size="mini"/>
           <template v-else>
@@ -63,7 +63,7 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.name.label')" prop="name" >
+      <ElTableColumn :label="$t('user.name.label')" prop="name">
         <template slot-scope="scope">
           <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
@@ -71,7 +71,7 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.mobileNumber.label')" prop="mobileNumber" >
+      <ElTableColumn :label="$t('user.mobileNumber.label')" prop="mobileNumber">
         <template slot-scope="scope">
           <el-input v-if="scope.row.edit" v-model="scope.row.mobileNumber" class="edit-input" size="mini"/>
           <template v-else>
@@ -79,29 +79,29 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.email.label')" prop="email" >
+      <ElTableColumn :label="$t('user.email.label')" prop="email">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.email" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.email" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.email }}
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled" >
+      <ElTableColumn :label="$t('user.enabled.label')" prop="enabled">
         <template slot-scope="scope">
           <ElTag :type="scope.row.enabled | enableFilter">
             {{ scope.row.enabled ? '启用' : '禁用' }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.groups.label')" prop="enabled" >
+      <ElTableColumn :label="$t('user.groups.label')" prop="groups">
         <template slot-scope="scope">
           <ElTag v-for="g in scope.row.groups" :key="g" type="primary">
             {{ g }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('user.roles.label')" prop="enabled" >
+      <ElTableColumn :label="$t('user.roles.label')" prop="roles">
         <template slot-scope="scope">
           <ElTag v-for="r in scope.row.roles" :key="r" type="primary">
             {{ r }}
@@ -112,15 +112,27 @@
         <template slot-scope="scope">
           <div>
             <template v-if="scope.row.edit">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">保存</ElButton>
-              <ElButton class="cancel-btn" size="mini" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</ElButton>
+              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">
+                保存
+              </ElButton>
+              <ElButton
+                class="cancel-btn"
+                size="mini"
+                icon="el-icon-refresh"
+                type="warning"
+                @click="cancelEdit(scope.row)"
+              >
+                取消
+              </ElButton>
             </template>
             <template v-else>
-              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</ElButton>
-              <ElButton type="success" size="mini" @click="handleChangePwd(scope.row.username)">
+              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
+                编辑
+              </ElButton>
+              <ElButton type="success" size="mini" @click="handleRole(scope.row)">
                 角色分配
               </ElButton>
-              <ElButton type="success" size="mini" @click="handleEnable(scope.row, true)">
+              <ElButton type="success" size="mini" @click="handleGroup(scope.row)">
                 用户组分配
               </ElButton>
             </template>
@@ -252,12 +264,35 @@
       </div>
     </ElDialog>
 
-    <ElDialog :visible.sync="changeGroup.visible" :title="$t('user.changeGroup.title')"/>
+    <ElDialog :visible.sync="changeGroup.visible" :title="$t('user.changeGroup.title')" width="750px">
+      <ElTransfer v-model="changeGroup.value" :data="changeGroup.data" :titles="['可选用户组','已选用户组']" filterable/>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="changeGroup.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="changeUserGroup">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+    <ElDialog :visible.sync="changeRole.visible" :title="$t('user.changeRole.title')" width="750px">
+      <ElTransfer v-model="changeRole.value" :data="changeRole.data" :titles="['可选角色','已选角色']" filterable/>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="changeRole.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="changeUserRole">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
   </div>
 </template>
 
 <script>
 import { getUsers, updateUser, passwordUser, enableUser, createUser } from '@/api/user'
+import { userGroup, updateUserGroup } from '@/api/group'
+import { userRole, updateUserRole } from '@/api/role'
 import { isvalidUsername, isEmpty, isEmail, isMobilePhone } from '@/utils/validate'
 import store from '../../store'
 
@@ -356,8 +391,18 @@ export default {
         }
       },
       changeGroup: {
-        visible: false
-      }
+        visible: false,
+        userId: undefined,
+        data: [],
+        value: []
+      },
+      changeRole: {
+        visible: false,
+        userId: undefined,
+        data: [],
+        value: []
+      },
+      downloadLoading: false
     }
   },
   created() {
@@ -372,7 +417,7 @@ export default {
       this.getData()
     },
     handleCurrentChange(val) {
-      this.userQuery.page = val
+      this.userQuery.pageNum = val
       this.getData()
     },
     getData() {
@@ -384,7 +429,7 @@ export default {
           v.original = JSON.stringify(v) //  will be used when user click the cancel botton
           return v
         })
-        this.pagination.total = response.data.total
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
       }).catch((e) => {
@@ -443,7 +488,7 @@ export default {
           type: 'success'
         })
         if (JSON.parse(row.original).id === store.getters.currentUserId &&
-          JSON.parse(row.original).username !== row.username) {
+            JSON.parse(row.original).username !== row.username) {
           setTimeout(() => {
             store.dispatch('FedLogOut').then(() => {
               this.$message({
@@ -591,8 +636,117 @@ export default {
           duration: 2000
         })
       })
-    }
+    },
+    handleGroup(row) {
+      this.changeGroup.userId = row.id
+      userGroup(row.id).then(response => {
+        const data = response.data
+        this.changeGroup.data = data
+        this.changeGroup.value = data.filter(g => g.exists).map(g => g.key)
+        this.changeGroup.visible = true
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取用户组失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    changeUserGroup() {
+      updateUserGroup(this.changeGroup.userId, this.changeGroup.value).then(response => {
+        this.changeGroup.visible = false
+        for (const v of this.table.data) {
+          if (v.id === this.changeGroup.userId) {
+            v.roles = response.data.roleNames
+            v.groups = response.data.groupNames
+            break
+          }
+        }
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '更新用户组失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+        this.changeGroup.visible = false
+      }
+      )
+    },
+    handleRole(row) {
+      this.changeRole.userId = row.id
+      userRole(row.id).then(response => {
+        const data = response.data
+        this.changeRole.data = data
+        this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
+        this.changeRole.visible = true
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取用户组失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    changeUserRole() {
+      updateUserRole(this.changeRole.userId, this.changeRole.value).then(response => {
+        this.changeRole.visible = false
+        for (const v of this.table.data) {
+          if (v.id === this.changeRole.userId) {
+            v.roles = response.data.roleNames
+            break
+          }
+        }
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '更新角色失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+        this.changeRole.visible = false
+      }
+      )
+    },
+    handleExport() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择用户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['登录名', '用户姓名', '手机号', '邮箱', '是否启用', '用户组', '角色']
+          const filterVal = ['username', 'name', 'mobileNumber', 'email', 'enabled', 'groups', 'roles']
 
+          const data = this.table.select.map(u => filterVal.map(field => {
+            return u[field]
+          }))
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '用户列表'
+          })
+          this.downloadLoading = false
+        })
+    }
   }
 }
 </script>
@@ -604,4 +758,15 @@ export default {
     height: 1px;
   }
 
+  .el-transfer {
+    text-align: center;
+  }
+
+  .el-transfer * {
+    text-align: left;
+  }
+
+  .el-transfer .el-transfer-panel {
+    width: 250px;
+  }
 </style>

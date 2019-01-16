@@ -255,6 +255,9 @@ export default {
     },
     changeGroup: {
       title: '选择用户组'
+    },
+    changeRole: {
+      title: '选择角色'
     }
   },
   general: {
