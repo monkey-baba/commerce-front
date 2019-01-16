@@ -129,11 +129,11 @@
               <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
                 编辑
               </ElButton>
-              <ElButton type="success" size="mini" @click="handleRole(scope.row)">
-                角色分配
-              </ElButton>
               <ElButton type="success" size="mini" @click="handleGroup(scope.row)">
                 用户组分配
+              </ElButton>
+              <ElButton type="success" size="mini" @click="handleRole(scope.row)">
+                角色分配
               </ElButton>
             </template>
           </div>
