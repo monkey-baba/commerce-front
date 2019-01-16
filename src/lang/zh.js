@@ -284,5 +284,19 @@ export default {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     }
+  },
+  stock: {
+    skuId: {
+      label: '商品编码'
+    },
+    skuName: {
+      label: '商品编码'
+    },
+    warehouseId: {
+      label: '仓库编码'
+    },
+    warehouseName: {
+      label: '仓库名称'
+    }
   }
 }

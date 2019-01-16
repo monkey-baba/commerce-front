@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export function getStocks(query) {
+export function getStocks(param) {
   return request({
-    'url': '/stock/api/v1/stock/query',
-    'method': 'get'
-    // 'params': query
+    'url': '/stock/api/v1/stock/info',
+    'method': 'post',
+    params: param
   })
 }

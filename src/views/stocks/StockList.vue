@@ -1,21 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-
-      <el-form ref="orderQuery" :model="orderQuery" :inline="true">
+      <el-form ref="stockQuery" :model="stockQuery" :inline="true">
         <el-row>
           <el-col>
-            <el-form-item :label=" '商品编码:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入商品编码'" auto-complete="on"/>
+            <el-form-item :label=" $t('stock.skuId.label')+':' " prop="code">
+              <el-input v-model="stockQuery.skuId" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" '商品名称:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入商品名称'" auto-complete="on"/>
+            <el-form-item :label=" $t('stock.skuName.label')+':' " prop="code">
+              <el-input v-model="stockQuery.skuName" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" '仓库编码:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入仓库编码'" auto-complete="on"/>
+            <el-form-item :label=" $t('stock.warehouseId.label')+':' " prop="code">
+              <el-input v-model="stockQuery.warehouseId" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" '仓库名称:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入仓库名称'" auto-complete="on"/>
+            <el-form-item :label=" $t('stock.warehouseName.label')+':' " prop="code">
+              <el-input v-model="stockQuery.warehouseName" auto-complete="on"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -69,27 +68,16 @@
 import { getStocks } from '@/api/stock'
 
 export default {
-  name: 'OrderList',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        'COMPLETED': 'success',
-        'SHIPPED': 'success',
-        'APPROVED': 'primary',
-        'CREATED': 'warning',
-        'PENDING': 'primary'
-      }
-      return statusMap[status]
-    }
-  },
+  name: 'StockList',
   data() {
     return {
-      orderQuery: {
-        code: '',
-        status: [],
+      stockQuery: {
+        skuId: '',
+        skuName: '',
+        warehouseId: '',
+        warehouseName: '',
         page: 1,
-        limit: 10,
-        platform: []
+        limit: 10
       },
       search: {
         loading: false
@@ -103,9 +91,7 @@ export default {
       table: {
         loading: false,
         data: null
-      },
-      statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
-      platforms: ['TM', 'JD', 'DMS', 'LGT']
+      }
     }
   },
   created() {
@@ -113,22 +99,23 @@ export default {
   },
   methods: {
     resetQuery() {
-      this.$refs['orderQuery'].resetFields()
+      this.$refs['stockQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.orderQuery.limit = val
+      this.stockQuery.limit = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.orderQuery.page = val
+      this.stockQuery.page = val
       this.getData()
     },
     getData() {
       this.table.loading = true
-      getStocks(this.orderQuery).then(response => {
+      console.log(this.stockQuery)
+      getStocks(this.stockQuery).then(response => {
         console.log(response)
-        this.table.data = response.data
-        this.pagination.total = response.data.total
+        this.table.data = response.data.item
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {
