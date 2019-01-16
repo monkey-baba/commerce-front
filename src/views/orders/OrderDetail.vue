@@ -2,36 +2,159 @@
   <div class="app-container">
     <el-row>
       <el-col>
-        <div align="right" style="margin-bottom: 10px">
-          <el-button type="primary" class="green-btn" size="small">审核</el-button>
-          <el-button type="primary" class="tiffany-btn" size="small">打印</el-button>
-          <el-button type="info" size="small">取消</el-button>
+        <div class="order-basic" >
+          <div class="order-basic-header clearfix">
+            <span>订单头信息</span>
+          </div>
+          <div class="order-basic-body">
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>平台订单号：000001</div></el-col>
+              <el-col :span="6"><div>订单状态：</div></el-col>
+              <el-col :span="6"><div>订单类型：</div></el-col>
+              <el-col :span="6"><div>配送方式：</div></el-col>
+            </el-row>
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>客户ID：</div></el-col>
+              <el-col :span="6"><div>平台：</div></el-col>
+              <el-col :span="6"><div>店铺：</div></el-col>
+              <el-col :span="6"><div>下单门店：</div></el-col>
+            </el-row>
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>下单日期：</div></el-col>
+              <el-col :span="6"><div>付款日期：</div></el-col>
+              <el-col :span="6"><div>订单金额：</div></el-col>
+              <el-col :span="6"><div>运费金额：</div></el-col>
+            </el-row>
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>订单来源：</div></el-col>
+              <el-col :span="6"><div>销售渠道：</div></el-col>
+            </el-row>
+          </div>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <el-card shadow="never">
-          <el-steps :active="order.status | stepFilter" align-center>
-            <el-step :title="$t('order.status.CREATED')"/>
-            <el-step :title="$t('order.status.PENDING')"/>
-            <el-step :title="$t('order.status.APPROVED')"/>
-            <el-step :title="$t('order.status.SHIPPED')"/>
-            <el-step :title="$t('order.status.COMPLETED')"/>
-          </el-steps>
-        </el-card>
       </el-col>
     </el-row>
     <el-row>
       <el-col>
         <div class="order-basic" >
           <div class="order-basic-header clearfix">
-            <span>基本信息</span>
+            <span>收件人信息</span>
           </div>
-          <div class="order-basic-body"/>
+          <div class="order-basic-body">
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>收件人：000001</div></el-col>
+              <el-col :span="6"><div>手机：</div></el-col>
+              <el-col :span="6"><div>地址：</div></el-col>
+              <el-col :span="6"><div>电话：</div></el-col>
+            </el-row>
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>指定发货点编码：</div></el-col>
+              <el-col :span="6"><div>指定发货点名称：</div></el-col>
+              <el-col :span="6"><div>地址：</div></el-col>
+              <el-col :span="6"><div>联系电话：</div></el-col>
+            </el-row>
+          </div>
         </div>
       </el-col>
     </el-row>
+    <el-row>
+      <el-col>
+        <div class="order-basic" >
+          <div class="order-basic-header clearfix">
+            <span>发票信息</span>
+          </div>
+          <div class="order-basic-body">
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="6"><div>申请开票：000001</div></el-col>
+              <el-col :span="6"><div>发票类型：</div></el-col>
+              <el-col :span="6"><div>发票抬头：</div></el-col>
+              <el-col :span="6"><div>发票金额：</div></el-col>
+            </el-row>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col>
+        <div class="order-basic" >
+          <div class="order-basic-header clearfix">
+            <span>备注信息</span>
+          </div>
+          <div class="order-basic-body">
+            <el-row :gutter="20" class="row-bg">
+              <el-col :span="12">
+                <div>买家留言</div>
+              </el-col>
+              <el-col :span="12">
+                <div class="order-basic" >
+                  <div class="order-basic-header clearfix">
+                    <span>客服信息</span>
+                  </div>
+                  <div class="order-basic-body">
+                    <el-table
+                      border
+                      fit
+                      stripe
+                      highlight-current-row>
+                      <el-table-column label="添加时间" prop="" />
+                      <el-table-column label="添加人" prop="" />
+                      <el-table-column label="备注" prop="" />
+                    </el-table>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-tabs type="border-card">
+      <el-tab-pane label="商品信息">
+        <el-table
+          border
+          fit
+          stripe
+          highlight-current-row>
+          <el-table-column label="行号" prop="" />
+          <el-table-column label="SKU" prop="code" >
+            <template slot-scope="scope">
+              <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品名称" prop="" />
+          <el-table-column label="颜色" prop="" />
+          <el-table-column label="尺码" prop="" />
+          <el-table-column label="数量" prop="" />
+          <el-table-column label="已发货数量" prop=""/>
+          <el-table-column label="原价" prop="" />
+          <el-table-column label="优惠" prop="" />
+          <el-table-column label="销售价" prop="" />
+          <el-table-column label="金额小计" prop="" />
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="支付信息">
+        <el-table
+          border
+          fit
+          stripe
+          highlight-current-row>
+          <el-table-column label="行号" prop="" />
+          <el-table-column label="支付方式" prop="" />
+          <el-table-column label="支付金额" prop="" />
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="配货信息">
+        <el-table
+          border
+          fit
+          stripe
+          highlight-current-row>
+          <el-table-column label="配货单号" prop="" />
+          <el-table-column label="配货单状态" prop="" />
+          <el-table-column label="快递公司" prop="" />
+          <el-table-column label="快递单号" prop="" />
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script>
@@ -65,9 +188,15 @@ export default {
     border-radius: 4px;
     .order-basic-header{
       padding: 10px;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 500;
       border-bottom: 1px solid #ebeef5;
     }
+    .order-basic-body{
+      font-size: 13px;
+    }
+  }
+  .row-bg {
+    padding: 10px 0;
   }
 </style>

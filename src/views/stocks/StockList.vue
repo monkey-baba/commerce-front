@@ -45,19 +45,11 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="序号" prop="code" />
-      <el-table-column label="商品编码" prop="code" >
-        <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="商品名称" prop="type" />
-      <el-table-column label="仓库" prop="code" >
-        <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="可用量" prop="totalPrice"/>
+      <el-table-column label="序号" prop="skuId" />
+      <el-table-column label="商品编码" prop="skuId" />
+      <el-table-column label="商品名称" prop="skuName" />
+      <el-table-column label="仓库" prop="warehouseId" />
+      <el-table-column label="可用量" prop="available"/>
     </el-table>
 
     <el-pagination
@@ -74,7 +66,7 @@
 </template>
 
 <script>
-import { getOrders } from '@/api/order'
+import { getStocks } from '@/api/stock'
 
 export default {
   name: 'OrderList',
@@ -133,8 +125,9 @@ export default {
     },
     getData() {
       this.table.loading = true
-      getOrders(this.orderQuery).then(response => {
-        this.table.data = response.data.items
+      getStocks(this.orderQuery).then(response => {
+        console.log(response)
+        this.table.data = response.data
         this.pagination.total = response.data.total
         this.table.loading = false
         this.search.loading = false
