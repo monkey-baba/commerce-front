@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
 
 // create an axios instance
 const service = axios.create({
@@ -63,14 +64,14 @@ service.interceptors.response.use(
   // },
   error => {
     console.log('err:' + JSON.stringify(error)) // for debug
-    // const response = error.response
-    // if (response.status >= 500) {
-    //   Message({
-    //     message: response.data.message !== undefined ? response.data.message : error.message,
-    //     type: 'error',
-    //     duration: 5 * 1000
-    //   })
-    // }
+    const response = error.response
+    if (response.status === 401) {
+      Message({
+        message: '无权限查看或登录已过期',
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )

@@ -166,7 +166,7 @@
         <ElButton @click="changeRole.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
-        <ElButton type="primary" @click="changeUserRole">
+        <ElButton type="primary" @click="changeGroupRole">
           {{ $t('table.confirm') }}
         </ElButton>
       </div>
@@ -444,12 +444,14 @@ export default {
         })
       })
     },
-    changeUserRole() {
+    changeGroupRole() {
       updateGroupRole(this.changeRole.groupId, this.changeRole.value).then(response => {
         this.changeRole.visible = false
         for (const v of this.table.data) {
           if (v.id === this.changeRole.groupId) {
+            console.log(JSON.stringify(v))
             v.roles = response.data.roleNames
+            console.log(JSON.stringify(v))
             break
           }
         }
@@ -473,7 +475,7 @@ export default {
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择用户',
+          message: '请选择用户组',
           type: 'error',
           duration: 2 * 1000
         })
@@ -481,8 +483,8 @@ export default {
       }
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['登录名', '用户姓名', '手机号', '邮箱', '是否启用', '用户组', '角色']
-          const filterVal = ['username', 'name', 'mobileNumber', 'email', 'enabled', 'groups', 'roles']
+          const tHeader = ['编码', '用户组名称', '描述', '角色']
+          const filterVal = ['code', 'name', 'description', 'roles']
 
           const data = this.table.select.map(u => filterVal.map(field => {
             return u[field]
@@ -490,7 +492,7 @@ export default {
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '用户列表'
+            filename: '用户组列表'
           })
           this.downloadLoading = false
         })
