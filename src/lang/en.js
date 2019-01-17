@@ -63,7 +63,9 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     orderManage: 'Order Manage',
-    orderList: 'Order List'
+    orderList: 'Order List',
+    DictionaryList: 'Dictionary List',
+    DictionaryManage: 'Dictionary Manage'
   },
   navbar: {
     logOut: 'Log Out',

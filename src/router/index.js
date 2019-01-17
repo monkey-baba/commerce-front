@@ -250,5 +250,23 @@ export const asyncRouterMap = [
     ]
   },
 
-  { path: '*', redirect: '/error/404', hidden: true }
+  { path: '*', redirect: '/error/404', hidden: true },
+
+  {
+    path: '/dictionarys',
+    component: Layout,
+    name: 'DictionaryManage',
+    meta: {
+      title: 'DictionaryManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/dictionarys/DictionaryList'),
+        name: 'DictionaryList',
+        meta: { title: 'DictionaryList' }
+      }
+    ]
+  }
 ]

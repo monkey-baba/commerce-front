@@ -77,7 +77,9 @@ export default {
     productManage: '产品管理',
     ProductList: '产品列表',
     CategoryList: '分类列表',
-    ProductDetail: '产品详情'
+    ProductDetail: '产品详情',
+    DictionaryList: '枚举管理',
+    DictionaryManage: '枚举管理'
   },
   navbar: {
     logOut: '退出登录',
