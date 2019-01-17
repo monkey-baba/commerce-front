@@ -1,71 +1,121 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-
-      <el-form ref="productQuery" :model="productQuery" :inline="true">
-        <el-row>
-          <el-col>
-            <el-form-item :label=" $t('product.name.name')+':' " prop="name">
-              <el-input v-model="productQuery.name" :placeholder="$t('product.name.placeholder')" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item :label=" $t('product.code.name')+':' " prop="code">
-              <el-input v-model="productQuery.code" :placeholder="$t('product.code.placeholder')" auto-complete="on"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col>
-            <el-form-item :label=" $t('product.category.name')+':' " prop="name">
-              <el-input v-model="productQuery.category" :placeholder="$t('product.category.placeholder')" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item :label=" $t('product.channel.name')+':' " prop="code">
-              <el-input v-model="productQuery.channel" :placeholder="$t('product.channel.placeholder')" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item :label=" $t('product.approvalStatus.name')+':' " prop="code">
-              <el-input v-model="productQuery.approvalStatus" :placeholder="$t('product.approvalStatus.placeholder')" auto-complete="on"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-form-item>
-            <el-col>
-              <el-button :loading="search.loading" type="primary" icon="el-icon-search" size="small" @click="query">查询
-              </el-button>
-              <el-button size="small" @click="resetQuery">重置</el-button>
-            </el-col>
-          </el-form-item>
-        </el-row>
-
-      </el-form>
+      <ElForm ref="productQuery" :model="productQuery" :inline="true">
+        <ElRow>
+          <ElCol>
+            <ElFormItem :label=" $t('product.code.name')+':' " prop="code">
+              <ElInput v-model="productQuery.code" :placeholder="$t('product.code.placeholder')" auto-complete="on"/>
+            </ElFormItem>
+            <ElFormItem :label=" $t('product.name.name')+':' " prop="name">
+              <ElInput v-model="productQuery.name" :placeholder="$t('product.name.placeholder')" auto-complete="on"/>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol>
+            <ElFormItem :label=" $t('product.channelId.name')+':' " prop="channelId">
+              <ElInput v-model="productQuery.channelId" :placeholder="$t('product.channelId.placeholder')" auto-complete="on"/>
+            </ElFormItem>
+            <ElFormItem :label=" $t('product.approvedId.name')+':' " prop="approvedId">
+              <ElInput v-model="productQuery.approvedId" :placeholder="$t('product.approvedId.placeholder')" auto-complete="on"/>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElFormItem>
+            <ElCol>
+              <ElButton :loading="search.loading" type="primary" icon="el-icon-search" size="small" @click="query">
+                查询
+              </ElButton>
+              <ElButton size="small" @click="resetQuery">
+                重置
+              </ElButton>
+            </ElCol>
+          </ElFormItem>
+        </ElRow>
+      </ElForm>
     </div>
     <hr>
-    <div class="filter-container">
-      <el-button type="primary" class="blue-btn" size="small">创建商品</el-button>
-      <el-button type="primary" class="green-btn" size="small">导出列表</el-button>
+    <div class="filter-container" style="margin: 0 10px">
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">
+        创建
+      </ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
+        导出
+      </ElButton>
     </div>
-    <el-table
+    <ElTable
       v-loading="table.loading"
       :data="table.data"
       border
       fit
       stripe
-      highlight-current-row>
-      <el-table-column type="selection" width="50px"/>
-      <el-table-column :label="$t('product.code.name')" prop="code" >
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
+      <ElTableColumn type="selection"/>
+      <ElTableColumn :label="$t('general.index')" type="index"/>
+      <ElTableColumn :label="$t('product.code.name')" prop="code">
         <template slot-scope="scope">
-          <router-link :to="{name:'ProductDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.code }}
+          </template>
         </template>
-      </el-table-column>
-      <el-table-column label="库存单位" prop="unit" />
-      <el-table-column label="商品分类" prop="category"/>
-      <el-table-column label="销售渠道" prop="channel"/>
-      <el-table-column label="操作">
+      </ElTableColumn>
+      <ElTableColumn :label="$t('product.name.name')" prop="name">
         <template slot-scope="scope">
-          <el-button type="primary" class="green-btn" size="mini">编辑</el-button>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.name }}
+          </template>
         </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
+      </ElTableColumn>
+      <ElTableColumn :label="$t('product.channelId.name')" prop="channelId">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.channelId" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.channelId }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('product.approvedId.name')" prop="approvedId">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.approvedId" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.approvedId }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="操作" min-width="200px">
+        <template slot-scope="scope">
+          <div>
+            <template v-if="scope.row.edit">
+              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">
+                保存
+              </ElButton>
+              <ElButton
+                class="cancel-btn"
+                size="mini"
+                icon="el-icon-refresh"
+                type="warning"
+                @click="cancelEdit(scope.row)"
+              >
+                取消
+              </ElButton>
+            </template>
+            <template v-else>
+              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
+                编辑
+              </ElButton>
+            </template>
+          </div>
+        </template>
+      </ElTableColumn>
+    </ElTable>
+
+    <ElPagination
       :current-page="pagination.page"
       :page-sizes="pagination.pageSizes"
       :total="pagination.total"
@@ -74,20 +124,67 @@
       layout="total, sizes, prev, pager, next, jumper"
       style="width: 100%"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"/>
+      @current-change="handleCurrentChange"
+    />
+
+    <ElDialog :visible.sync="productCreate.visible" :title="$t('product.create.title')">
+      <ElForm
+        ref="createProductForm"
+        :rules="productCreate.rules"
+        :model="productCreate.form"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <ElFormItem :label="$t('product.code.name')" prop="code">
+          <ElInput
+            v-model="productCreate.form.code"
+            :placeholder="$t('product.code.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('product.name.name')" prop="name">
+          <ElInput
+            v-model="productCreate.form.name"
+            :placeholder="$t('product.name.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('product.channelId.name')" prop="channelId">
+          <ElInput
+            v-model="productCreate.form.channelId"
+            :placeholder="$t('product.channelId.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('product.approvedId.name')" prop="approvedId">
+          <ElInput
+            v-model="productCreate.form.approvedId"
+            :placeholder="$t('product.approvedId.placeholder')"
+          />
+        </ElFormItem>
+      </ElForm>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="productCreate.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="createData">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+
   </div>
 </template>
 
 <script>
-import { getProducts } from '@/api/product'
+import { getProducts, updateProduct, createProduct } from '@/api/product'
+import { isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'ProductList',
+  name: 'Product',
   filters: {
-    statusFilter(status) {
+    enableFilter(status) {
       const statusMap = {
-        'APPROVED': 'approved',
-        'UNAPPROVED': 'unapproved'
+        'true': 'success',
+        'false': 'info'
       }
       return statusMap[status]
     }
@@ -97,23 +194,32 @@ export default {
       productQuery: {
         code: '',
         name: '',
-        category: '',
-        channel: '',
-        approvalStatus: []
+        channelId: '',
+        approvedId: '',
+        pageNum: 1,
+        pageSize: 10
       },
       search: {
         loading: false
       },
       pagination: {
-        page: 0,
+        page: 1,
         total: 0,
         background: false,
         pageSizes: [10, 20, 50]
       },
       table: {
         loading: false,
-        data: null
-      }
+        data: undefined,
+        select: []
+      },
+      productCreate: {
+        visible: false,
+        rules: {
+        },
+        form: {}
+      },
+      downloadLoading: false
     }
   },
   created() {
@@ -128,26 +234,134 @@ export default {
       this.getData()
     },
     handleCurrentChange(val) {
-      this.productQuery.page = val
+      this.productQuery.pageNum = val
       this.getData()
     },
     getData() {
       this.table.loading = true
       getProducts(this.productQuery).then(response => {
-        this.table.data = response.data.items
-        this.pagination.total = response.data.total
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when product click the cancel botton
+          return v
+        })
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
-      }).catch(() => {
+      }).catch((e) => {
         this.table.loading = false
+        this.search.loading = false
       })
-    },
-    setSearchLoading() {
-      // this.search.loading = false
     },
     query() {
       this.search.loading = true
       this.getData()
+    },
+    cancelEdit(row) {
+      const originRow = JSON.parse(row.original)
+      row.code = originRow.code
+      row.name = originRow.name
+      row.channelId = originRow.channelId
+      row.approvedId = originRow.approvedId
+      row.edit = false
+    },
+    confirmEdit(row) {
+      if (isEmpty(row.code)) {
+        this.$message({
+          message: '产品编码不能为空',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      if (isEmpty(row.name)) {
+        this.$message({
+          message: '产品名称不能为空',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
+      updateProduct(row).then(response => {
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+        row.original = JSON.stringify(row)
+        row.edit = false
+      }).catch(e => {
+        const response = e.response
+        this.$message({
+          message: response !== undefined ? response.data : e.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        this.cancelEdit(row)
+      })
+    },
+    handleCreate() {
+      this.productCreate.form = {
+        code: '',
+        name: '',
+        channelId: '',
+        approvedId: ''
+      }
+      this.productCreate.visible = true
+      this.$nextTick(() => {
+        this.$refs['createProductForm'].clearValidate()
+      })
+    },
+    createData() {
+      this.$refs['createProductForm'].validate((valid) => {
+        if (valid) {
+          createProduct(this.productCreate.form).then((response) => {
+            this.table.data.unshift(response.data)
+            this.productCreate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '产品创建失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    handleSelectionChange(val) {
+      this.table.select = val
+    },
+    handleExport() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择产品',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['产品编码', '产品名称', '产品渠道', '审批状态']
+          const filterVal = ['code', 'name', 'channelId', 'approvedId']
+
+          const data = this.table.select.map(u => filterVal.map(field => {
+            return u[field]
+          }))
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '产品列表'
+          })
+          this.downloadLoading = false
+        })
     }
   }
 }
@@ -158,6 +372,9 @@ export default {
     border: 0;
     border-bottom: 1px solid #eaeaea;
     height: 1px;
+  }
+  .el-transfer * {
+    text-align: left;
   }
 
 </style>
