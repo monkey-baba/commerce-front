@@ -171,11 +171,43 @@ export default {
   },
   order: {
     code: {
-      name: '订单编号',
-      placeholder: '请输入订单号'
+      label: '订单编号'
     },
-    status: {
-      name: '订单状态',
+    ecsOrderId: {
+      label: '平台订单号'
+    },
+    consignmentCode: {
+      label: '配货单号'
+    },
+    storeId: {
+      label: '网店'
+    },
+    customerId: {
+      label: '客户编号'
+    },
+    receiver: {
+      label: '收货人'
+    },
+    receiverPhone: {
+      label: '收货手机号'
+    },
+    wareId: {
+      label: '门店'
+    },
+    totalPrice: {
+      label: '订单金额'
+    },
+    date: {
+      label: '下单日期'
+    },
+    paymentDate: {
+      label: '付款日期'
+    },
+    orderTypeId: {
+      label: '订单类型'
+    },
+    statusId: {
+      label: '订单状态',
       CREATED: '已创建',
       PENDING: '待审核',
       APPROVED: '已审核',
@@ -323,13 +355,81 @@ export default {
       label: '商品编码'
     },
     skuName: {
-      label: '商品编码'
+      label: '商品名称'
+    },
+    queryWarehouseId: {
+      label: '仓库编码'
     },
     warehouseId: {
-      label: '仓库编码'
+      label: '仓库'
     },
     warehouseName: {
       label: '仓库名称'
+    },
+    available: {
+      label: '可用量'
+    }
+  },
+  warehouse: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '名称'
+    },
+    active: {
+      label: '是否启用'
+    },
+    posId: {
+      label: '所属供货点'
+    },
+    posAddress: {
+      label: '仓库地址'
+    }
+  },
+  customer: {
+    queryCode: {
+      label: '客户编号'
+    },
+    queryName: {
+      label: '客户姓名'
+    },
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '名称'
+    },
+    phone: {
+      label: '手机号'
+    },
+    email: {
+      label: '邮箱'
+    },
+    statusId: {
+      label: '状态'
+    },
+    create: {
+      title: '创建客户',
+      code: {
+        label: '客户编号',
+        placeholder: '请输入客户编号'
+      },
+      name: {
+        label: '客户姓名',
+        placeholder: '请输入客户姓名'
+      },
+      phone: {
+        label: '手机号',
+        placeholder: '请输入手机号'
+      },
+      email: {
+        label: '邮箱',
+        placeholder: '请输入邮箱'
+      },
+      statusId: {
+        label: '状态'
+      }
     }
   }
 }

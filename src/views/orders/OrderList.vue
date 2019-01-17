@@ -5,8 +5,8 @@
       <el-form ref="orderQuery" :model="orderQuery" :inline="true">
         <el-row>
           <el-col>
-            <el-form-item label="平台订单号:" prop="code">
-              <el-select v-model="orderQuery.platformNumber" auto-complete="on">
+            <el-form-item :label="$t('order.ecsOrderId.label')+':'" prop="ecsOrderId">
+              <el-select v-model="orderQuery.ecsOrderId" auto-complete="on">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -14,47 +14,47 @@
                   :value="item.value"/>
               </el-select>
             </el-form-item>
-            <el-form-item :label=" $t('order.code.name')+':' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="$t('order.code.placeholder')" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item label="配货单号:" prop="">
-              <el-input v-model="orderQuery.consignmentCode" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item label="网店:" prop="">
-              <el-select v-model="orderQuery.onlineStore" auto-complete="on">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col>
-            <el-form-item label="客户编号:" prop="">
+            <el-form-item :label=" $t('order.code.label')+':' " prop="code">
               <el-input v-model="orderQuery.code" auto-complete="on"/>
             </el-form-item>
-            <el-form-item label="收货人:" prop="">
-              <el-input v-model="orderQuery.delivery" auto-complete="on"/>
+            <el-form-item :label="$t('order.consignmentCode.label')+':'" prop="">
+              <el-input v-model="orderQuery.consignmentCode" auto-complete="on"/>
             </el-form-item>
-            <el-form-item label="收货手机号:" prop="">
-              <el-input v-model="orderQuery.deliveryPhone" auto-complete="on"/>
-            </el-form-item>
-            <el-form-item label="门店:" prop="">
-              <el-input v-model="orderQuery.store" auto-complete="on"/>
+            <el-form-item :label="$t('order.storeId.label')+':'" prop="storeId">
+              <el-select v-model="orderQuery.storeId" auto-complete="on">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item label="订单金额:" prop="">
+            <el-form-item :label="$t('order.customerId.label')+':'" prop="customerId">
+              <el-input v-model="orderQuery.customerId" auto-complete="on"/>
+            </el-form-item>
+            <el-form-item :label="$t('order.receiver.label')+':'" prop="receiver">
+              <el-input v-model="orderQuery.receiver" auto-complete="on"/>
+            </el-form-item>
+            <el-form-item :label="$t('order.receiverPhone.label')+':'" prop="receiverPhone">
+              <el-input v-model="orderQuery.receiverPhone" auto-complete="on"/>
+            </el-form-item>
+            <el-form-item :label="$t('order.wareId.label')+':'" prop="wareId">
+              <el-input v-model="orderQuery.wareId" auto-complete="on"/>
+            </el-form-item>
+          </el-col>
+          <el-col>
+            <el-form-item :label="$t('order.totalPrice.label')+':'" prop="totalPrice">
               <el-form-item prop="min">
-                <el-input v-model="orderQuery.min" />
+                <el-input v-model="orderQuery.totalPriceMin" />
               </el-form-item>
               ~
               <el-form-item prop="max">
-                <el-input v-model="orderQuery.max" />
+                <el-input v-model="orderQuery.totalPriceMax" />
               </el-form-item>
             </el-form-item>
-            <el-form-item label="下单日期:" prop="">
+            <el-form-item :label="$t('order.date.label')+':'" prop="date">
               <el-date-picker
                 v-model="orderQuery.startDate"
                 type="date"
@@ -65,14 +65,14 @@
                 type="date"
                 placeholder="选择结束日期"/>
             </el-form-item>
-            <el-form-item label="付款日期:" prop="">
+            <el-form-item :label="$t('order.paymentDate.label')+':'" prop="paymentDate">
               <el-date-picker
-                v-model="orderQuery.payStartDate"
+                v-model="orderQuery.paymentStartDate"
                 type="date"
                 placeholder="选择开始日期"/>
               ~
               <el-date-picker
-                v-model="orderQuery.payEndDate"
+                v-model="orderQuery.paymentEndDate"
                 type="date"
                 placeholder="选择结束日期"/>
             </el-form-item>
@@ -80,7 +80,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item :label=" $t('order.status.name')+':' " prop="status">
+            <el-form-item :label=" $t('order.statusId.label')+':' " prop="statusId">
               <el-checkbox-group v-model="orderQuery.status">
                 <el-checkbox v-for="sta in statuses" :label="sta" :key="sta" border checked>{{ $t(sta) }}</el-checkbox>
               </el-checkbox-group>
@@ -89,7 +89,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="订单类型:" prop=""/>
+            <el-form-item :label="$t('order.orderTypeId.label')+':'" prop="orderTypeId"/>
           </el-col>
         </el-row>
         <el-row>
@@ -117,30 +117,30 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="平台订单号" prop="" />
-      <el-table-column label="店铺" prop="" />
-      <el-table-column :label="$t('order.code.name')" prop="code" >
+      <el-table-column label="平台订单号" prop="ecsOrderId" />
+      <el-table-column label="店铺" prop="storeId" />
+      <el-table-column :label="$t('order.code.label')" prop="code" >
         <template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
-      <el-table-column label="下单门店" prop="" />
-      <el-table-column label="订单类型" prop="type" />
-      <el-table-column label="订单状态" prop="status">
+      <el-table-column label="下单门店" prop="wareId" />
+      <el-table-column label="订单类型" prop="orderTypeId" />
+      <el-table-column label="订单状态" prop="statusId">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="订单金额" prop="totalPrice"/>
-      <el-table-column label="手机号" prop="" />
-      <el-table-column label="收件地址" prop="" />
+      <el-table-column label="手机号" prop="receiverPhone" />
+      <el-table-column label="收件地址" prop="addressId" />
       <el-table-column label="下单时间" prop="date">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="支付时间" prop="date">
+      <el-table-column label="支付时间" prop="paymentDate">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -181,11 +181,24 @@ export default {
   data() {
     return {
       orderQuery: {
+        ecsOrderId: '',
         code: '',
-        status: [],
-        page: 1,
+        consignmentCode: '',
+        storeId: '',
         limit: 10,
-        platform: []
+        customerId: '',
+        receiver: '',
+        receiverPhone: '',
+        totalPriceMin: '',
+        totalPriceMax: '',
+        startDate: '',
+        endDate: '',
+        paymentStartDate: '',
+        paymentEndDate: '',
+        statusId: '',
+        orderTypeId: '',
+        pageNum: 1,
+        pageSize: 10
       },
       search: {
         loading: false

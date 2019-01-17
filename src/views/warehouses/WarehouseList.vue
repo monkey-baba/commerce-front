@@ -2,14 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
 
-      <el-form ref="orderQuery" :model="orderQuery" :inline="true">
+      <el-form ref="warehouseQuery" :model="warehouseQuery" :inline="true">
         <el-row>
           <el-col>
-            <el-form-item :label=" '编码:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入编码'" auto-complete="on"/>
+            <el-form-item :label=" $t('warehouse.code.label')+':' " prop="code">
+              <el-input v-model="warehouseQuery.code" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" '名称:' " prop="code">
-              <el-input v-model="orderQuery.code" :placeholder="'请输入名称'" auto-complete="on"/>
+            <el-form-item :label=" $t('warehouse.name.label')+':' " prop="name">
+              <el-input v-model="warehouseQuery.name" auto-complete="on"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -39,16 +39,12 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="序号" prop="code" />
-      <el-table-column label="编码" prop="code" >
-        <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" prop="type" />
-      <el-table-column label="是否启用" prop="" />
-      <el-table-column label="所属供货点" prop="" />
-      <el-table-column label="仓库地址" prop="" />
+      <el-table-column :label="$t('general.index')" type="index" />
+      <el-table-column :label="$t('warehouse.code.label')" prop="code" />
+      <el-table-column :label="$t('warehouse.name.label')" prop="name" />
+      <el-table-column :label="$t('warehouse.active.label')" prop="active" />
+      <el-table-column :label="$t('warehouse.posId.label')" prop="posId" />
+      <el-table-column :label="$t('warehouse.posAddress.label')" prop="posAddress" />
     </el-table>
 
     <el-pagination
@@ -65,30 +61,17 @@
 </template>
 
 <script>
-import { getOrders } from '@/api/order'
+import { getWarehouses } from '@/api/warehouse'
 
 export default {
-  name: 'OrderList',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        'COMPLETED': 'success',
-        'SHIPPED': 'success',
-        'APPROVED': 'primary',
-        'CREATED': 'warning',
-        'PENDING': 'primary'
-      }
-      return statusMap[status]
-    }
-  },
+  name: 'WarehouseList',
   data() {
     return {
-      orderQuery: {
+      warehouseQuery: {
         code: '',
-        status: [],
-        page: 1,
-        limit: 10,
-        platform: []
+        name: '',
+        pageNum: 1,
+        pageSize: 10
       },
       search: {
         loading: false
@@ -102,9 +85,7 @@ export default {
       table: {
         loading: false,
         data: null
-      },
-      statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
-      platforms: ['TM', 'JD', 'DMS', 'LGT']
+      }
     }
   },
   created() {
@@ -112,21 +93,27 @@ export default {
   },
   methods: {
     resetQuery() {
-      this.$refs['orderQuery'].resetFields()
+      this.$refs['warehouseQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.orderQuery.limit = val
+      this.warehouseQuery.limit = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.orderQuery.page = val
+      this.warehouseQuery.page = val
       this.getData()
     },
     getData() {
       this.table.loading = true
-      getOrders(this.orderQuery).then(response => {
-        this.table.data = response.data.items
-        this.pagination.total = response.data.total
+      console.log(this.warehouseQuery)
+      getWarehouses(this.warehouseQuery).then(response => {
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {

@@ -4,16 +4,16 @@
       <el-form ref="stockQuery" :model="stockQuery" :inline="true">
         <el-row>
           <el-col>
-            <el-form-item :label=" $t('stock.skuId.label')+':' " prop="code">
+            <el-form-item :label=" $t('stock.skuId.label')+':' " prop="skuId">
               <el-input v-model="stockQuery.skuId" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" $t('stock.skuName.label')+':' " prop="code">
+            <el-form-item :label=" $t('stock.skuName.label')+':' " prop="skuName">
               <el-input v-model="stockQuery.skuName" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" $t('stock.warehouseId.label')+':' " prop="code">
+            <el-form-item :label=" $t('stock.queryWarehouseId.label')+':' " prop="warehouseId">
               <el-input v-model="stockQuery.warehouseId" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label=" $t('stock.warehouseName.label')+':' " prop="code">
+            <el-form-item :label=" $t('stock.warehouseName.label')+':' " prop="warehouseName">
               <el-input v-model="stockQuery.warehouseName" auto-complete="on"/>
             </el-form-item>
           </el-col>
@@ -44,11 +44,11 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="序号" prop="skuId" />
-      <el-table-column label="商品编码" prop="skuId" />
-      <el-table-column label="商品名称" prop="skuName" />
-      <el-table-column label="仓库" prop="warehouseId" />
-      <el-table-column label="可用量" prop="available"/>
+      <el-table-column :label="$t('general.index')" type="index" />
+      <el-table-column :label="$t('stock.skuId.label')" prop="skuId" />
+      <el-table-column :label="$t('stock.skuName.label')" prop="skuName" />
+      <el-table-column :label="$t('stock.warehouseId.label')" prop="warehouseId" />
+      <el-table-column :label="$t('stock.available.label')" prop="available"/>
     </el-table>
 
     <el-pagination
@@ -76,8 +76,8 @@ export default {
         skuName: '',
         warehouseId: '',
         warehouseName: '',
-        page: 1,
-        limit: 10
+        pageNum: 1,
+        pageSize: 10
       },
       search: {
         loading: false
@@ -114,7 +114,12 @@ export default {
       console.log(this.stockQuery)
       getStocks(this.stockQuery).then(response => {
         console.log(response)
-        this.table.data = response.data.item
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
         this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
