@@ -18,3 +18,15 @@ export function isEmail(str) {
 export function isMobilePhone(str) {
   return validator.isMobilePhone(str, 'zh-CN')
 }
+
+export function isCharOrNumber(str, min, max) {
+  console.log(min !== undefined)
+  console.log(max !== undefined)
+  if (min !== undefined && str.length < min) {
+    return false
+  }
+  if (max !== undefined && str.length > max) {
+    return false
+  }
+  return validator.matches(str, /^[a-zA-Z0-9]+$/)
+}

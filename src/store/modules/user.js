@@ -96,7 +96,6 @@ const user = {
           commit('SET_INTRODUCTION', data.name)
           resolve(response)
         }).catch(error => {
-          console.log(error)
           reject(error)
         })
       })

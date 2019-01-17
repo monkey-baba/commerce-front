@@ -22,3 +22,39 @@ export function updateUserGroup(userId, groups) {
     data
   })
 }
+
+export function getGroups(query) {
+  const param = query
+  return request({
+    url: '/auth/api/v1/group/list',
+    method: 'get',
+    params: param
+  })
+}
+
+export function updateGroup(group) {
+  const data = group
+  return request({
+    url: '/auth/api/v1/group/update',
+    method: 'post',
+    data
+  })
+}
+
+export function createGroup(group) {
+  const data = group
+  return request({
+    url: '/auth/api/v1/group/create',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteGroup(groups) {
+  const data = groups
+  return request({
+    url: '/auth/api/v1/group/delete',
+    method: 'delete',
+    data
+  })
+}
