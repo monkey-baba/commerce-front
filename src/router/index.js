@@ -232,7 +232,7 @@ export const asyncRouterMap = [
       {
         path: 'group',
         name: 'authGroup',
-        component: () => import('@/views/auth/user'),
+        component: () => import('@/views/auth/group'),
         meta: {
           title: 'accountGroup'
         }

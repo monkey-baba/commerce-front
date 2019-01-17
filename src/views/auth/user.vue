@@ -356,13 +356,14 @@ export default {
         rules: {
           username: [{
             type: 'string',
-            pattern: '[a-zA-Z0-9]{5,20}',
+            pattern: '^[a-zA-Z0-9]{5,20}$',
             required: true,
             message: '用户名必须是5-20位字母与数字',
             trigger: 'change'
           }],
           password: [{ type: 'string', min: 5, max: 16, required: true, message: '密码必须在5-16位', trigger: 'change' }],
-          enable: [{ required: true, message: '是否启用必输', trigger: 'change' }],
+          enable: [{ required: true, message: '是否启用不能为空', trigger: 'change' }],
+          name: [{ required: true, message: '用户姓名不能为空', trigger: 'change' }],
           mobileNumber: [{ required: false, validator: validateMobileNumber, trigger: 'change' }],
           email: [{ required: false, validator: validateEmail, trigger: 'change' }]
         },
@@ -413,7 +414,7 @@ export default {
       this.$refs['userQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.userQuery.limit = val
+      this.userQuery.pageSize = val
       this.getData()
     },
     handleCurrentChange(val) {
@@ -503,11 +504,11 @@ export default {
         row.original = JSON.stringify(row)
         row.edit = false
       }).catch(e => {
-        const response = e.response
-        this.$message({
-          message: response !== undefined ? response.data : e.message,
+        this.$notify({
+          title: '失败',
+          message: '登录名已存在',
           type: 'error',
-          duration: 5 * 1000
+          duration: 2000
         })
         this.cancelEdit(row)
       })
@@ -531,6 +532,7 @@ export default {
         if (valid) {
           createUser(this.userCreate.form).then((response) => {
             this.table.data.unshift(response.data)
+            this.pagination.total = this.pagination.total + 1
             this.userCreate.visible = false
             this.$notify({
               title: '成功',
@@ -620,21 +622,25 @@ export default {
       })
     },
     changePassword() {
-      passwordUser(this.changePwd.form).then(() => {
-        this.changePwd.visible = false
-        this.$notify({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000
-        })
-      }).catch(() => {
-        this.$notify({
-          title: '失败',
-          message: '更新失败',
-          type: 'error',
-          duration: 2000
-        })
+      this.$refs['createUserForm'].validate((valid) => {
+        if (valid) {
+          passwordUser(this.changePwd.form).then(() => {
+            this.changePwd.visible = false
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '更新失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
       })
     },
     handleGroup(row) {

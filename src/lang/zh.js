@@ -68,6 +68,7 @@ export default {
     OrderDetail: '订单详情',
     account: '账户管理',
     accountUser: '用户管理',
+    accountGroup: '用户组管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
@@ -255,6 +256,38 @@ export default {
     },
     changeGroup: {
       title: '选择用户组'
+    },
+    changeRole: {
+      title: '选择角色'
+    }
+  },
+  group: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '用户组名称'
+    },
+    description: {
+      label: '描述'
+    },
+    roles: {
+      label: '角色'
+    },
+    create: {
+      title: '创建用户组',
+      code: {
+        label: '编码',
+        placeholder: '请输入用户组编码'
+      },
+      name: {
+        label: '用户组名称',
+        placeholder: '请输入用户组名称'
+      },
+      description: {
+        label: '描述',
+        placeholder: '请输入用户组描述'
+      }
     },
     changeRole: {
       title: '选择角色'
