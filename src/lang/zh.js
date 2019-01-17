@@ -337,17 +337,17 @@ export default {
       name: '商品名称',
       placeholder: '请输入商品名称'
     },
-    category: {
+    categoryId: {
       name: '商品分类',
       placeholder: '请选择商品分类'
     },
-    channel: {
+    channelId: {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     },
-    approvalStatus: {
-      name: '销售渠道',
-      placeholder: '请选择销售渠道'
+    approvedId: {
+      name: '批准',
+      placeholder: '是否批准'
     }
   },
   stock: {
