@@ -69,6 +69,7 @@ export default {
     account: '账户管理',
     accountUser: '用户管理',
     accountGroup: '用户组管理',
+    accountRole: '角色管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
@@ -325,6 +326,38 @@ export default {
     },
     changeRole: {
       title: '选择角色'
+    }
+  },
+  role: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '角色名称'
+    },
+    description: {
+      label: '描述'
+    },
+    parents: {
+      label: '父级角色'
+    },
+    children: {
+      label: '子级角色'
+    },
+    create: {
+      title: '创建角色',
+      code: {
+        label: '编码',
+        placeholder: '请输入角色编码'
+      },
+      name: {
+        label: '角色名称',
+        placeholder: '请输入角色名称'
+      },
+      description: {
+        label: '描述',
+        placeholder: '请输入角色描述'
+      }
     }
   },
   general: {

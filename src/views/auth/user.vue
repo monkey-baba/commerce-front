@@ -531,6 +531,7 @@ export default {
       this.$refs['createUserForm'].validate((valid) => {
         if (valid) {
           createUser(this.userCreate.form).then((response) => {
+            response.data.edit = false
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.userCreate.visible = false
@@ -696,7 +697,7 @@ export default {
       }).catch(() => {
         this.$notify({
           title: '失败',
-          message: '获取用户组失败，请稍后再试',
+          message: '获取角色失败，请稍后再试',
           type: 'error',
           duration: 2000
         })
