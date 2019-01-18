@@ -5,10 +5,10 @@
         <ElRow>
           <ElCol>
             <ElFormItem :label=" $t('role.code.label')+':' " prop="code">
-              <ElInput v-model="roleQuery.code" auto-complete="on" />
+              <ElInput v-model="roleQuery.code" auto-complete="on"/>
             </ElFormItem>
             <ElFormItem :label=" $t('role.name.label')+':' " prop="name">
-              <ElInput v-model="roleQuery.name" auto-complete="on" />
+              <ElInput v-model="roleQuery.name" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -47,11 +47,11 @@
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
-      <ElTableColumn type="selection" />
-      <ElTableColumn :label="$t('general.index')" type="index" />
+      <ElTableColumn type="selection"/>
+      <ElTableColumn :label="$t('general.index')" type="index"/>
       <ElTableColumn :label="$t('role.code.label')" prop="code">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.code }}
           </template>
@@ -59,7 +59,7 @@
       </ElTableColumn>
       <ElTableColumn :label="$t('role.name.label')" prop="name">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.name }}
           </template>
@@ -67,7 +67,7 @@
       </ElTableColumn>
       <ElTableColumn :label="$t('role.description.label')" prop="description">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.description" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.description" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.description }}
           </template>
@@ -107,10 +107,13 @@
             <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
               编辑
             </ElButton>
+            <ElButton type="success" size="mini" @click="handleRole(scope.row, 'parent')">
+              父角色设置
+            </ElButton>
+            <ElButton type="success" size="mini" @click="handleRole(scope.row, 'child')">
+              子角色设置
+            </ElButton>
           </template>
-          <ElButton type="success" size="mini" @click="handleRole(scope.row)">
-            角色分配
-          </ElButton>
           <ElButton type="danger" size="mini" @click="handleDelete(scope.row)">
             删除
           </ElButton>
@@ -168,7 +171,7 @@
       </div>
     </ElDialog>
     <ElDialog :visible.sync="changeRole.visible" :title="$t('role.changeRole.title')" width="750px">
-      <ElTransfer v-model="changeRole.value" :data="changeRole.data" :titles="['可选角色','已选角色']" filterable />
+      <ElTransfer v-model="changeRole.value" :data="changeRole.data" :titles="['可选角色','已选角色']" filterable/>
       <div slot="footer" class="dialog-footer">
         <ElButton @click="changeRole.visible = false">
           {{ $t('table.cancel') }}
@@ -182,7 +185,7 @@
 </template>
 
 <script>
-import { getRoles, updateRole, createRole, deleteRole } from '@/api/role'
+import { getRoles, updateRole, createRole, deleteRole, parentRole, childRole, updateParentRole, updateChildRole } from '@/api/role'
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
 
 export default {
@@ -226,6 +229,7 @@ export default {
       },
       changeRole: {
         visible: false,
+        type: '',
         roleId: undefined,
         data: [],
         value: []
@@ -368,7 +372,8 @@ export default {
             duration: 2000
           })
         })
-      }).catch((e) => {})
+      }).catch((e) => {
+      })
     },
     handleSelectionChange(val) {
       this.table.select = val
@@ -401,51 +406,83 @@ export default {
             duration: 2000
           })
         })
-      }).catch((e) => {})
+      }).catch((e) => {
+      })
     },
-    handleRole(row) {
+    handleRole(row, type) {
       this.changeRole.roleId = row.id
-      // roleRole(row.id).then(response => {
-      //   const data = response.data
-      //   this.changeRole.data = data
-      //   this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
-      //   this.changeRole.visible = true
-      // }).catch(() => {
-      //   this.$notify({
-      //     title: '失败',
-      //     message: '获取角色失败，请稍后再试',
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      // })
+      this.changeRole.type = type
+      if (type === 'parent') {
+        parentRole(row.id).then(response => {
+          const data = response.data
+          this.changeRole.data = data
+          this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
+          this.changeRole.visible = true
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '获取角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+        })
+      } else {
+        childRole(row.id).then(response => {
+          const data = response.data
+          this.changeRole.data = data
+          this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
+          this.changeRole.visible = true
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '获取角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+        })
+      }
     },
     changeRoleRole() {
-      // updateRoleRole(this.changeRole.roleId, this.changeRole.value).then(response => {
-      //   this.changeRole.visible = false
-      //   for (const v of this.table.data) {
-      //     if (v.id === this.changeRole.roleId) {
-      //       console.log(JSON.stringify(v))
-      //       v.roles = response.data.roleNames
-      //       console.log(JSON.stringify(v))
-      //       break
-      //     }
-      //   }
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '更新成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      // }).catch(() => {
-      //   this.$notify({
-      //     title: '失败',
-      //     message: '更新角色失败，请稍后再试',
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      //   this.changeRole.visible = false
-      // }
-      // )
+      if (this.changeRole.type === 'parent') {
+        updateParentRole(this.changeRole.roleId, this.changeRole.value).then(response => {
+          this.changeRole.visible = false
+          this.getData()
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '更新角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+          this.changeRole.visible = false
+        }
+        )
+      } else {
+        updateChildRole(this.changeRole.roleId, this.changeRole.value).then(response => {
+          this.changeRole.visible = false
+          this.getData()
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '更新角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+          this.changeRole.visible = false
+        })
+      }
     },
     handleExport() {
       if (this.table.select.length <= 0) {
@@ -457,20 +494,20 @@ export default {
         return
       }
       this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['编码', '角色名称', '描述', '角色']
-          const filterVal = ['code', 'name', 'description', 'roles']
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['编码', '角色名称', '描述', '角色']
+        const filterVal = ['code', 'name', 'description', 'roles']
 
-          const data = this.table.select.map(u => filterVal.map(field => {
-            return u[field]
-          }))
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '角色列表'
-          })
-          this.downloadLoading = false
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '角色列表'
         })
+        this.downloadLoading = false
+      })
     }
   }
 }

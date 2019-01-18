@@ -81,3 +81,49 @@ export function deleteRole(roles) {
     data
   })
 }
+
+export function parentRole(roleId) {
+  const param = {
+    id: roleId
+  }
+  return request({
+    url: '/auth/api/v1/role/parentRole',
+    method: 'get',
+    params: param
+  })
+}
+
+export function childRole(roleId) {
+  const param = {
+    id: roleId
+  }
+  return request({
+    url: '/auth/api/v1/role/childRole',
+    method: 'get',
+    params: param
+  })
+}
+
+export function updateParentRole(roleId, roles) {
+  const data = {
+    roleId: roleId,
+    roles: roles
+  }
+  return request({
+    url: '/auth/api/v1/role/changeParentRole',
+    method: 'post',
+    data
+  })
+}
+
+export function updateChildRole(roleId, roles) {
+  const data = {
+    roleId: roleId,
+    roles: roles
+  }
+  return request({
+    url: '/auth/api/v1/role/changeChildRole',
+    method: 'post',
+    data
+  })
+}
