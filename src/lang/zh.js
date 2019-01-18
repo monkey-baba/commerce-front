@@ -433,5 +433,17 @@ export default {
         label: '状态'
       }
     }
+  },
+
+  dictionary: {
+    code: {
+      label: '代码'
+    },
+    name: {
+      label: '描述'
+    },
+    edit: {
+      label: '编辑'
+    }
   }
 }

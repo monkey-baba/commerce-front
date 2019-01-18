@@ -37,8 +37,12 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="代码" prop="code" />
-      <el-table-column label="描述" prop="name" />
+      <el-table-column :label="$t('dictionary.code.label')" prop="code">
+        <template slot-scope="scope">{{ scope.row.code }}</template>
+      </el-table-column>
+      <el-table-column :label="$t('dictionary.name.label')" prop="code">
+        <template slot-scope="scope">{{ scope.name.code }}</template>
+      </el-table-column>
       <el-table-column label="编辑" min-width="200px">
         <template slot-scope="scope">
           <div style="margin-top: 10px">
@@ -82,7 +86,7 @@ export default {
     return {
       dictionaryQuery: {
         code: '',
-        status: [],
+        name: '',
         page: 1,
         limit: 10,
         platform: []
