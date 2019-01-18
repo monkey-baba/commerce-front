@@ -236,6 +236,14 @@ export const asyncRouterMap = [
         meta: {
           title: 'accountGroup'
         }
+      },
+      {
+        path: 'role',
+        name: 'authRole',
+        component: () => import('@/views/auth/role'),
+        meta: {
+          title: 'accountRole'
+        }
       }
     ]
   },
