@@ -102,11 +102,11 @@ export default {
       this.$refs['stockQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.stockQuery.limit = val
+      this.stockQuery.pageSize = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.stockQuery.page = val
+      this.stockQuery.pageNum = val
       this.getData()
     },
     getData() {
@@ -125,6 +125,7 @@ export default {
         this.search.loading = false
       }).catch(() => {
         this.table.loading = false
+        this.search.loading = false
       })
     },
     setSearchLoading() {

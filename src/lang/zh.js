@@ -412,7 +412,7 @@ export default {
     name: {
       label: '名称'
     },
-    active: {
+    enabled: {
       label: '是否启用'
     },
     posId: {
@@ -420,6 +420,22 @@ export default {
     },
     posAddress: {
       label: '仓库地址'
+    },
+    create: {
+      title: '创建仓库',
+      code: {
+        label: '编码',
+        placeholder: '请输入编码'
+      },
+      name: {
+        label: '名称',
+        placeholder: '请输入名称'
+      },
+      enabled: {
+        label: '是否启用',
+        yes: '启用',
+        no: '禁用'
+      }
     }
   },
   customer: {
