@@ -6,27 +6,21 @@
         <el-row>
           <el-col>
             <el-form-item :label="$t('order.ecsOrderId.label')+':'" prop="ecsOrderId">
-              <el-select v-model="orderQuery.ecsOrderId" auto-complete="on">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
-              </el-select>
+              <el-input v-model="orderQuery.ecsOrderId" auto-complete="on"/>
             </el-form-item>
             <el-form-item :label=" $t('order.code.label')+':' " prop="code">
               <el-input v-model="orderQuery.code" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label="$t('order.consignmentCode.label')+':'" prop="">
+            <el-form-item :label="$t('order.consignmentCode.label')+':'" prop="consignmentCode">
               <el-input v-model="orderQuery.consignmentCode" auto-complete="on"/>
             </el-form-item>
             <el-form-item :label="$t('order.storeId.label')+':'" prop="storeId">
               <el-select v-model="orderQuery.storeId" auto-complete="on">
-                <el-option
+                <!--<el-option
                   v-for="item in options"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"/>
+                  :value="item.value"/>-->
               </el-select>
             </el-form-item>
           </el-col>
@@ -80,11 +74,11 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item :label=" $t('order.statusId.label')+':' " prop="statusId">
-              <el-checkbox-group v-model="orderQuery.status">
+            <el-form-item :label=" $t('order.statusId.label')+':' " prop="statusId"/>
+            <!--<el-checkbox-group v-model="orderQuery.status">
                 <el-checkbox v-for="sta in statuses" :label="sta" :key="sta" border checked>{{ $t(sta) }}</el-checkbox>
               </el-checkbox-group>
-            </el-form-item>
+            </el-form-item>-->
           </el-col>
         </el-row>
         <el-row>
@@ -119,18 +113,14 @@
       <el-table-column type="selection" width="50px"/>
       <el-table-column label="平台订单号" prop="ecsOrderId" />
       <el-table-column label="店铺" prop="storeId" />
-      <el-table-column :label="$t('order.code.label')" prop="code" >
-        <template slot-scope="scope">
+      <el-table-column :label="$t('order.code.label')" prop="code" />
+      <!--<template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="下单门店" prop="wareId" />
       <el-table-column label="订单类型" prop="orderTypeId" />
-      <el-table-column label="订单状态" prop="statusId">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column label="订单状态" prop="statusId" />
       <el-table-column label="订单金额" prop="totalPrice"/>
       <el-table-column label="手机号" prop="receiverPhone" />
       <el-table-column label="收件地址" prop="addressId" />
@@ -166,18 +156,18 @@ import { getOrders } from '@/api/order'
 
 export default {
   name: 'OrderList',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        'COMPLETED': 'success',
-        'SHIPPED': 'success',
-        'APPROVED': 'primary',
-        'CREATED': 'warning',
-        'PENDING': 'primary'
-      }
-      return statusMap[status]
-    }
-  },
+  // filters: {
+  //   statusFilter(status) {
+  //     const statusMap = {
+  //       'COMPLETED': 'success',
+  //       'SHIPPED': 'success',
+  //       'APPROVED': 'primary',
+  //       'CREATED': 'warning',
+  //       'PENDING': 'primary'
+  //     }
+  //     return statusMap[status]
+  //   }
+  // },
   data() {
     return {
       orderQuery: {
@@ -185,16 +175,16 @@ export default {
         code: '',
         consignmentCode: '',
         storeId: '',
-        limit: 10,
         customerId: '',
         receiver: '',
         receiverPhone: '',
+        wareId: '',
         totalPriceMin: '',
         totalPriceMax: '',
-        startDate: '',
-        endDate: '',
-        paymentStartDate: '',
-        paymentEndDate: '',
+        startDate: null,
+        endDate: null,
+        paymentStartDate: null,
+        paymentEndDate: null,
         statusId: '',
         orderTypeId: '',
         pageNum: 1,
@@ -212,9 +202,9 @@ export default {
       table: {
         loading: false,
         data: null
-      },
-      statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
-      platforms: ['TM', 'JD', 'DMS', 'LGT']
+      }
+      // statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
+      // platforms: ['TM', 'JD', 'DMS', 'LGT']
     }
   },
   created() {
@@ -225,22 +215,30 @@ export default {
       this.$refs['orderQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.orderQuery.limit = val
+      this.orderQuery.pageSize = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.orderQuery.page = val
+      this.orderQuery.pageNum = val
       this.getData()
     },
     getData() {
       this.table.loading = true
+      console.log(this.orderQuery)
       getOrders(this.orderQuery).then(response => {
-        this.table.data = response.data.items
-        this.pagination.total = response.data.total
+        console.log(response.data)
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {
         this.table.loading = false
+        this.search.loading = false
       })
     },
     setSearchLoading() {
