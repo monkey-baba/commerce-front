@@ -358,6 +358,9 @@ export default {
         label: '描述',
         placeholder: '请输入角色描述'
       }
+    },
+    changeRole: {
+      title: '选择角色'
     }
   },
   general: {
