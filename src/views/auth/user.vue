@@ -623,7 +623,7 @@ export default {
       })
     },
     changePassword() {
-      this.$refs['createUserForm'].validate((valid) => {
+      this.$refs['changePwdForm'].validate((valid) => {
         if (valid) {
           passwordUser(this.changePwd.form).then(() => {
             this.changePwd.visible = false
