@@ -46,8 +46,7 @@
       <el-table-column :label="$t('general.index')" type="index" />
       <el-table-column :label="$t('customer.code.label')" prop="code" >
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
-          <template v-else>
+          <template>
             {{ scope.row.code }}
           </template>
         </template>
@@ -277,6 +276,7 @@ export default {
       this.$refs['createCustomerForm'].validate((valid) => {
         if (valid) {
           createCustomer(this.customerCreate.form).then((response) => {
+            response.data.edit = false
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.customerCreate.visible = false
@@ -336,14 +336,6 @@ export default {
       row.edit = false
     },
     confirmEdit(row) {
-      if (isEmpty(row.code)) {
-        this.$message({
-          message: '客户编码不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
       if (isEmpty(row.name)) {
         this.$message({
           message: '客户姓名不能为空',
@@ -407,6 +399,7 @@ export default {
     },
     query() {
       this.search.loading = true
+      this.customerQuery.pageNum = 1
       this.getData()
     }
   }

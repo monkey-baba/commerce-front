@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getOrders(query) {
   return request({
-    'url': '/orders/get',
+    'url': '/order/api/v1/order/info',
     'method': 'get',
     'params': query
   })
