@@ -477,6 +477,17 @@ export default {
     },
     edit: {
       label: '编辑'
+    },
+    create: {
+      code: {
+        label: '代码',
+        placeholder: '请输入代码'
+      },
+      name: {
+        label: '描述',
+        placeholder: '请输入描述'
+      },
+      title: '新建'
     }
   }
 }

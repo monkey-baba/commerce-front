@@ -26,7 +26,7 @@
     </div>
     <hr>
     <div class="filter-container">
-      <el-button type="primary" class="blue-btn" size="small">新建</el-button>
+      <el-button type="primary" class="blue-btn" size="small" @click="handleCreate">新建</el-button>
       <el-button type="info" size="small">删除</el-button>
     </div>
     <el-table
@@ -40,8 +40,8 @@
       <el-table-column :label="$t('dictionary.code.label')" prop="code">
         <template slot-scope="scope">{{ scope.row.code }}</template>
       </el-table-column>
-      <el-table-column :label="$t('dictionary.name.label')" prop="code">
-        <template slot-scope="scope">{{ scope.name.code }}</template>
+      <el-table-column :label="$t('dictionary.name.label')" prop="name">
+        <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column label="编辑" min-width="200px">
         <template slot-scope="scope">
@@ -62,11 +62,43 @@
       style="width: 100%"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"/>
+
+    <el-dialog :visible.sync="dictionaryCreate.visible" :title="$t('dictionary.create.title')">
+      <el-form
+        ref="createDictionaryForm"
+        :rules="dictionaryCreate.rules"
+        :model="dictionaryCreate.form"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item :label="$t('dictionary.create.code.label')" prop="code">
+          <el-input
+            v-model="dictionaryCreate.form.code"
+            :placeholder="$t('dictionary.create.code.placeholder')"
+          />
+        </el-form-item>
+        <el-form-item :label="$t('dictionary.create.name.label')" prop="name">
+          <el-input
+            v-model="dictionaryCreate.form.name"
+            :placeholder="$t('dictionary.create.name.placeholder')"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dictionaryCreate.visible = false">
+          {{ $t('table.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="createData">
+          {{ $t('table.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getDictionarys, getDictionary } from '@/api/dictionary'
+import { getDictionarys, getDictionary, createDictionary } from '@/api/dictionary'
 
 export default {
   name: 'DictionaryList',
@@ -88,8 +120,7 @@ export default {
         code: '',
         name: '',
         page: 1,
-        limit: 10,
-        platform: []
+        pageSize: 10
       },
       search: {
         loading: false
@@ -105,7 +136,14 @@ export default {
         data: null
       },
       statuses: ['CREATED', 'PENDING', 'APPROVED', 'SHIPPED', 'COMPLETED'],
-      platforms: ['TM', 'JD', 'DMS', 'LGT']
+      platforms: ['TM', 'JD', 'DMS', 'LGT'],
+      dictionaryCreate: {
+        visible: false,
+        rules: {
+          code: [{ required: true, message: '请输入代码' }]
+        },
+        form: {}
+      }
     }
   },
   created() {
@@ -126,8 +164,8 @@ export default {
     getData() {
       this.table.loading = true
       getDictionarys(this.dictionaryQuery).then(response => {
-        this.table.data = response.data.items
-        this.pagination.total = response.data.total
+        this.table.data = response.data.list
+        this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {
@@ -140,6 +178,41 @@ export default {
     query() {
       this.search.loading = true
       this.getData()
+    },
+    handleCreate() {
+      this.dictionaryCreate.form = {
+        code: '',
+        name: ''
+      }
+      this.dictionaryCreate.visible = true
+      this.$nextTick(() => {
+        this.$refs['createDictionaryForm'].clearValidate()
+      })
+    },
+    createData() {
+      this.$refs['createDictionaryForm'].validate((valid) => {
+        if (valid) {
+          createDictionary(this.dictionaryCreate.form).then((response) => {
+            this.table.data.unshift(response.data)
+            this.pagination.total = this.pagination.total + 1
+            this.dictionaryCreate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch((e) => {
+            console.log(e)
+            this.$notify({
+              title: '失败',
+              message: '创建失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
+      })
     },
     editDictionary(code) {
       this.table.loading = true
