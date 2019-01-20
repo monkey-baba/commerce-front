@@ -27,7 +27,7 @@ export function deleteDictionarys(dictionary) {
   })
 }
 
-export function getDictionary(query) {
+export function getDictionaryValue(query) {
   const data = query
   return request({
     'url': '/basic/api/v1/dictionaryvalue/info',
@@ -35,7 +35,7 @@ export function getDictionary(query) {
     data
   })
 }
-export function editDictionaryAndValue(dictionaryValues) {
+export function getDictionaryValues(dictionaryValues) {
   const data = dictionaryValues
   return request({
     'url': '/basic/api/v1/dictionaryvalue/info',
