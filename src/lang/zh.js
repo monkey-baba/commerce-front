@@ -80,7 +80,9 @@ export default {
     CategoryList: '分类列表',
     ProductDetail: '产品详情',
     DictionaryList: '枚举管理',
-    DictionaryManage: '枚举管理'
+    DictionaryManage: '枚举管理',
+    OrderRouterRules: '订单路由规则',
+    ConsignmentDetail: '配货单详情'
   },
   navbar: {
     logOut: '退出登录',
@@ -484,6 +486,32 @@ export default {
       statusId: {
         label: '状态'
       }
+    }
+  },
+  routerRule: {
+    index: {
+      label: '序号'
+    },
+    code: {
+      label: '规则编码'
+    },
+    name: {
+      label: '规则名称'
+    },
+    enabled: {
+      label: '是否启用'
+    },
+    priority: {
+      label: '优先级'
+    },
+    type: {
+      label: '规则类型'
+    },
+    modifyUserId: {
+      label: '修改人'
+    },
+    modifyDate: {
+      label: '修改时间'
     }
   }
 }
