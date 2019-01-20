@@ -108,6 +108,7 @@ export default {
           type: 'success'
         })
         this.updateItem(items, false)
+        this.getData()
       }).catch(e => {
         this.$notify({
           title: '失败',
