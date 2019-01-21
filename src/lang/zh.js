@@ -61,7 +61,7 @@ export default {
     theme: '换肤',
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
-    externalLink: '外链',
+    serviceCenter: '服务中心',
     orderManage: '订单管理',
     OrderList: '订单列表',
     ConsignmentList: '发货单列表',
@@ -69,6 +69,10 @@ export default {
     account: '账户管理',
     accountUser: '用户管理',
     accountGroup: '用户组管理',
+    accountRole: '角色管理',
+    auth: '权限管理',
+    oauth: 'Oauth客户端',
+    router: '路由管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
@@ -80,7 +84,9 @@ export default {
     CategoryList: '类目管理',
     ProductDetail: '产品详情',
     DictionaryList: '枚举管理',
-    DictionaryManage: '枚举管理'
+    DictionaryManage: '枚举管理',
+    OrderRouterRules: '订单路由规则',
+    ConsignmentDetail: '配货单详情'
   },
   navbar: {
     logOut: '退出登录',
@@ -328,6 +334,41 @@ export default {
       title: '选择角色'
     }
   },
+  role: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '角色名称'
+    },
+    description: {
+      label: '描述'
+    },
+    parents: {
+      label: '父级角色'
+    },
+    children: {
+      label: '子级角色'
+    },
+    create: {
+      title: '创建角色',
+      code: {
+        label: '编码',
+        placeholder: '请输入角色编码'
+      },
+      name: {
+        label: '角色名称',
+        placeholder: '请输入角色名称'
+      },
+      description: {
+        label: '描述',
+        placeholder: '请输入角色描述'
+      }
+    },
+    changeRole: {
+      title: '选择角色'
+    }
+  },
   general: {
     index: '序号'
   },
@@ -420,7 +461,7 @@ export default {
     name: {
       label: '名称'
     },
-    active: {
+    enabled: {
       label: '是否启用'
     },
     posId: {
@@ -428,6 +469,22 @@ export default {
     },
     posAddress: {
       label: '仓库地址'
+    },
+    create: {
+      title: '创建仓库',
+      code: {
+        label: '编码',
+        placeholder: '请输入编码'
+      },
+      name: {
+        label: '名称',
+        placeholder: '请输入名称'
+      },
+      enabled: {
+        label: '是否启用',
+        yes: '启用',
+        no: '禁用'
+      }
     }
   },
   customer: {
@@ -473,6 +530,70 @@ export default {
       statusId: {
         label: '状态'
       }
+    }
+  },
+  routerRule: {
+    index: {
+      label: '序号'
+    },
+    code: {
+      label: '规则编码'
+    },
+    name: {
+      label: '规则名称'
+    },
+    enabled: {
+      label: '是否启用'
+    },
+    priority: {
+      label: '优先级'
+    },
+    type: {
+      label: '规则类型'
+    },
+    modifyUserId: {
+      label: '修改人'
+    },
+    modifyDate: {
+      label: '修改时间'
+    }
+  },
+
+  dictionary: {
+    code: {
+      label: '代码'
+    },
+    name: {
+      label: '描述'
+    },
+    edit: {
+      label: '编辑',
+      dicList: {
+        label: '值列表'
+      }
+    },
+    create: {
+      code: {
+        label: '代码',
+        placeholder: '请输入代码'
+      },
+      name: {
+        label: '描述',
+        placeholder: '请输入描述'
+      },
+      title: '新建'
+    }
+  },
+  dictionaryvalue: {
+    label: {
+      code: '值',
+      name: '含义',
+      description: '描述',
+      type_id: '排序号',
+      attribute1: '预留字段1',
+      attribute2: '预留字段2',
+      attribute3: '预留字段3',
+      active: '是否启用'
     }
   }
 }

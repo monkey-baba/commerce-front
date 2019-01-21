@@ -335,7 +335,7 @@ export default {
         name: '',
         mobileNumber: '',
         pageNum: 1,
-        pageSize: 2
+        pageSize: 10
       },
       search: {
         loading: false

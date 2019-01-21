@@ -31,9 +31,9 @@ router.beforeEach((to, from, next) => {
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
-        }).catch(() => {
+        }).catch((e) => {
           store.dispatch('FedLogOut').then(() => {
-            Message.error('登录已过期，请重新登录')
+            Message.error(e.response.data.error)
             next({ path: '/' })
           })
         })

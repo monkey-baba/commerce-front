@@ -85,6 +85,23 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/basic',
+    component: Layout,
+    name: 'DictionaryManage',
+    meta: {
+      title: 'DictionaryManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: '/api/v1/dict/info',
+        component: () => import('@/views/dictionarys/DictionaryList'),
+        name: 'DictionaryList',
+        meta: { title: 'DictionaryList' }
+      }
+    ]
+  },
+  {
     path: '/order',
     component: Layout,
     name: 'OrderManage',
@@ -100,10 +117,16 @@ export const asyncRouterMap = [
         meta: { title: 'OrderList' }
       },
       {
-        path: 'list2',
-        component: () => import('@/views/orders/OrderList'),
+        path: 'Consignment',
+        component: () => import('@/views/orders/ConsignmentList'),
         name: 'ConsignmentList',
         meta: { title: 'ConsignmentList' }
+      },
+      {
+        path: 'OrderRouterRules',
+        component: () => import('@/views/orders/OrderRouterRules'),
+        name: 'OrderRouterRules',
+        meta: { title: 'OrderRouterRules' }
       },
       {
         path: ':code',
@@ -112,6 +135,15 @@ export const asyncRouterMap = [
         component: () => import('@/views/orders/OrderDetail'),
         meta: {
           title: 'OrderDetail'
+        }
+      },
+      {
+        path: ':consignmentCode',
+        hidden: false,
+        name: 'ConsignmentDetail',
+        component: () => import('@/views/orders/ConsignmentDetail'),
+        meta: {
+          title: 'ConsignmentDetail'
         }
       }
     ]
@@ -198,7 +230,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: 'ErrorPages',
-    // hidden: true,
+    hidden: true,
     meta: {
       title: 'errorPages',
       icon: '404'
@@ -219,9 +251,9 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/auth',
+    path: '/account',
     component: Layout,
-    name: 'Auth',
+    name: 'account',
     meta: {
       icon: 'user',
       title: 'account'
@@ -230,7 +262,7 @@ export const asyncRouterMap = [
       {
         path: 'user',
         name: 'authUser',
-        component: () => import('@/views/auth/user'),
+        component: () => import('@/views/account/user'),
         meta: {
           title: 'accountUser'
         }
@@ -238,41 +270,58 @@ export const asyncRouterMap = [
       {
         path: 'group',
         name: 'authGroup',
-        component: () => import('@/views/auth/group'),
+        component: () => import('@/views/account/group'),
         meta: {
           title: 'accountGroup'
+        }
+      },
+      {
+        path: 'role',
+        name: 'authRole',
+        component: () => import('@/views/account/role'),
+        meta: {
+          title: 'accountRole'
         }
       }
     ]
   },
   {
-    path: 'external-link',
+    path: '/auth',
+    component: Layout,
+    name: 'Auth',
+    meta: {
+      icon: 'lock',
+      title: 'auth'
+    },
+    children: [
+      {
+        path: 'oauth',
+        name: 'Oauth',
+        component: () => import('@/views/account/user'),
+        meta: {
+          title: 'oauth'
+        }
+      },
+      {
+        path: 'router',
+        name: 'Router',
+        component: () => import('@/views/account/user'),
+        meta: {
+          title: 'router'
+        }
+      }
+    ]
+  },
+  {
+    path: 'nacos',
     component: Layout,
     children: [
       {
-        path: 'https://gitee.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'externalLink', icon: 'link' }
+        path: 'http://8848.gr89ce0e.p3lcmzo9.ae4b24.grapps.cn/nacos/',
+        meta: { title: 'serviceCenter', icon: 'link' }
       }
     ]
   },
 
-  { path: '*', redirect: '/error/404', hidden: true },
-
-  {
-    path: '/dictionarys',
-    component: Layout,
-    name: 'DictionaryManage',
-    meta: {
-      title: 'DictionaryManage',
-      icon: 'form'
-    },
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/dictionarys/DictionaryList'),
-        name: 'DictionaryList',
-        meta: { title: 'DictionaryList' }
-      }
-    ]
-  }
+  { path: '*', redirect: '/error/404', hidden: true }
 ]
