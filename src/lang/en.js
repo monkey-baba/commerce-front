@@ -159,5 +159,17 @@ export default {
   },
   order: {
     code: 'Order Code'
+  },
+
+  dictionary: {
+    code: {
+      label: '代码'
+    },
+    name: {
+      label: '描述'
+    },
+    edit: {
+      label: '编辑'
+    }
   }
 }
