@@ -62,6 +62,7 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     serviceCenter: '服务中心',
+    serviceManage: '微服务后台',
     orderManage: '订单管理',
     OrderList: '订单列表',
     ConsignmentList: '发货单列表',

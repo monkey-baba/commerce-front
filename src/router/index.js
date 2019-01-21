@@ -316,6 +316,16 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path: 'rain',
+    component: Layout,
+    children: [
+      {
+        path: 'http://116.247.124.34:7070/',
+        meta: { title: 'serviceManage', icon: 'link' }
+      }
+    ]
+  },
 
   { path: '*', redirect: '/error/404', hidden: true }
 ]

@@ -439,6 +439,7 @@ export default {
       })
     },
     query() {
+      this.userQuery.pageNum = 1
       this.search.loading = true
       this.getData()
     },
