@@ -194,7 +194,7 @@ export const asyncRouterMap = [
     name: 'productManage',
     meta: {
       title: 'productManage',
-      icon: 'form'
+      icon: 'goods'
     },
     children: [
       {
@@ -202,6 +202,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/products/ProductList'),
         name: 'ProductList',
         meta: { title: 'ProductList' }
+      },
+      {
+        path: 'pricelist',
+        component: () => import('@/views/products/PriceList'),
+        name: 'PriceList',
+        meta: { title: 'PriceList' }
       },
       {
         path: 'categorylist',

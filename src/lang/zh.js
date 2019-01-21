@@ -81,7 +81,8 @@ export default {
     CustomerList: '客户管理',
     productManage: '产品管理',
     ProductList: '产品列表',
-    CategoryList: '分类列表',
+    PriceList: '价目表管理',
+    CategoryList: '类目管理',
     ProductDetail: '产品详情',
     DictionaryList: '枚举管理',
     DictionaryManage: '枚举管理',
@@ -392,6 +393,46 @@ export default {
     approvedId: {
       name: '批准',
       placeholder: '是否批准'
+    }
+  },
+  price: {
+    active: {
+      name: '是否启用',
+      placeholder: '是否启用'
+    },
+    name: {
+      name: '价目表名称',
+      placeholder: '请输入价目表名称'
+    },
+    priority: {
+      name: '优先级',
+      placeholder: '优先级'
+    },
+    channelId: {
+      name: '应用渠道',
+      placeholder: '请选择销售渠道'
+    },
+    startTime: {
+      name: '开始时间',
+      placeholder: '开始时间'
+    },
+    endTime: {
+      name: '结束时间',
+      placeholder: '结束时间'
+    }
+  },
+  category: {
+    code: {
+      name: '类目编码',
+      placeholder: '类目编码'
+    },
+    name: {
+      name: '类目名称',
+      placeholder: '类目名称'
+    },
+    parentId: {
+      name: '父类目编码',
+      placeholder: '父类目编码'
     }
   },
   stock: {
