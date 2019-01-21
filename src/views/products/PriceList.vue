@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <ElForm ref="categoryQuery" :model="categoryQuery" :inline="true">
+      <ElForm ref="priceQuery" :model="priceQuery" :inline="true">
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('category.name.name')+':' " prop="name">
-              <ElInput v-model="categoryQuery.name" :placeholder="$t('category.name.placeholder')" auto-complete="on"/>
+            <ElFormItem :label=" $t('price.name.name')+':' " prop="name">
+              <ElInput v-model="priceQuery.name" :placeholder="$t('price.name.placeholder')" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('category.code.name')+':' " prop="code">
-              <ElInput v-model="categoryQuery.code" :placeholder="$t('category.code.placeholder')" auto-complete="on"/>
+            <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
+              <ElInput v-model="priceQuery.channelId" :placeholder="$t('price.channelId.placeholder')" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -50,15 +50,7 @@
     >
       <ElTableColumn type="selection"/>
       <ElTableColumn :label="$t('general.index')" type="index"/>
-      <ElTableColumn :label="$t('category.code.name')" prop="code">
-        <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.code }}
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn :label="$t('category.name.name')" prop="name">
+      <ElTableColumn :label="$t('price.name.name')" prop="name">
         <template slot-scope="scope">
           <ElInput v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
@@ -66,11 +58,43 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('category.parentId.name')" prop="parentId">
+      <ElTableColumn :label="$t('price.channelId.name')" prop="channelId">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.parentId" class="edit-input" size="mini"/>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.channelId" class="edit-input" size="mini"/>
           <template v-else>
-            {{ scope.row.parentId }}
+            {{ scope.row.channelId }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.priority.name')" prop="priority">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.priority" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.priority }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.startTime.name')" prop="startTime">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.startTime" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.startTime }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.endTime.name')" prop="endTime">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.endTime" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.endTime }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.active.name')" prop="active">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.active" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.active }}
           </template>
         </template>
       </ElTableColumn>
@@ -113,35 +137,54 @@
       @current-change="handleCurrentChange"
     />
 
-    <ElDialog :visible.sync="categoryCreate.visible" :title="$t('category.create.title')">
+    <ElDialog :visible.sync="priceCreate.visible" :title="$t('price.create.title')">
       <ElForm
-        ref="createCategoryForm"
-        :rules="categoryCreate.rules"
-        :model="categoryCreate.form"
+        ref="createPriceForm"
+        :rules="priceCreate.rules"
+        :model="priceCreate.form"
         label-position="left"
         label-width="85px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('category.code.name')" prop="code">
+        <ElFormItem :label="$t('price.name.name')" prop="name">
           <ElInput
-            v-model="categoryCreate.form.code"
-            :placeholder="$t('category.code.placeholder')"
+            v-model="priceCreate.form.name"
+            :placeholder="$t('price.name.placeholder')"
           />
-          <ElFormItem :label="$t('category.name.name')" prop="name">
-            <ElInput
-              v-model="categoryCreate.form.name"
-              :placeholder="$t('category.name.placeholder')"
-            />
-          </ElFormItem>
-          <ElFormItem :label="$t('category.parentId.name')" prop="parentId">
-            <ElInput
-              v-model="categoryCreate.form.parentId"
-              :placeholder="$t('category.parentId.placeholder')"
-            />
-          </ElFormItem>
-      </elformitem></ElForm>
+        </ElFormItem>
+        <ElFormItem :label="$t('price.channelId.name')" prop="channelId">
+          <ElInput
+            v-model="priceCreate.form.channelId"
+            :placeholder="$t('price.channelId.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('price.priority.name')" prop="priority">
+          <ElInput
+            v-model="priceCreate.form.priority"
+            :placeholder="$t('price.priority.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('price.active.name')" prop="active">
+          <ElInput
+            v-model="priceCreate.form.active"
+            :placeholder="$t('price.active.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('price.startTime.name')" prop="startTime">
+          <ElInput
+            v-model="priceCreate.form.startTime"
+            :placeholder="$t('price.startTime.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('price.endTime.name')" prop="endTime">
+          <ElInput
+            v-model="priceCreate.form.endTime"
+            :placeholder="$t('price.endTime.placeholder')"
+          />
+        </ElFormItem>
+      </ElForm>
       <div slot="footer" class="dialog-footer">
-        <ElButton @click="categoryCreate.visible = false">
+        <ElButton @click="priceCreate.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
         <ElButton type="primary" @click="createData">
@@ -154,11 +197,11 @@
 </template>
 
 <script>
-import { getCategories, updateCategory, createCategory } from '@/api/category'
+import { getPrices, updatePrice, createPrice } from '@/api/price'
 import { isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Category',
+  name: 'Price',
   filters: {
     enableFilter(status) {
       const statusMap = {
@@ -170,9 +213,9 @@ export default {
   },
   data() {
     return {
-      categoryQuery: {
-        code: '',
+      priceQuery: {
         name: '',
+        channelId: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -190,7 +233,7 @@ export default {
         data: undefined,
         select: []
       },
-      categoryCreate: {
+      priceCreate: {
         visible: false,
         rules: {
         },
@@ -204,23 +247,23 @@ export default {
   },
   methods: {
     resetQuery() {
-      this.$refs['categoryQuery'].resetFields()
+      this.$refs['priceQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.categoryQuery.limit = val
+      this.priceQuery.limit = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.categoryQuery.pageNum = val
+      this.priceQuery.pageNum = val
       this.getData()
     },
     getData() {
       this.table.loading = true
-      getCategories(this.categoryQuery).then(response => {
+      getPrices(this.priceQuery).then(response => {
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when category click the cancel botton
+          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
           return v
         })
         this.pagination.total = Number.parseInt(response.data.total)
@@ -246,23 +289,15 @@ export default {
       row.edit = false
     },
     confirmEdit(row) {
-      if (isEmpty(row.code)) {
-        this.$message({
-          message: '类目编码不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
       if (isEmpty(row.name)) {
         this.$message({
-          message: '类目名称不能为空',
+          message: '价目表名称不能为空',
           type: 'error',
           duration: 5 * 1000
         })
         return
       }
-      updateCategory(row).then(response => {
+      updatePrice(row).then(response => {
         this.$message({
           message: response.data,
           type: 'success'
@@ -280,23 +315,23 @@ export default {
       })
     },
     handleCreate() {
-      this.categoryCreate.form = {
+      this.priceCreate.form = {
         code: '',
         name: '',
         channelId: '',
         approvedId: ''
       }
-      this.categoryCreate.visible = true
+      this.priceCreate.visible = true
       this.$nextTick(() => {
-        this.$refs['createCategoryForm'].clearValidate()
+        this.$refs['createPriceForm'].clearValidate()
       })
     },
     createData() {
-      this.$refs['createCategoryForm'].validate((valid) => {
+      this.$refs['createPriceForm'].validate((valid) => {
         if (valid) {
-          createCategory(this.categoryCreate.form).then((response) => {
+          createPrice(this.priceCreate.form).then((response) => {
             this.table.data.unshift(response.data)
-            this.categoryCreate.visible = false
+            this.priceCreate.visible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -306,7 +341,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '类目创建失败',
+              message: '价目表创建失败',
               type: 'error',
               duration: 2000
             })
@@ -320,7 +355,7 @@ export default {
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择类目',
+          message: '请选择价目表',
           type: 'error',
           duration: 2 * 1000
         })
@@ -328,8 +363,8 @@ export default {
       }
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['类目编码', '类目名称', '父类目编码']
-          const filterVal = ['code', 'name', 'parentId']
+          const tHeader = ['价目表名称', '应用渠道', '优先级', '开始时间', '结束时间', '是否启用']
+          const filterVal = ['name', 'channelId', 'priority', 'startTime', 'endTime', 'active']
 
           const data = this.table.select.map(u => filterVal.map(field => {
             return u[field]
