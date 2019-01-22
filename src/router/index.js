@@ -90,7 +90,7 @@ export const asyncRouterMap = [
     name: 'DictionaryManage',
     meta: {
       title: 'DictionaryManage',
-      icon: 'form'
+      icon: 'tree'
     },
     children: [
       {
@@ -154,7 +154,7 @@ export const asyncRouterMap = [
     name: 'StockManage',
     meta: {
       title: 'stockManage',
-      icon: 'form'
+      icon: 'chart'
     },
     children: [
       {
@@ -177,7 +177,7 @@ export const asyncRouterMap = [
     name: 'CustomerManage',
     meta: {
       title: 'customerManage',
-      icon: 'form'
+      icon: 'people'
     },
     children: [
       {
@@ -341,6 +341,5 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   { path: '*', redirect: '/error/404', hidden: true }
 ]

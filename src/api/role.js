@@ -138,3 +138,10 @@ export function findRoleByName(roleName) {
     params: data
   })
 }
+
+export function roleTree() {
+  return request({
+    url: '/auth/api/v1/role/tree',
+    method: 'get'
+  })
+}
