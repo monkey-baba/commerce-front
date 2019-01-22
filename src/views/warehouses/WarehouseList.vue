@@ -64,7 +64,14 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('warehouse.posId.label')" prop="posId" />
+      <el-table-column :label="$t('warehouse.posId.label')" prop="posId" >
+        <template slot-scope="scope">
+          <el-input v-if="scope.row.edit" v-model="scope.row.posId" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.posId }}
+          </template>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('warehouse.posAddress.label')" prop="posAddress" />
       <el-table-column label="操作" min-width="100px">
         <template slot-scope="scope">
@@ -138,6 +145,12 @@
           <el-radio v-model="warehouseCreate.form.enabled" label="false">
             {{ $t('warehouse.create.enabled.no') }}
           </el-radio>
+        </el-form-item>
+        <el-form-item :label="$t('warehouse.create.posId.label')" prop="posId">
+          <el-input
+            v-model="warehouseCreate.form.posId"
+            :placeholder="$t('warehouse.create.posId.placeholder')"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -246,7 +259,8 @@ export default {
       this.warehouseCreate.form = {
         code: '',
         name: '',
-        enabled: 'true'
+        enabled: 'true',
+        posId: ''
       }
       this.warehouseCreate.visible = true
       this.$nextTick(() => {
