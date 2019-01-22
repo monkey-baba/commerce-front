@@ -32,12 +32,9 @@
     </div>
     <hr>
     <div class="filter-container" style="margin: 0 10px">
-      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">
-        创建
-      </ElButton>
-      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
-        导出
-      </ElButton>
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">创建</ElButton>
+      <el-button type="info" size="small" class="gray-btn" @click="handleDeletes">删除</el-button>
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出</ElButton>
     </div>
     <ElTable
       v-loading="table.loading"
@@ -76,7 +73,7 @@
       </ElTableColumn>
       <ElTableColumn :label="$t('price.startTime.name')" prop="startTime">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.startTime" class="edit-input" size="mini"/>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.startTime" class="edit-input" size="mini" type="datetime"/>
           <template v-else>
             {{ scope.row.startTime }}
           </template>
@@ -84,7 +81,7 @@
       </ElTableColumn>
       <ElTableColumn :label="$t('price.endTime.name')" prop="endTime">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.endTime" class="edit-input" size="mini"/>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.endTime" class="edit-input" size="mini" type="datetime"/>
           <template v-else>
             {{ scope.row.endTime }}
           </template>
@@ -164,22 +161,26 @@
             :placeholder="$t('price.priority.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('price.active.name')" prop="active">
-          <ElInput
-            v-model="priceCreate.form.active"
-            :placeholder="$t('price.active.placeholder')"
-          />
-        </ElFormItem>
+        <el-form-item :label="$t('price.active.name')" prop="active">
+          <el-radio v-model="priceCreate.form.active" label="true">
+            {{ $t('price.active.true') }}
+          </el-radio>
+          <el-radio v-model="priceCreate.form.active" label="false">
+            {{ $t('price.active.false') }}
+          </el-radio>
+        </el-form-item>
         <ElFormItem :label="$t('price.startTime.name')" prop="startTime">
-          <ElInput
+          <ElDatePicker
             v-model="priceCreate.form.startTime"
             :placeholder="$t('price.startTime.placeholder')"
+            type="datetime"
           />
         </ElFormItem>
         <ElFormItem :label="$t('price.endTime.name')" prop="endTime">
-          <ElInput
+          <ElDatePicker
             v-model="priceCreate.form.endTime"
             :placeholder="$t('price.endTime.placeholder')"
+            type="datetime"
           />
         </ElFormItem>
       </ElForm>
@@ -197,7 +198,7 @@
 </template>
 
 <script>
-import { getPrices, updatePrice, createPrice } from '@/api/price'
+import { getPrices, updatePrice, createPrice, deletePrice } from '@/api/price'
 import { isEmpty } from '@/utils/validate'
 
 export default {
@@ -324,6 +325,32 @@ export default {
       this.priceCreate.visible = true
       this.$nextTick(() => {
         this.$refs['createPriceForm'].clearValidate()
+      })
+    },
+    handleDeletes() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择价目表',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      deletePrice(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '删除失败',
+          type: 'error',
+          duration: 2000
+        })
       })
     },
     createData() {

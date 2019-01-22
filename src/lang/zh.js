@@ -396,9 +396,14 @@ export default {
     }
   },
   price: {
+    create: {
+      title: '创建价目表'
+    },
     active: {
       name: '是否启用',
-      placeholder: '是否启用'
+      placeholder: '是否启用',
+      true: '是',
+      false: '否'
     },
     name: {
       name: '价目表名称',
