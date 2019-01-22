@@ -532,6 +532,7 @@ export default {
         if (valid) {
           createUser(this.userCreate.form).then((response) => {
             response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.userCreate.visible = false

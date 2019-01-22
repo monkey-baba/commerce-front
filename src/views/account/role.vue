@@ -331,6 +331,7 @@ export default {
         if (valid) {
           createRole(this.roleCreate.form).then((response) => {
             response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.roleCreate.visible = false

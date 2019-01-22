@@ -321,6 +321,7 @@ export default {
         if (valid) {
           createGroup(this.groupCreate.form).then((response) => {
             response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.groupCreate.visible = false
