@@ -177,7 +177,7 @@ export const asyncRouterMap = [
     name: 'CustomerManage',
     meta: {
       title: 'customerManage',
-      icon: 'people'
+      icon: 'peoples'
     },
     children: [
       {
