@@ -568,7 +568,7 @@ export default {
     type: {
       label: '规则类型'
     },
-    modifyUserId: {
+    modifyUserName: {
       label: '修改人'
     },
     modifyDate: {

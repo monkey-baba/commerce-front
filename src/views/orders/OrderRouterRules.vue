@@ -23,8 +23,8 @@
             @change="change(scope.row)"/>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('routerRule.type.label')" prop="" />
-      <el-table-column :label="$t('routerRule.modifyUserId.label')" prop=""/>
+      <el-table-column :label="$t('routerRule.type.label')" prop="routerRuleDisplayName" />
+      <el-table-column :label="$t('routerRule.modifyUserName.label')" prop="modifyUserName"/>
       <el-table-column :label="$t('routerRule.modifyDate.label')" prop="modifyDate"/>
     </el-table>
 
