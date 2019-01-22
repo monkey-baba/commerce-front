@@ -189,7 +189,7 @@ import { getRoles, updateRole, createRole, deleteRole, parentRole, childRole, up
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Role',
+  name: 'AccountRole',
   data() {
     const validateRoleCode = (rule, value, callback) => {
       if (!isCharOrNumber(value)) {

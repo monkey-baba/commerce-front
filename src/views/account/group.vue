@@ -180,7 +180,7 @@ import { groupRole, updateGroupRole } from '@/api/role'
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Group',
+  name: 'AccountGroup',
   data() {
     const validateGroupCode = (rule, value, callback) => {
       if (!isCharOrNumber(value)) {

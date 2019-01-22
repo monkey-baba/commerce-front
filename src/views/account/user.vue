@@ -297,7 +297,7 @@ import { isvalidUsername, isEmpty, isEmail, isMobilePhone } from '@/utils/valida
 import store from '../../store'
 
 export default {
-  name: 'User',
+  name: 'AccountUser',
   filters: {
     enableFilter(status) {
       const statusMap = {
