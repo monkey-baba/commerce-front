@@ -47,7 +47,7 @@
       <el-table-column :label="$t('general.index')" type="index" />
       <el-table-column :label="$t('stock.skuId.label')" prop="skuId" />
       <el-table-column :label="$t('stock.skuName.label')" prop="skuName" />
-      <el-table-column :label="$t('stock.warehouseId.label')" prop="warehouseId" />
+      <el-table-column :label="$t('stock.warehouseId.label')" prop="warehouse" />
       <el-table-column :label="$t('stock.available.label')" prop="available"/>
     </el-table>
 

@@ -490,6 +490,10 @@ export default {
         label: '是否启用',
         yes: '启用',
         no: '禁用'
+      },
+      posId: {
+        label: '所属供货点',
+        placeholder: '请输入供货点'
       }
     }
   },

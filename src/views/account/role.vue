@@ -189,7 +189,7 @@ import { getRoles, updateRole, createRole, deleteRole, parentRole, childRole, up
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Role',
+  name: 'AccountRole',
   data() {
     const validateRoleCode = (rule, value, callback) => {
       if (!isCharOrNumber(value)) {
@@ -270,7 +270,7 @@ export default {
       })
     },
     query() {
-      this.userQuery.pageNum = 1
+      this.roleQuery.pageNum = 1
       this.search.loading = true
       this.getData()
     },
@@ -331,6 +331,7 @@ export default {
         if (valid) {
           createRole(this.roleCreate.form).then((response) => {
             response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.roleCreate.visible = false

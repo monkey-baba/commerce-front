@@ -180,7 +180,7 @@ import { groupRole, updateGroupRole } from '@/api/role'
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Group',
+  name: 'AccountGroup',
   data() {
     const validateGroupCode = (rule, value, callback) => {
       if (!isCharOrNumber(value)) {
@@ -260,7 +260,7 @@ export default {
       })
     },
     query() {
-      this.userQuery.pageNum = 1
+      this.groupQuery.pageNum = 1
       this.search.loading = true
       this.getData()
     },
@@ -321,6 +321,7 @@ export default {
         if (valid) {
           createGroup(this.groupCreate.form).then((response) => {
             response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.groupCreate.visible = false

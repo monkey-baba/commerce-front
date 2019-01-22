@@ -261,7 +261,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'user',
-        name: 'authUser',
+        name: 'AccountUser',
         component: () => import('@/views/account/user'),
         meta: {
           title: 'accountUser'
@@ -269,7 +269,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'group',
-        name: 'authGroup',
+        name: 'AccountGroup',
         component: () => import('@/views/account/group'),
         meta: {
           title: 'accountGroup'
@@ -277,7 +277,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'role',
-        name: 'authRole',
+        name: 'AccountRole',
         component: () => import('@/views/account/role'),
         meta: {
           title: 'accountRole'
