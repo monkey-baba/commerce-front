@@ -73,7 +73,8 @@ export default {
     accountRole: '角色管理',
     auth: '权限管理',
     oauth: 'Oauth客户端',
-    router: '路由管理',
+    authRouter: '菜单管理',
+    authRole: '角色权限管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
@@ -368,6 +369,12 @@ export default {
     },
     changeRole: {
       title: '选择角色'
+    }
+  },
+  router: {
+    roleName: {
+      label: '选择角色',
+      placeholder: '请输入角色名称或编码'
     }
   },
   general: {

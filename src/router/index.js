@@ -297,17 +297,26 @@ export const asyncRouterMap = [
       {
         path: 'oauth',
         name: 'Oauth',
-        component: () => import('@/views/account/user'),
+        component: () => import('@/views/auth/router'),
+        hidden: true,
         meta: {
           title: 'oauth'
         }
       },
       {
         path: 'router',
-        name: 'Router',
-        component: () => import('@/views/account/user'),
+        name: 'AuthRouter',
+        component: () => import('@/views/auth/router'),
         meta: {
-          title: 'router'
+          title: 'authRouter'
+        }
+      },
+      {
+        path: 'role',
+        name: 'AuthRole',
+        component: () => import('@/views/auth/role'),
+        meta: {
+          title: 'authRole'
         }
       }
     ]
