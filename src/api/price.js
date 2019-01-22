@@ -24,3 +24,12 @@ export function createPrice(price) {
     data
   })
 }
+
+export function deletePrice(price) {
+  const data = price
+  return request({
+    url: '/product/api/v1/price/delete',
+    method: 'post',
+    data
+  })
+}
