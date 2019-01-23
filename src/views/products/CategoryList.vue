@@ -32,74 +32,39 @@
     </div>
     <hr>
     <div class="filter-container" style="margin: 0 10px">
-      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate(undefined,0)">
         创建
       </ElButton>
       <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
         导出
       </ElButton>
     </div>
-    <ElTable
+    <tree-table
       v-loading="table.loading"
       :data="table.data"
       border
-      fit
-      stripe
-      highlight-current-row
       @selection-change="handleSelectionChange"
     >
       <ElTableColumn type="selection"/>
       <ElTableColumn :label="$t('general.index')" type="index"/>
-      <ElTableColumn :label="$t('category.code.name')" prop="code">
+      <el-table-column label="分类">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.code }}
-          </template>
+          <span style="color:sandybrown">{{ scope.row.code }}</span>
         </template>
-      </ElTableColumn>
-      <ElTableColumn :label="$t('category.name.name')" prop="name">
+      </el-table-column>
+      <el-table-column label="编码">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.name }}
-          </template>
+          <span style="color:sandybrown">{{ scope.row.name }}</span>
         </template>
-      </ElTableColumn>
-      <ElTableColumn :label="$t('category.parentId.name')" prop="parentId">
+      </el-table-column>
+      <el-table-column label="操作" width="290">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.parentId" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.parentId }}
-          </template>
+          <ElButton type="primary" size="mini" icon="" @click="handleCreate(scope.row,1)">新增子分类</ElButton>
+          <ElButton type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</ElButton>
+          <ElButton type="primary" size="mini" class="el-icon-delete" @click="handleDelete(scope.row)">删除</ElButton>
         </template>
-      </ElTableColumn>
-      <ElTableColumn label="操作" min-width="200px">
-        <template slot-scope="scope">
-          <div>
-            <template v-if="scope.row.edit">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">
-                保存
-              </ElButton>
-              <ElButton
-                class="cancel-btn"
-                size="mini"
-                icon="el-icon-refresh"
-                type="warning"
-                @click="cancelEdit(scope.row)"
-              >
-                取消
-              </ElButton>
-            </template>
-            <template v-else>
-              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
-                编辑
-              </ElButton>
-            </template>
-          </div>
-        </template>
-      </ElTableColumn>
-    </ElTable>
+      </el-table-column>
+    </tree-table>
 
     <ElPagination
       :current-page="pagination.page"
@@ -122,24 +87,13 @@
         label-width="85px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('category.code.name')" prop="code">
+        <ElFormItem :label="$t('category.name.name')" prop="name">
           <ElInput
-            v-model="categoryCreate.form.code"
-            :placeholder="$t('category.code.placeholder')"
+            v-model="categoryCreate.form.name"
+            :placeholder="$t('category.name.placeholder')"
           />
-          <ElFormItem :label="$t('category.name.name')" prop="name">
-            <ElInput
-              v-model="categoryCreate.form.name"
-              :placeholder="$t('category.name.placeholder')"
-            />
-          </ElFormItem>
-          <ElFormItem :label="$t('category.parentId.name')" prop="parentId">
-            <ElInput
-              v-model="categoryCreate.form.parentId"
-              :placeholder="$t('category.parentId.placeholder')"
-            />
-          </ElFormItem>
-      </elformitem></ElForm>
+        </ElFormItem>
+      </ElForm>
       <div slot="footer" class="dialog-footer">
         <ElButton @click="categoryCreate.visible = false">
           {{ $t('table.cancel') }}
@@ -150,15 +104,68 @@
       </div>
     </ElDialog>
 
+    <ElDialog :visible.sync="categoryUpdate.visible" :title="$t('category.update.title')">
+      <ElForm
+        ref="updateCategoryForm"
+        :rules="categoryUpdate.rules"
+        :model="categoryUpdate.form"
+        label-position="left"
+        label-width="85px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <ElFormItem :label="$t('category.name.name')" prop="name">
+          <ElInput
+            v-model="categoryUpdate.form.name"
+            :placeholder="$t('category.name.placeholder')"
+          />
+        </ElFormItem>
+      </ElForm>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="categoryUpdate.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="updateData">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+
+    <ElDialog :visible.sync="subCategoryCreate.visible" :title="$t('subCategory.create.title')">
+      <ElForm
+        ref="createSubCategoryForm"
+        :rules="subCategoryCreate.rules"
+        :model="subCategoryCreate.form"
+        label-position="left"
+        label-width="85px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <ElFormItem :label="$t('category.name.name')" prop="name">
+          <ElInput
+            v-model="subCategoryCreate.form.name"
+            :placeholder="$t('category.name.placeholder')"
+          />
+        </ElFormItem>
+      </ElForm>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="subCategoryCreate.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="createSubData">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+
   </div>
 </template>
-
 <script>
-import { getCategories, updateCategory, createCategory } from '@/api/category'
-import { isEmpty } from '@/utils/validate'
+
+import TreeTable from '@/components/TreeTable'
+import { getCategories, createCategory, createSubCategory, updateCategory, deleteCategory } from '@/api/category'
 
 export default {
   name: 'Category',
+  components: { TreeTable },
   filters: {
     enableFilter(status) {
       const statusMap = {
@@ -174,7 +181,7 @@ export default {
         code: '',
         name: '',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 2
       },
       search: {
         loading: false
@@ -185,16 +192,25 @@ export default {
         background: false,
         pageSizes: [10, 20, 50]
       },
-      table: {
-        loading: false,
-        data: undefined,
-        select: []
-      },
       categoryCreate: {
         visible: false,
-        rules: {
-        },
+        rules: {},
         form: {}
+      },
+      categoryUpdate: {
+        visible: false,
+        rules: {},
+        form: {}
+      },
+      subCategoryCreate: {
+        visible: false,
+        rules: {},
+        form: {}
+      },
+      table: {
+        loading: false,
+        data: [],
+        select: []
       },
       downloadLoading: false
     }
@@ -217,6 +233,7 @@ export default {
     getData() {
       this.table.loading = true
       getCategories(this.categoryQuery).then(response => {
+        console.log(response.data)
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
@@ -235,60 +252,34 @@ export default {
       this.search.loading = true
       this.getData()
     },
-    cancelEdit(row) {
-      const originRow = JSON.parse(row.original)
-      row.name = originRow.name
-      row.channelId = originRow.channelId
-      row.active = originRow.active
-      row.priority = originRow.priority
-      row.startTime = originRow.startTime
-      row.endTime = originRow.endTime
-      row.edit = false
-    },
-    confirmEdit(row) {
-      if (isEmpty(row.code)) {
-        this.$message({
-          message: '类目编码不能为空',
-          type: 'error',
-          duration: 5 * 1000
+    handleCreate(category, type) {
+      if (type === 0) {
+        this.categoryCreate.form = {
+          name: ''
+        }
+        this.categoryCreate.visible = true
+        this.$nextTick(() => {
+          this.$refs['createCategoryForm'].clearValidate()
         })
-        return
+      } else {
+        this.subCategoryCreate.form = {
+          name: '',
+          parentId: category.id
+        }
+        this.subCategoryCreate.visible = true
+        this.$nextTick(() => {
+          this.$refs['createSubCategoryForm'].clearValidate()
+        })
       }
-      if (isEmpty(row.name)) {
-        this.$message({
-          message: '类目名称不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
-      updateCategory(row).then(response => {
-        this.$message({
-          message: response.data,
-          type: 'success'
-        })
-        row.original = JSON.stringify(row)
-        row.edit = false
-      }).catch(e => {
-        const response = e.response
-        this.$message({
-          message: response !== undefined ? response.data : e.message,
-          type: 'error',
-          duration: 5 * 1000
-        })
-        this.cancelEdit(row)
-      })
     },
-    handleCreate() {
-      this.categoryCreate.form = {
-        code: '',
+    handleUpdate(category) {
+      this.categoryUpdate.form = {
         name: '',
-        channelId: '',
-        approvedId: ''
+        id: category.id
       }
-      this.categoryCreate.visible = true
+      this.categoryUpdate.visible = true
       this.$nextTick(() => {
-        this.$refs['createCategoryForm'].clearValidate()
+        this.$refs['updateCategoryForm'].clearValidate()
       })
     },
     createData() {
@@ -303,10 +294,78 @@ export default {
               type: 'success',
               duration: 2000
             })
-          }).catch(() => {
+          }).catch((e) => {
+            console.log(e)
             this.$notify({
               title: '失败',
               message: '类目创建失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    updateData() {
+      this.$refs['updateCategoryForm'].validate((valid) => {
+        if (valid) {
+          updateCategory(this.categoryUpdate.form).then((response) => {
+            this.table.data.unshift(response.data)
+            this.categoryUpdate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch((e) => {
+            this.$notify({
+              title: '失败',
+              message: '类目更新失败',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    handleDelete(category) {
+      const item = {
+        id: category.id
+      }
+      deleteCategory(item).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '删除失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    createSubData() {
+      this.$refs['createSubCategoryForm'].validate((valid) => {
+        if (valid) {
+          createSubCategory(this.subCategoryCreate.form).then((response) => {
+            this.table.data.unshift(response.data)
+            this.subCategoryCreate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch((e) => {
+            this.$notify({
+              title: '失败',
+              message: '子类目创建失败',
               type: 'error',
               duration: 2000
             })
@@ -327,33 +386,23 @@ export default {
         return
       }
       this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['类目编码', '类目名称', '父类目编码']
-          const filterVal = ['code', 'name', 'parentId']
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['类目编码', '类目名称', '父类目编码']
+        const filterVal = ['code', 'name', 'parentId']
 
-          const data = this.table.select.map(u => filterVal.map(field => {
-            return u[field]
-          }))
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '产品列表'
-          })
-          this.downloadLoading = false
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '分类列表'
         })
+        this.downloadLoading = false
+      })
     }
   }
 }
 </script>
-<style>
-  hr {
-    display: block;
-    border: 0;
-    border-bottom: 1px solid #eaeaea;
-    height: 1px;
-  }
-  .el-transfer * {
-    text-align: left;
-  }
+<style/>
 
-</style>
