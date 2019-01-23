@@ -34,3 +34,11 @@ export function updateCustomer(customer) {
     data
   })
 }
+
+export function getCustomerStatus() {
+  return request({
+    'url': '/customer/api/v1/customer/status',
+    'method': 'get'
+  })
+}
+

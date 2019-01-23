@@ -434,6 +434,9 @@ export default {
     }
   },
   category: {
+    create: {
+      title: '创建分类'
+    },
     code: {
       name: '类目编码',
       placeholder: '类目编码'

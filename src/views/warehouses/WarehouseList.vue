@@ -273,6 +273,7 @@ export default {
           createWarehouse(this.warehouseCreate.form).then((response) => {
             response.data.edit = false
             this.table.data.unshift(response.data)
+            response.data.original = JSON.stringify(response.data)
             this.pagination.total = this.pagination.total + 1
             this.warehouseCreate.visible = false
             this.$notify({

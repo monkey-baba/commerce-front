@@ -24,3 +24,21 @@ export function createCategory(category) {
     data
   })
 }
+
+export function createSubCategory(category) {
+  const data = category
+  return request({
+    url: '/product/api/v1/category/create/sub',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteCategory(category) {
+  const data = category
+  return request({
+    url: '/product/api/v1/category/delete',
+    method: 'post',
+    data
+  })
+}
