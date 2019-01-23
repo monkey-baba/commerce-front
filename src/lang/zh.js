@@ -665,6 +665,10 @@ export default {
       owner: {
         label: '门店联系人',
         placeholder: '请输入门店联系联系人'
+      },
+      detailaddress: {
+        label: '详细地址',
+        placeholder: '请输入门店详细地址'
       }
     }
 
