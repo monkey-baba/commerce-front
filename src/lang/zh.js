@@ -586,11 +586,11 @@ export default {
     },
     create: {
       title: '创建枚举',
-      name: {
+      code: {
         label: '代码',
         placeholder: '请输入代码'
       },
-      code: {
+      name: {
         label: '描述',
         placeholder: '请输入描述'
       }
