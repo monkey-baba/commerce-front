@@ -68,7 +68,17 @@
 
       <ElTableColumn type="selection" width="50px"/>
       <ElTableColumn label="门店名称" prop="name" />
-      <ElTableColumn label="门店地址" prop="address"/>
+      <ElTableColumn label="门店地址" prop="detailaddress"/>
+      <ElTableColumn label="操作" prop="paddress">
+        <template slot-scope="scope">
+          <address-line v-model="paddress"/>
+        </template>
+
+        <template>
+          <span class="address-line">{{ paddress }}</span>
+        </template>
+
+      </ElTableColumn>
       <ElTableColumn label="门店状态" prop="pstatus"/>
       <ElTableColumn label="负责人" prop="owner"/>
       <ElTableColumn label="操作">
@@ -173,10 +183,11 @@
 <script>
 import { getStores, getClassifyData, getStatusData, createStore } from '@/api/store'
 import AddressSelect from '@/components/Address/addressSelect'
+import AddressLine from '../../components/Address/addressLine'
 
 export default {
   name: 'StoreList',
-  components: { AddressSelect },
+  components: { AddressLine, AddressSelect },
   filters: {
     statusFilter(status) {
       const statusMap = {
