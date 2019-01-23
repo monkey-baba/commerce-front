@@ -77,7 +77,10 @@ export default {
     productManage: '产品管理',
     ProductList: '产品列表',
     CategoryList: '分类列表',
-    ProductDetail: '产品详情'
+    ProductDetail: '产品详情',
+    storeManage: '门店管理',
+    StoreDetail: '门店详情',
+    StoreList: '门店列表'
   },
   navbar: {
     logOut: '退出登录',
@@ -331,5 +334,47 @@ export default {
     warehouseName: {
       label: '仓库名称'
     }
+  },
+  store: {
+    name: {
+      name: '门店名称'
+    },
+    code: {
+      code: '门店编码'
+    },
+    classification: {
+      name: '门店分类'
+    },
+    status: {
+      name: '门店状态'
+    },
+    people: {
+      name: '负责人员'
+    },
+
+    create: {
+      title: '创建门店',
+      name: {
+        label: '门店名字',
+        placeholder: '请输入门店名'
+      },
+      code: {
+        label: '门店编码',
+        placeholder: '请输入门店编码'
+      },
+      address: {
+        label: '门店地址',
+        placeholder: '请输入门店地址'
+      },
+      contact: {
+        label: '联系方式',
+        placeholder: '请输入门店联系方式'
+      },
+      owner: {
+        label: '门店联系人',
+        placeholder: '请输入门店联系联系人'
+      }
+    }
+
   }
 }
