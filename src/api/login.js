@@ -7,7 +7,8 @@ export function loginByUsername(username, password) {
     password,
     grant_type: 'password',
     client_id: store.getters.appId,
-    client_secret: store.getters.appId
+    client_secret: store.getters.appId,
+    tokenType: 'jwt'
   }
   return request({
     url: '/oauth2/oauth/token',

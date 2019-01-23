@@ -1,24 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <ElForm ref="productQuery" :model="productQuery" :inline="true">
+      <ElForm ref="priceQuery" :model="priceQuery" :inline="true">
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('product.code.name')+':' " prop="code">
-              <ElInput v-model="productQuery.code" :placeholder="$t('product.code.placeholder')" auto-complete="on"/>
-            </ElFormItem>
-            <ElFormItem :label=" $t('product.name.name')+':' " prop="name">
-              <ElInput v-model="productQuery.name" :placeholder="$t('product.name.placeholder')" auto-complete="on"/>
+            <ElFormItem :label=" $t('price.name.name')+':' " prop="name">
+              <ElInput v-model="priceQuery.name" :placeholder="$t('price.name.placeholder')" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('product.channelId.name')+':' " prop="channelId">
-              <ElInput v-model="productQuery.channelId" :placeholder="$t('product.channelId.placeholder')" auto-complete="on"/>
-            </ElFormItem>
-            <ElFormItem :label=" $t('product.approvedId.name')+':' " prop="approvedId">
-              <ElInput v-model="productQuery.approvedId" :placeholder="$t('product.approvedId.placeholder')" auto-complete="on"/>
+            <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
+              <ElInput v-model="priceQuery.channelId" :placeholder="$t('price.channelId.placeholder')" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -38,12 +32,9 @@
     </div>
     <hr>
     <div class="filter-container" style="margin: 0 10px">
-      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">
-        创建
-      </ElButton>
-      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
-        导出
-      </ElButton>
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">创建</ElButton>
+      <el-button type="info" size="small" class="gray-btn" @click="handleDeletes">删除</el-button>
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出</ElButton>
     </div>
     <ElTable
       v-loading="table.loading"
@@ -56,15 +47,7 @@
     >
       <ElTableColumn type="selection"/>
       <ElTableColumn :label="$t('general.index')" type="index"/>
-      <ElTableColumn :label="$t('product.code.name')" prop="code">
-        <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.code }}
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn :label="$t('product.name.name')" prop="name">
+      <ElTableColumn :label="$t('price.name.name')" prop="name">
         <template slot-scope="scope">
           <ElInput v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
@@ -72,7 +55,7 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('product.channelId.name')" prop="channelId">
+      <ElTableColumn :label="$t('price.channelId.name')" prop="channelId">
         <template slot-scope="scope">
           <ElInput v-if="scope.row.edit" v-model="scope.row.channelId" class="edit-input" size="mini"/>
           <template v-else>
@@ -80,11 +63,35 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('product.approvedId.name')" prop="approvedId">
+      <ElTableColumn :label="$t('price.priority.name')" prop="priority">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.approvedId" class="edit-input" size="mini"/>
+          <ElInput v-if="scope.row.edit" v-model="scope.row.priority" class="edit-input" size="mini"/>
           <template v-else>
-            {{ scope.row.approvedId }}
+            {{ scope.row.priority }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.startTime.name')" prop="startTime">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.startTime" class="edit-input" size="mini" type="datetime"/>
+          <template v-else>
+            {{ scope.row.startTime }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.endTime.name')" prop="endTime">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.endTime" class="edit-input" size="mini" type="datetime"/>
+          <template v-else>
+            {{ scope.row.endTime }}
+          </template>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('price.active.name')" prop="active">
+        <template slot-scope="scope">
+          <ElInput v-if="scope.row.edit" v-model="scope.row.active" class="edit-input" size="mini"/>
+          <template v-else>
+            {{ scope.row.active }}
           </template>
         </template>
       </ElTableColumn>
@@ -127,42 +134,58 @@
       @current-change="handleCurrentChange"
     />
 
-    <ElDialog :visible.sync="productCreate.visible" :title="$t('product.create.title')">
+    <ElDialog :visible.sync="priceCreate.visible" :title="$t('price.create.title')">
       <ElForm
-        ref="createProductForm"
-        :rules="productCreate.rules"
-        :model="productCreate.form"
+        ref="createPriceForm"
+        :rules="priceCreate.rules"
+        :model="priceCreate.form"
         label-position="left"
-        label-width="70px"
+        label-width="85px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('product.code.name')" prop="code">
+        <ElFormItem :label="$t('price.name.name')" prop="name">
           <ElInput
-            v-model="productCreate.form.code"
-            :placeholder="$t('product.code.placeholder')"
+            v-model="priceCreate.form.name"
+            :placeholder="$t('price.name.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('product.name.name')" prop="name">
+        <ElFormItem :label="$t('price.channelId.name')" prop="channelId">
           <ElInput
-            v-model="productCreate.form.name"
-            :placeholder="$t('product.name.placeholder')"
+            v-model="priceCreate.form.channelId"
+            :placeholder="$t('price.channelId.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('product.channelId.name')" prop="channelId">
+        <ElFormItem :label="$t('price.priority.name')" prop="priority">
           <ElInput
-            v-model="productCreate.form.channelId"
-            :placeholder="$t('product.channelId.placeholder')"
+            v-model="priceCreate.form.priority"
+            :placeholder="$t('price.priority.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('product.approvedId.name')" prop="approvedId">
-          <ElInput
-            v-model="productCreate.form.approvedId"
-            :placeholder="$t('product.approvedId.placeholder')"
+        <el-form-item :label="$t('price.active.name')" prop="active">
+          <el-radio v-model="priceCreate.form.active" label="true">
+            {{ $t('price.active.true') }}
+          </el-radio>
+          <el-radio v-model="priceCreate.form.active" label="false">
+            {{ $t('price.active.false') }}
+          </el-radio>
+        </el-form-item>
+        <ElFormItem :label="$t('price.startTime.name')" prop="startTime">
+          <ElDatePicker
+            v-model="priceCreate.form.startTime"
+            :placeholder="$t('price.startTime.placeholder')"
+            type="datetime"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('price.endTime.name')" prop="endTime">
+          <ElDatePicker
+            v-model="priceCreate.form.endTime"
+            :placeholder="$t('price.endTime.placeholder')"
+            type="datetime"
           />
         </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
-        <ElButton @click="productCreate.visible = false">
+        <ElButton @click="priceCreate.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
         <ElButton type="primary" @click="createData">
@@ -175,11 +198,11 @@
 </template>
 
 <script>
-import { getProducts, updateProduct, createProduct } from '@/api/product'
+import { getPrices, updatePrice, createPrice, deletePrice } from '@/api/price'
 import { isEmpty } from '@/utils/validate'
 
 export default {
-  name: 'Product',
+  name: 'Price',
   filters: {
     enableFilter(status) {
       const statusMap = {
@@ -191,11 +214,9 @@ export default {
   },
   data() {
     return {
-      productQuery: {
-        code: '',
+      priceQuery: {
         name: '',
         channelId: '',
-        approvedId: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -213,7 +234,7 @@ export default {
         data: undefined,
         select: []
       },
-      productCreate: {
+      priceCreate: {
         visible: false,
         rules: {
         },
@@ -227,23 +248,23 @@ export default {
   },
   methods: {
     resetQuery() {
-      this.$refs['productQuery'].resetFields()
+      this.$refs['priceQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.productQuery.limit = val
+      this.priceQuery.limit = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.productQuery.pageNum = val
+      this.priceQuery.pageNum = val
       this.getData()
     },
     getData() {
       this.table.loading = true
-      getProducts(this.productQuery).then(response => {
+      getPrices(this.priceQuery).then(response => {
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when product click the cancel botton
+          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
           return v
         })
         this.pagination.total = Number.parseInt(response.data.total)
@@ -260,30 +281,24 @@ export default {
     },
     cancelEdit(row) {
       const originRow = JSON.parse(row.original)
-      row.code = originRow.code
       row.name = originRow.name
       row.channelId = originRow.channelId
-      row.approvedId = originRow.approvedId
+      row.active = originRow.active
+      row.priority = originRow.priority
+      row.startTime = originRow.startTime
+      row.endTime = originRow.endTime
       row.edit = false
     },
     confirmEdit(row) {
-      if (isEmpty(row.code)) {
-        this.$message({
-          message: '产品编码不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
       if (isEmpty(row.name)) {
         this.$message({
-          message: '产品名称不能为空',
+          message: '价目表名称不能为空',
           type: 'error',
           duration: 5 * 1000
         })
         return
       }
-      updateProduct(row).then(response => {
+      updatePrice(row).then(response => {
         this.$message({
           message: response.data,
           type: 'success'
@@ -301,23 +316,49 @@ export default {
       })
     },
     handleCreate() {
-      this.productCreate.form = {
+      this.priceCreate.form = {
         code: '',
         name: '',
         channelId: '',
         approvedId: ''
       }
-      this.productCreate.visible = true
+      this.priceCreate.visible = true
       this.$nextTick(() => {
-        this.$refs['createProductForm'].clearValidate()
+        this.$refs['createPriceForm'].clearValidate()
+      })
+    },
+    handleDeletes() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择价目表',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      deletePrice(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '删除失败',
+          type: 'error',
+          duration: 2000
+        })
       })
     },
     createData() {
-      this.$refs['createProductForm'].validate((valid) => {
+      this.$refs['createPriceForm'].validate((valid) => {
         if (valid) {
-          createProduct(this.productCreate.form).then((response) => {
+          createPrice(this.priceCreate.form).then((response) => {
             this.table.data.unshift(response.data)
-            this.productCreate.visible = false
+            this.priceCreate.visible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -327,7 +368,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '产品创建失败',
+              message: '价目表创建失败',
               type: 'error',
               duration: 2000
             })
@@ -341,7 +382,7 @@ export default {
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择产品',
+          message: '请选择价目表',
           type: 'error',
           duration: 2 * 1000
         })
@@ -349,8 +390,8 @@ export default {
       }
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['产品编码', '产品名称', '产品渠道', '审批状态']
-          const filterVal = ['code', 'name', 'channelId', 'approvedId']
+          const tHeader = ['价目表名称', '应用渠道', '优先级', '开始时间', '结束时间', '是否启用']
+          const filterVal = ['name', 'channelId', 'priority', 'startTime', 'endTime', 'active']
 
           const data = this.table.select.map(u => filterVal.map(field => {
             return u[field]

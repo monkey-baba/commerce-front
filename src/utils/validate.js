@@ -20,8 +20,6 @@ export function isMobilePhone(str) {
 }
 
 export function isCharOrNumber(str, min, max) {
-  console.log(min !== undefined)
-  console.log(max !== undefined)
   if (min !== undefined && str.length < min) {
     return false
   }

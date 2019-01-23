@@ -63,7 +63,9 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     orderManage: 'Order Manage',
-    orderList: 'Order List'
+    orderList: 'Order List',
+    DictionaryList: 'Dictionary List',
+    DictionaryManage: 'Dictionary Manage'
   },
   navbar: {
     logOut: 'Log Out',
@@ -157,5 +159,17 @@ export default {
   },
   order: {
     code: 'Order Code'
+  },
+
+  dictionary: {
+    code: {
+      label: '代码'
+    },
+    name: {
+      label: '描述'
+    },
+    edit: {
+      label: '编辑'
+    }
   }
 }

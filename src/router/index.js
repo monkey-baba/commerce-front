@@ -85,6 +85,23 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/dict',
+    component: Layout,
+    name: 'DictionaryManage',
+    meta: {
+      title: 'DictionaryManage',
+      icon: 'tree'
+    },
+    children: [
+      {
+        path: 'info',
+        component: () => import('@/views/dictionarys/DictionaryList'),
+        name: 'dictList',
+        meta: { title: 'dictList' }
+      }
+    ]
+  },
+  {
     path: '/order',
     component: Layout,
     name: 'OrderManage',
@@ -100,10 +117,16 @@ export const asyncRouterMap = [
         meta: { title: 'OrderList' }
       },
       {
-        path: 'list2',
-        component: () => import('@/views/orders/OrderList'),
+        path: 'Consignment',
+        component: () => import('@/views/orders/ConsignmentList'),
         name: 'ConsignmentList',
         meta: { title: 'ConsignmentList' }
+      },
+      {
+        path: 'OrderRouterRules',
+        component: () => import('@/views/orders/OrderRouterRules'),
+        name: 'OrderRouterRules',
+        meta: { title: 'OrderRouterRules' }
       },
       {
         path: ':code',
@@ -112,6 +135,15 @@ export const asyncRouterMap = [
         component: () => import('@/views/orders/OrderDetail'),
         meta: {
           title: 'OrderDetail'
+        }
+      },
+      {
+        path: ':consignmentCode',
+        hidden: false,
+        name: 'ConsignmentDetail',
+        component: () => import('@/views/orders/ConsignmentDetail'),
+        meta: {
+          title: 'ConsignmentDetail'
         }
       }
     ]
@@ -122,7 +154,7 @@ export const asyncRouterMap = [
     name: 'StockManage',
     meta: {
       title: 'stockManage',
-      icon: 'form'
+      icon: 'chart'
     },
     children: [
       {
@@ -162,7 +194,7 @@ export const asyncRouterMap = [
     name: 'CustomerManage',
     meta: {
       title: 'customerManage',
-      icon: 'form'
+      icon: 'peoples'
     },
     children: [
       {
@@ -179,7 +211,7 @@ export const asyncRouterMap = [
     name: 'productManage',
     meta: {
       title: 'productManage',
-      icon: 'form'
+      icon: 'goods'
     },
     children: [
       {
@@ -189,6 +221,12 @@ export const asyncRouterMap = [
         meta: { title: 'ProductList' }
       },
       {
+        path: 'pricelist',
+        component: () => import('@/views/products/PriceList'),
+        name: 'PriceList',
+        meta: { title: 'PriceList' }
+      },
+      {
         path: 'categorylist',
         component: () => import('@/views/products/CategoryList'),
         name: 'CategoryList',
@@ -196,7 +234,7 @@ export const asyncRouterMap = [
       },
       {
         path: ':productdetail',
-        hidden: true,
+        hidden: false,
         name: 'ProductDetail',
         component: () => import('@/views/products/ProductDetail'),
         meta: {
@@ -209,7 +247,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: 'ErrorPages',
-    // hidden: true,
+    hidden: true,
     meta: {
       title: 'errorPages',
       icon: '404'
@@ -230,9 +268,9 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/auth',
+    path: '/account',
     component: Layout,
-    name: 'Auth',
+    name: 'account',
     meta: {
       icon: 'user',
       title: 'account'
@@ -240,32 +278,85 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'user',
-        name: 'authUser',
-        component: () => import('@/views/auth/user'),
+        name: 'AccountUser',
+        component: () => import('@/views/account/user'),
         meta: {
           title: 'accountUser'
         }
       },
       {
         path: 'group',
-        name: 'authGroup',
-        component: () => import('@/views/auth/group'),
+        name: 'AccountGroup',
+        component: () => import('@/views/account/group'),
         meta: {
           title: 'accountGroup'
+        }
+      },
+      {
+        path: 'role',
+        name: 'AccountRole',
+        component: () => import('@/views/account/role'),
+        meta: {
+          title: 'accountRole'
         }
       }
     ]
   },
   {
-    path: 'external-link',
+    path: '/auth',
     component: Layout,
+    name: 'Auth',
+    meta: {
+      icon: 'lock',
+      title: 'auth'
+    },
     children: [
       {
-        path: 'https://gitee.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'externalLink', icon: 'link' }
+        path: 'oauth',
+        name: 'Oauth',
+        component: () => import('@/views/auth/router'),
+        hidden: true,
+        meta: {
+          title: 'oauth'
+        }
+      },
+      {
+        path: 'router',
+        name: 'AuthRouter',
+        component: () => import('@/views/auth/router'),
+        meta: {
+          title: 'authRouter'
+        }
+      },
+      {
+        path: 'role',
+        name: 'AuthRole',
+        component: () => import('@/views/auth/role'),
+        meta: {
+          title: 'authRole'
+        }
       }
     ]
   },
-
+  {
+    path: 'nacos',
+    component: Layout,
+    children: [
+      {
+        path: 'http://8848.gr89ce0e.p3lcmzo9.ae4b24.grapps.cn/nacos/',
+        meta: { title: 'serviceCenter', icon: 'link' }
+      }
+    ]
+  },
+  {
+    path: 'rain',
+    component: Layout,
+    children: [
+      {
+        path: 'http://116.247.124.34:7070/',
+        meta: { title: 'serviceManage', icon: 'link' }
+      }
+    ]
+  },
   { path: '*', redirect: '/error/404', hidden: true }
 ]

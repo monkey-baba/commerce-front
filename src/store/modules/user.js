@@ -65,8 +65,7 @@ const user = {
             reject('error')
           }
           commit('SET_TOKEN', data.value)
-          setToken(data.value)
-          setInterval(removeToken, (data.expiresIn - 60) * 1000)
+          setToken(data.value, (data.expiresIn) / 60 / 60 / 24)
           resolve()
         }).catch(error => {
           reject(error)

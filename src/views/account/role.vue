@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <ElForm ref="groupQuery" :model="groupQuery" :inline="true">
+      <ElForm ref="roleQuery" :model="roleQuery" :inline="true">
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('group.code.label')+':' " prop="code">
-              <ElInput v-model="groupQuery.code" auto-complete="on" />
+            <ElFormItem :label=" $t('role.code.label')+':' " prop="code">
+              <ElInput v-model="roleQuery.code" auto-complete="on"/>
             </ElFormItem>
-            <ElFormItem :label=" $t('group.name.label')+':' " prop="name">
-              <ElInput v-model="groupQuery.name" auto-complete="on" />
+            <ElFormItem :label=" $t('role.name.label')+':' " prop="name">
+              <ElInput v-model="roleQuery.name" auto-complete="on"/>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -47,35 +47,42 @@
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
-      <ElTableColumn type="selection" />
-      <ElTableColumn :label="$t('general.index')" type="index" />
-      <ElTableColumn :label="$t('group.code.label')" prop="code">
+      <ElTableColumn type="selection"/>
+      <ElTableColumn :label="$t('general.index')" type="index"/>
+      <ElTableColumn :label="$t('role.code.label')" prop="code">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.code }}
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('group.name.label')" prop="name">
+      <ElTableColumn :label="$t('role.name.label')" prop="name">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.name }}
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('group.description.label')" prop="description">
+      <ElTableColumn :label="$t('role.description.label')" prop="description">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.description" class="edit-input" size="mini" />
+          <el-input v-if="scope.row.edit" v-model="scope.row.description" class="edit-input" size="mini"/>
           <template v-else>
             {{ scope.row.description }}
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn :label="$t('group.roles.label')" prop="roles">
+      <ElTableColumn :label="$t('role.parents.label')" prop="parents">
         <template slot-scope="scope">
-          <ElTag v-for="r in scope.row.roles" :key="r" type="primary">
+          <ElTag v-for="r in scope.row.parents" :key="r" type="primary">
+            {{ r }}
+          </ElTag>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('role.children.label')" prop="children">
+        <template slot-scope="scope">
+          <ElTag v-for="r in scope.row.children" :key="r" type="primary">
             {{ r }}
           </ElTag>
         </template>
@@ -100,10 +107,13 @@
             <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
               编辑
             </ElButton>
+            <ElButton type="success" size="mini" @click="handleRole(scope.row, 'parent')">
+              父角色设置
+            </ElButton>
+            <ElButton type="success" size="mini" @click="handleRole(scope.row, 'child')">
+              子角色设置
+            </ElButton>
           </template>
-          <ElButton type="success" size="mini" @click="handleRole(scope.row)">
-            角色分配
-          </ElButton>
           <ElButton type="danger" size="mini" @click="handleDelete(scope.row)">
             删除
           </ElButton>
@@ -123,36 +133,36 @@
       @current-change="handleCurrentChange"
     />
 
-    <ElDialog :visible.sync="groupCreate.visible" :title="$t('group.create.title')">
+    <ElDialog :visible.sync="roleCreate.visible" :title="$t('role.create.title')">
       <ElForm
-        ref="createGroupForm"
-        :rules="groupCreate.rules"
-        :model="groupCreate.form"
+        ref="createRoleForm"
+        :rules="roleCreate.rules"
+        :model="roleCreate.form"
         label-position="left"
-        label-width="100px"
+        label-width="80px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('group.create.code.label')" prop="code">
+        <ElFormItem :label="$t('role.create.code.label')" prop="code">
           <ElInput
-            v-model="groupCreate.form.code"
-            :placeholder="$t('group.create.code.placeholder')"
+            v-model="roleCreate.form.code"
+            :placeholder="$t('role.create.code.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('group.create.name.label')" prop="name">
+        <ElFormItem :label="$t('role.create.name.label')" prop="name">
           <ElInput
-            v-model="groupCreate.form.name"
-            :placeholder="$t('group.create.name.placeholder')"
+            v-model="roleCreate.form.name"
+            :placeholder="$t('role.create.name.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('group.create.description.label')" prop="description">
+        <ElFormItem :label="$t('role.create.description.label')" prop="description">
           <ElInput
-            v-model="groupCreate.form.description"
-            :placeholder="$t('group.create.description.placeholder')"
+            v-model="roleCreate.form.description"
+            :placeholder="$t('role.create.description.placeholder')"
           />
         </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
-        <ElButton @click="groupCreate.visible = false">
+        <ElButton @click="roleCreate.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
         <ElButton type="primary" @click="createData">
@@ -160,13 +170,13 @@
         </ElButton>
       </div>
     </ElDialog>
-    <ElDialog :visible.sync="changeRole.visible" :title="$t('group.changeRole.title')" width="750px">
-      <ElTransfer v-model="changeRole.value" :data="changeRole.data" :titles="['可选角色','已选角色']" filterable />
+    <ElDialog :visible.sync="changeRole.visible" :title="$t('role.changeRole.title')" width="750px">
+      <ElTransfer v-model="changeRole.value" :data="changeRole.data" :titles="['可选角色','已选角色']" filterable/>
       <div slot="footer" class="dialog-footer">
         <ElButton @click="changeRole.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
-        <ElButton type="primary" @click="changeUserRole">
+        <ElButton type="primary" @click="changeRoleRole">
           {{ $t('table.confirm') }}
         </ElButton>
       </div>
@@ -175,24 +185,13 @@
 </template>
 
 <script>
-import { getGroups, updateGroup, createGroup, deleteGroup } from '@/api/group'
-import { groupRole, updateGroupRole } from '@/api/role'
+import { getRoles, updateRole, createRole, deleteRole, parentRole, childRole, updateParentRole, updateChildRole } from '@/api/role'
 import { isCharOrNumber, isEmpty } from '@/utils/validate'
-import store from '../../store'
 
 export default {
-  name: 'Group',
-  filters: {
-    enableFilter(status) {
-      const statusMap = {
-        'true': 'success',
-        'false': 'info'
-      }
-      return statusMap[status]
-    }
-  },
+  name: 'AccountRole',
   data() {
-    const validateGroupCode = (rule, value, callback) => {
+    const validateRoleCode = (rule, value, callback) => {
       if (!isCharOrNumber(value)) {
         callback(new Error('编码为字母数字组成'))
       } else {
@@ -200,7 +199,7 @@ export default {
       }
     }
     return {
-      groupQuery: {
+      roleQuery: {
         code: '',
         name: '',
         pageNum: 1,
@@ -220,17 +219,18 @@ export default {
         data: undefined,
         select: []
       },
-      groupCreate: {
+      roleCreate: {
         visible: false,
         rules: {
-          name: [{ required: true, message: '用户组名称不能为空', trigger: 'change' }],
-          code: [{ required: true, validator: validateGroupCode, trigger: 'change' }]
+          name: [{ required: true, message: '角色名称不能为空', trigger: 'change' }],
+          code: [{ required: true, validator: validateRoleCode, trigger: 'change' }]
         },
         form: {}
       },
       changeRole: {
         visible: false,
-        groupId: undefined,
+        type: '',
+        roleId: undefined,
         data: [],
         value: []
       },
@@ -242,23 +242,23 @@ export default {
   },
   methods: {
     resetQuery() {
-      this.$refs['groupQuery'].resetFields()
+      this.$refs['roleQuery'].resetFields()
     },
     handleSizeChange(val) {
-      this.groupQuery.pageSize = val
+      this.roleQuery.pageSize = val
       this.getData()
     },
     handleCurrentChange(val) {
-      this.groupQuery.pageNum = val
+      this.roleQuery.pageNum = val
       this.getData()
     },
     getData() {
       this.table.loading = true
-      getGroups(this.groupQuery).then(response => {
+      getRoles(this.roleQuery).then(response => {
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when group click the cancel botton
+          v.original = JSON.stringify(v) //  will be used when role click the cancel botton
           return v
         })
         this.pagination.total = Number.parseInt(response.data.total)
@@ -270,6 +270,7 @@ export default {
       })
     },
     query() {
+      this.roleQuery.pageNum = 1
       this.search.loading = true
       this.getData()
     },
@@ -291,36 +292,23 @@ export default {
       }
       if (isEmpty(row.name)) {
         this.$message({
-          message: '用户组名称不能为空',
+          message: '角色名称不能为空',
           type: 'error',
           duration: 5 * 1000
         })
         return
       }
-      updateGroup(row).then(response => {
+      updateRole(row).then(response => {
         this.$message({
           message: response.data,
           type: 'success'
         })
-        if (JSON.parse(row.original).id === store.getters.currentgroupId &&
-            JSON.parse(row.original).username !== row.username) {
-          setTimeout(() => {
-            store.dispatch('FedLogOut').then(() => {
-              this.$message({
-                message: '登录已过期，请重新登录',
-                type: 'error',
-                duration: 5 * 1000
-              })
-              this.$router.push({ path: '/login' })
-            })
-          }, 1000)
-        }
         row.original = JSON.stringify(row)
         row.edit = false
       }).catch(e => {
         this.$notify({
           title: '失败',
-          message: '用户组编码已存在',
+          message: '角色编码已存在',
           type: 'error',
           duration: 2000
         })
@@ -328,23 +316,25 @@ export default {
       })
     },
     handleCreate() {
-      this.groupCreate.form = {
+      this.roleCreate.form = {
         code: '',
         name: '',
         description: ''
       }
-      this.groupCreate.visible = true
+      this.roleCreate.visible = true
       this.$nextTick(() => {
-        this.$refs['createGroupForm'].clearValidate()
+        this.$refs['createRoleForm'].clearValidate()
       })
     },
     createData() {
-      this.$refs['createGroupForm'].validate((valid) => {
+      this.$refs['createRoleForm'].validate((valid) => {
         if (valid) {
-          createGroup(this.groupCreate.form).then((response) => {
+          createRole(this.roleCreate.form).then((response) => {
+            response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
-            this.groupCreate.visible = false
+            this.roleCreate.visible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -354,7 +344,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '用户组编码已存在',
+              message: '角色编码已存在',
               type: 'error',
               duration: 2000
             })
@@ -366,15 +356,9 @@ export default {
       this.$confirm('确认删除？', '提示', {
         type: 'warning'
       }).then(() => {
-        deleteGroup([{ id: row.id }]).then(
+        deleteRole([{ id: row.id }]).then(
           () => {
-            for (const v of this.table.data) {
-              if (v.id === row.id) {
-                const index = this.table.data.indexOf(v)
-                this.table.data.splice(index, 1)
-                break
-              }
-            }
+            this.getData()
             this.$notify({
               title: '成功',
               message: '删除成功',
@@ -390,7 +374,8 @@ export default {
             duration: 2000
           })
         })
-      }).catch((e) => {})
+      }).catch((e) => {
+      })
     },
     handleSelectionChange(val) {
       this.table.select = val
@@ -398,7 +383,7 @@ export default {
     handleDeletes() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择用户组',
+          message: '请选择角色',
           type: 'error',
           duration: 2 * 1000
         })
@@ -407,11 +392,8 @@ export default {
       this.$confirm('确认删除？', '提示', {
         type: 'warning'
       }).then(() => {
-        deleteGroup(this.table.select).then(() => {
-          for (const v of this.table.select) {
-            const index = this.table.data.indexOf(v)
-            this.table.data.splice(index, 1)
-          }
+        deleteRole(this.table.select).then(() => {
+          this.getData()
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -426,74 +408,108 @@ export default {
             duration: 2000
           })
         })
-      }).catch((e) => {})
-    },
-    handleRole(row) {
-      this.changeRole.groupId = row.id
-      groupRole(row.id).then(response => {
-        const data = response.data
-        this.changeRole.data = data
-        this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
-        this.changeRole.visible = true
-      }).catch(() => {
-        this.$notify({
-          title: '失败',
-          message: '获取用户组失败，请稍后再试',
-          type: 'error',
-          duration: 2000
-        })
+      }).catch((e) => {
       })
     },
-    changeUserRole() {
-      updateGroupRole(this.changeRole.groupId, this.changeRole.value).then(response => {
-        this.changeRole.visible = false
-        for (const v of this.table.data) {
-          if (v.id === this.changeRole.groupId) {
-            v.roles = response.data.roleNames
-            break
-          }
-        }
-        this.$notify({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000
+    handleRole(row, type) {
+      this.changeRole.roleId = row.id
+      this.changeRole.type = type
+      if (type === 'parent') {
+        parentRole(row.id).then(response => {
+          const data = response.data
+          this.changeRole.data = data
+          this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
+          this.changeRole.visible = true
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '获取角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
         })
-      }).catch(() => {
-        this.$notify({
-          title: '失败',
-          message: '更新角色失败，请稍后再试',
-          type: 'error',
-          duration: 2000
+      } else {
+        childRole(row.id).then(response => {
+          const data = response.data
+          this.changeRole.data = data
+          this.changeRole.value = data.filter(r => r.exists).map(r => r.key)
+          this.changeRole.visible = true
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '获取角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
         })
-        this.changeRole.visible = false
       }
-      )
+    },
+    changeRoleRole() {
+      if (this.changeRole.type === 'parent') {
+        updateParentRole(this.changeRole.roleId, this.changeRole.value).then(response => {
+          this.changeRole.visible = false
+          this.getData()
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '更新角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+          this.changeRole.visible = false
+        }
+        )
+      } else {
+        updateChildRole(this.changeRole.roleId, this.changeRole.value).then(response => {
+          this.changeRole.visible = false
+          this.getData()
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '更新角色失败，请稍后再试',
+            type: 'error',
+            duration: 2000
+          })
+          this.changeRole.visible = false
+        })
+      }
     },
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择用户',
+          message: '请选择角色',
           type: 'error',
           duration: 2 * 1000
         })
         return
       }
       this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['登录名', '用户姓名', '手机号', '邮箱', '是否启用', '用户组', '角色']
-          const filterVal = ['username', 'name', 'mobileNumber', 'email', 'enabled', 'groups', 'roles']
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['编码', '角色名称', '描述', '父级角色', '子级角色']
+        const filterVal = ['code', 'name', 'description', 'parents', 'children']
 
-          const data = this.table.select.map(u => filterVal.map(field => {
-            return u[field]
-          }))
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '用户列表'
-          })
-          this.downloadLoading = false
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '角色列表'
         })
+        this.downloadLoading = false
+      })
     }
   }
 }

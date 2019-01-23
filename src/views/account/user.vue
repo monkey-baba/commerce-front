@@ -297,7 +297,7 @@ import { isvalidUsername, isEmpty, isEmail, isMobilePhone } from '@/utils/valida
 import store from '../../store'
 
 export default {
-  name: 'User',
+  name: 'AccountUser',
   filters: {
     enableFilter(status) {
       const statusMap = {
@@ -439,6 +439,7 @@ export default {
       })
     },
     query() {
+      this.userQuery.pageNum = 1
       this.search.loading = true
       this.getData()
     },
@@ -531,6 +532,8 @@ export default {
       this.$refs['createUserForm'].validate((valid) => {
         if (valid) {
           createUser(this.userCreate.form).then((response) => {
+            response.data.edit = false
+            response.data.original = JSON.stringify(response.data)
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.userCreate.visible = false
@@ -622,7 +625,7 @@ export default {
       })
     },
     changePassword() {
-      this.$refs['createUserForm'].validate((valid) => {
+      this.$refs['changePwdForm'].validate((valid) => {
         if (valid) {
           passwordUser(this.changePwd.form).then(() => {
             this.changePwd.visible = false
@@ -664,7 +667,6 @@ export default {
         this.changeGroup.visible = false
         for (const v of this.table.data) {
           if (v.id === this.changeGroup.userId) {
-            v.roles = response.data.roleNames
             v.groups = response.data.groupNames
             break
           }
@@ -696,7 +698,7 @@ export default {
       }).catch(() => {
         this.$notify({
           title: '失败',
-          message: '获取用户组失败，请稍后再试',
+          message: '获取角色失败，请稍后再试',
           type: 'error',
           duration: 2000
         })

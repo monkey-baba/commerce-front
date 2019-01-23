@@ -61,7 +61,8 @@ export default {
     theme: '换肤',
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
-    externalLink: '外链',
+    serviceCenter: '服务中心',
+    serviceManage: '微服务后台',
     orderManage: '订单管理',
     OrderList: '订单列表',
     ConsignmentList: '发货单列表',
@@ -69,6 +70,11 @@ export default {
     account: '账户管理',
     accountUser: '用户管理',
     accountGroup: '用户组管理',
+    accountRole: '角色管理',
+    auth: '权限管理',
+    oauth: 'Oauth客户端',
+    authRouter: '菜单管理',
+    authRole: '角色权限管理',
     stockManage: '库存管理',
     StockList: '库存管理',
     WarehouseList: '仓库管理',
@@ -80,7 +86,12 @@ export default {
     ProductDetail: '产品详情',
     storeManage: '门店管理',
     StoreDetail: '门店详情',
-    StoreList: '门店列表'
+    StoreList: '门店列表',
+    PriceList: '价目表管理',
+    dictList: '枚举管理',
+    DictionaryManage: '枚举管理',
+    OrderRouterRules: '订单路由规则',
+    ConsignmentDetail: '配货单详情'
   },
   navbar: {
     logOut: '退出登录',
@@ -174,11 +185,43 @@ export default {
   },
   order: {
     code: {
-      name: '订单编号',
-      placeholder: '请输入订单号'
+      label: '订单编号'
     },
-    status: {
-      name: '订单状态',
+    ecsOrderId: {
+      label: '平台订单号'
+    },
+    consignmentCode: {
+      label: '配货单号'
+    },
+    storeId: {
+      label: '网店'
+    },
+    customerId: {
+      label: '客户编号'
+    },
+    receiver: {
+      label: '收货人'
+    },
+    receiverPhone: {
+      label: '收货手机号'
+    },
+    wareId: {
+      label: '门店'
+    },
+    totalPrice: {
+      label: '订单金额'
+    },
+    date: {
+      label: '下单日期'
+    },
+    paymentDate: {
+      label: '付款日期'
+    },
+    orderTypeId: {
+      label: '订单类型'
+    },
+    statusId: {
+      label: '订单状态',
       CREATED: '已创建',
       PENDING: '待审核',
       APPROVED: '已审核',
@@ -296,6 +339,47 @@ export default {
       title: '选择角色'
     }
   },
+  role: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '角色名称'
+    },
+    description: {
+      label: '描述'
+    },
+    parents: {
+      label: '父级角色'
+    },
+    children: {
+      label: '子级角色'
+    },
+    create: {
+      title: '创建角色',
+      code: {
+        label: '编码',
+        placeholder: '请输入角色编码'
+      },
+      name: {
+        label: '角色名称',
+        placeholder: '请输入角色名称'
+      },
+      description: {
+        label: '描述',
+        placeholder: '请输入角色描述'
+      }
+    },
+    changeRole: {
+      title: '选择角色'
+    }
+  },
+  router: {
+    roleName: {
+      label: '选择角色',
+      placeholder: '请输入角色名称或编码'
+    }
+  },
   general: {
     index: '序号'
   },
@@ -308,17 +392,65 @@ export default {
       name: '商品名称',
       placeholder: '请输入商品名称'
     },
-    category: {
+    categoryId: {
       name: '商品分类',
       placeholder: '请选择商品分类'
     },
-    channel: {
+    channelId: {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     },
-    approvalStatus: {
-      name: '销售渠道',
+    approvedId: {
+      name: '批准',
+      placeholder: '是否批准'
+    }
+  },
+  price: {
+    create: {
+      title: '创建价目表'
+    },
+    active: {
+      name: '是否启用',
+      placeholder: '是否启用',
+      true: '是',
+      false: '否'
+    },
+    name: {
+      name: '价目表名称',
+      placeholder: '请输入价目表名称'
+    },
+    priority: {
+      name: '优先级',
+      placeholder: '优先级'
+    },
+    channelId: {
+      name: '应用渠道',
       placeholder: '请选择销售渠道'
+    },
+    startTime: {
+      name: '开始时间',
+      placeholder: '开始时间'
+    },
+    endTime: {
+      name: '结束时间',
+      placeholder: '结束时间'
+    }
+  },
+  category: {
+    create: {
+      title: '创建分类'
+    },
+    code: {
+      name: '类目编码',
+      placeholder: '类目编码'
+    },
+    name: {
+      name: '类目名称',
+      placeholder: '类目名称'
+    },
+    parentId: {
+      name: '父类目编码',
+      placeholder: '父类目编码'
     }
   },
   stock: {
@@ -326,13 +458,148 @@ export default {
       label: '商品编码'
     },
     skuName: {
-      label: '商品编码'
+      label: '商品名称'
+    },
+    queryWarehouseId: {
+      label: '仓库编码'
     },
     warehouseId: {
-      label: '仓库编码'
+      label: '仓库'
     },
     warehouseName: {
       label: '仓库名称'
+    },
+    available: {
+      label: '可用量'
+    }
+  },
+  warehouse: {
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '名称'
+    },
+    enabled: {
+      label: '是否启用'
+    },
+    posId: {
+      label: '所属供货点'
+    },
+    posAddress: {
+      label: '仓库地址'
+    },
+    create: {
+      title: '创建仓库',
+      code: {
+        label: '编码',
+        placeholder: '请输入编码'
+      },
+      name: {
+        label: '名称',
+        placeholder: '请输入名称'
+      },
+      enabled: {
+        label: '是否启用',
+        yes: '启用',
+        no: '禁用'
+      },
+      posId: {
+        label: '所属供货点',
+        placeholder: '请输入供货点'
+      }
+    }
+  },
+  customer: {
+    queryCode: {
+      label: '客户编号'
+    },
+    queryName: {
+      label: '客户姓名'
+    },
+    code: {
+      label: '编码'
+    },
+    name: {
+      label: '名称'
+    },
+    phone: {
+      label: '手机号'
+    },
+    email: {
+      label: '邮箱'
+    },
+    statusId: {
+      label: '状态'
+    },
+    create: {
+      title: '创建客户',
+      code: {
+        label: '客户编号',
+        placeholder: '请输入客户编号'
+      },
+      name: {
+        label: '客户姓名',
+        placeholder: '请输入客户姓名'
+      },
+      phone: {
+        label: '手机号',
+        placeholder: '请输入手机号'
+      },
+      email: {
+        label: '邮箱',
+        placeholder: '请输入邮箱'
+      },
+      statusId: {
+        label: '状态'
+      }
+    }
+  },
+  routerRule: {
+    index: {
+      label: '序号'
+    },
+    code: {
+      label: '规则编码'
+    },
+    name: {
+      label: '规则名称'
+    },
+    enabled: {
+      label: '是否启用'
+    },
+    priority: {
+      label: '优先级'
+    },
+    type: {
+      label: '规则类型'
+    },
+    modifyUserName: {
+      label: '修改人'
+    },
+    modifyDate: {
+      label: '修改时间'
+    }
+  },
+  dict: {
+    code: {
+      label: '代码',
+      placeholder: '请输入代码'
+    },
+    name: {
+      label: '描述',
+      placeholder: '请输入描述'
+    },
+    create: {
+      title: '创建枚举',
+      code: {
+        label: '代码',
+        placeholder: '请输入代码'
+      },
+      name: {
+        label: '描述',
+        placeholder: '请输入描述'
+      }
     }
   },
   store: {
