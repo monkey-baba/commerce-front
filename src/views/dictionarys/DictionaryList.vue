@@ -27,7 +27,7 @@
     <hr>
     <div class="filter-container">
       <el-button type="primary" class="blue-btn" size="small" @click="handleCreate" >新建</el-button>
-      <el-button type="danger" size="small" >删除</el-button>
+      <el-button type="danger" size="small" @click="handleDeletes">删除</el-button>
     </div>
     <el-table
       v-loading="table.loading"
@@ -47,7 +47,7 @@
       <el-table-column label="编辑" width="150px">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.editable" type="danger" size="mini">删除</el-button>
+          <el-button v-if="scope.row.editable" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -222,7 +222,7 @@
 </template>
 
 <script>
-import { getDicts, createDict, getDictValues, editDict } from '@/api/dictionary'
+import { getDicts, createDict, getDictValues, editDict, deleteDict } from '@/api/dictionary'
 
 export default {
   name: 'DictionaryList',
@@ -505,6 +505,69 @@ export default {
           })
         }
       })
+    },
+    handleDelete(row) {
+      this.$confirm('确认删除？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        deleteDict([{ id: row.id }]).then(
+          () => {
+            for (const v of this.table.data) {
+              if (v.id === row.id) {
+                const index = this.table.data.indexOf(v)
+                this.table.data.splice(index, 1)
+                break
+              }
+            }
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        ).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
+          })
+        })
+      }).catch((e) => {})
+    },
+    handleDeletes() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择枚举',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.$confirm('确认删除？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        deleteDict(this.table.select).then(() => {
+          for (const v of this.table.select) {
+            const index = this.table.data.indexOf(v)
+            this.table.data.splice(index, 1)
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '删除失败',
+            type: 'error',
+            duration: 2000
+          })
+        })
+      }).catch((e) => {})
     }
   }
 }

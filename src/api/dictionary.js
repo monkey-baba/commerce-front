@@ -37,3 +37,12 @@ export function editDict(form) {
     data
   })
 }
+
+export function deleteDict(dicts) {
+  const data = dicts
+  return request({
+    url: '/basic/api/v1/dict/delete',
+    method: 'delete',
+    data
+  })
+}
