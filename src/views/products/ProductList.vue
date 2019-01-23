@@ -58,32 +58,28 @@
       <ElTableColumn :label="$t('general.index')" type="index"/>
       <ElTableColumn :label="$t('product.code.name')" prop="code">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.code" class="edit-input" size="mini"/>
-          <template v-else>
+          <template>
             {{ scope.row.code }}
           </template>
         </template>
       </ElTableColumn>
       <ElTableColumn :label="$t('product.name.name')" prop="name">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
-          <template v-else>
+          <template>
             {{ scope.row.name }}
           </template>
         </template>
       </ElTableColumn>
       <ElTableColumn :label="$t('product.channelId.name')" prop="channelId">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.channelId" class="edit-input" size="mini"/>
-          <template v-else>
+          <template>
             {{ scope.row.channelId }}
           </template>
         </template>
       </ElTableColumn>
       <ElTableColumn :label="$t('product.approvedId.name')" prop="approvedId">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.approvedId" class="edit-input" size="mini"/>
-          <template v-else>
+          <template>
             {{ scope.row.approvedId }}
           </template>
         </template>
@@ -91,22 +87,8 @@
       <ElTableColumn label="操作" min-width="200px">
         <template slot-scope="scope">
           <div>
-            <template v-if="scope.row.edit">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">
-                保存
-              </ElButton>
-              <ElButton
-                class="cancel-btn"
-                size="mini"
-                icon="el-icon-refresh"
-                type="warning"
-                @click="cancelEdit(scope.row)"
-              >
-                取消
-              </ElButton>
-            </template>
-            <template v-else>
-              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
+            <template>
+              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">
                 编辑
               </ElButton>
             </template>
@@ -170,13 +152,14 @@
         </ElButton>
       </div>
     </ElDialog>
-
+    <ProductDetail v-if="productDetailVisible" ref="ProductDetail" @RefreshDataList="getData"/>
   </div>
 </template>
 
 <script>
 import { getProducts, updateProduct, createProduct } from '@/api/product'
 import { isEmpty } from '@/utils/validate'
+import ProductDetail from './ProductDetail'
 
 export default {
   name: 'Product',
@@ -188,6 +171,9 @@ export default {
       }
       return statusMap[status]
     }
+  },
+  components: {
+    ProductDetail
   },
   data() {
     return {
@@ -219,7 +205,8 @@ export default {
         },
         form: {}
       },
-      downloadLoading: false
+      downloadLoading: false,
+      productDetailVisible: false
     }
   },
   created() {
@@ -362,6 +349,12 @@ export default {
           })
           this.downloadLoading = false
         })
+    },
+    handleEdit(row) {
+      this.productDetailVisible = true
+      this.$nextTick(function() {
+        this.$refs.ProductDetail.init(row.id)
+      })
     }
   }
 }

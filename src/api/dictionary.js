@@ -17,3 +17,32 @@ export function createDict(dict) {
     data
   })
 }
+
+export function getDictValues(code) {
+  const data = {
+    type: code
+  }
+  return request({
+    url: '/basic/api/v1/dict/values',
+    method: 'get',
+    params: data
+  })
+}
+
+export function editDict(form) {
+  const data = form
+  return request({
+    url: '/basic/api/v1/dict/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteDict(dicts) {
+  const data = dicts
+  return request({
+    url: '/basic/api/v1/dict/delete',
+    method: 'delete',
+    data
+  })
+}
