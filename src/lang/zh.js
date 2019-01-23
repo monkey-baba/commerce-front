@@ -383,6 +383,20 @@ export default {
   general: {
     index: '序号'
   },
+  sku: {
+    attributecode: {
+      name: '属性名'
+    },
+    attributename: {
+      name: '属性值'
+    },
+    code: {
+      name: 'sku编码'
+    },
+    name: {
+      name: 'sku名称'
+    }
+  },
   product: {
     code: {
       name: '商品编号',
@@ -400,9 +414,20 @@ export default {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     },
+    attribute: {
+      name: '属性值',
+      placeholder: '属性值'
+    },
     approvedId: {
       name: '批准',
       placeholder: '是否批准'
+    },
+    unitId: {
+      name: '单位',
+      placeholder: '单位'
+    },
+    images: {
+      name: '商品图片'
     }
   },
   price: {
