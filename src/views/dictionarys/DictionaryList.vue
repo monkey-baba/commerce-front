@@ -391,6 +391,7 @@ export default {
         update: [],
         delete: []
       }
+      this.dictEdit.row = row
       this.dictEdit.visible = true
       this.dictEdit.table.loading = true
       this.$nextTick(() => {
@@ -489,6 +490,7 @@ export default {
             }
           }
           editDict(this.dictEdit.form).then(() => {
+            this.dictEdit.row.name = this.dictEdit.form.name
             this.$notify({
               title: '成功',
               message: '更新成功',
