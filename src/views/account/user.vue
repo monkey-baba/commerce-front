@@ -667,7 +667,6 @@ export default {
         this.changeGroup.visible = false
         for (const v of this.table.data) {
           if (v.id === this.changeGroup.userId) {
-            v.roles = response.data.roleNames
             v.groups = response.data.groupNames
             break
           }

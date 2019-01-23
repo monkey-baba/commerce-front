@@ -85,7 +85,7 @@ export default {
     PriceList: '价目表管理',
     CategoryList: '类目管理',
     ProductDetail: '产品详情',
-    DictionaryList: '枚举管理',
+    dictList: '枚举管理',
     DictionaryManage: '枚举管理',
     OrderRouterRules: '订单路由规则',
     ConsignmentDetail: '配货单详情'
@@ -578,21 +578,17 @@ export default {
       label: '修改时间'
     }
   },
-
-  dictionary: {
+  dict: {
     code: {
-      label: '代码'
+      label: '代码',
+      placeholder: '请输入代码'
     },
     name: {
-      label: '描述'
-    },
-    edit: {
-      label: '编辑',
-      dicList: {
-        label: '值列表'
-      }
+      label: '描述',
+      placeholder: '请输入描述'
     },
     create: {
+      title: '创建枚举',
       code: {
         label: '代码',
         placeholder: '请输入代码'
@@ -600,20 +596,7 @@ export default {
       name: {
         label: '描述',
         placeholder: '请输入描述'
-      },
-      title: '新建'
-    }
-  },
-  dictionaryvalue: {
-    label: {
-      code: '值',
-      name: '含义',
-      description: '描述',
-      type_id: '排序号',
-      attribute1: '预留字段1',
-      attribute2: '预留字段2',
-      attribute3: '预留字段3',
-      active: '是否启用'
+      }
     }
   }
 }

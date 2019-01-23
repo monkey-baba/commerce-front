@@ -75,11 +75,17 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.statusId.label')" prop="statusId">
+      <el-table-column :label="$t('customer.statusId.label')">
         <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.statusId" class="edit-input" size="mini"/>
+          <el-select v-if="scope.row.edit" v-model="scope.row.statusId" auto-complete="on">
+            <el-option
+              v-for="item in customerStatus"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
           <template v-else>
-            {{ scope.row.statusId }}
+            {{ scope.row.statusName }}
           </template>
         </template>
       </el-table-column>
@@ -155,9 +161,13 @@
           />
         </el-form-item>
         <el-form-item :label="$t('customer.create.statusId.label')" prop="statusId">
-          <el-input
-            v-model="customerCreate.form.statusId"
-          />
+          <el-select v-model="customerCreate.form.statusId" auto-complete="on">
+            <el-option
+              v-for="item in customerStatus"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -174,7 +184,7 @@
 </template>
 
 <script>
-import { getCustomers, createCustomer, deleteCustomer, updateCustomer } from '@/api/customer'
+import { getCustomers, createCustomer, deleteCustomer, updateCustomer, getCustomerStatus } from '@/api/customer'
 import { isEmpty, isEmail, isMobilePhone } from '@/utils/validate'
 
 export default {
@@ -224,11 +234,14 @@ export default {
         },
         form: {}
       },
-      downloadLoading: false
+      downloadLoading: false,
+      customerStatus: [],
+      customerStatusMap: {}
     }
   },
   created() {
     this.getData()
+    this.initCustomerStatus()
   },
   methods: {
     resetQuery() {
@@ -278,6 +291,7 @@ export default {
           createCustomer(this.customerCreate.form).then((response) => {
             response.data.edit = false
             this.table.data.unshift(response.data)
+            response.data.original = JSON.stringify(response.data)
             this.pagination.total = this.pagination.total + 1
             this.customerCreate.visible = false
             this.$notify({
@@ -365,6 +379,7 @@ export default {
           message: response.data,
           type: 'success'
         })
+        row.statusName = this.customerStatusMap[row.statusId]
         row.original = JSON.stringify(row)
         row.edit = false
       })
@@ -392,6 +407,16 @@ export default {
           filename: '客户列表'
         })
         this.downloadLoading = false
+      })
+    },
+    initCustomerStatus() {
+      getCustomerStatus().then(response => {
+        this.customerStatus = response.data
+        this.customerStatus.forEach(v => {
+          this.customerStatusMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
       })
     },
     setSearchLoading() {

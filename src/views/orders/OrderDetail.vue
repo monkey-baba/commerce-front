@@ -9,25 +9,25 @@
           <div class="order-basic-body">
             <el-row :gutter="20" class="row-bg">
               <el-col :span="6"><div>平台订单号：000001</div></el-col>
-              <el-col :span="6"><div>订单状态：</div></el-col>
-              <el-col :span="6"><div>订单类型：</div></el-col>
-              <el-col :span="6"><div>配送方式：</div></el-col>
+              <el-col :span="6"><div>订单状态：已完成</div></el-col>
+              <el-col :span="6"><div>订单类型：线上销售订单</div></el-col>
+              <el-col :span="6"><div>配送方式：快递</div></el-col>
             </el-row>
             <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>客户ID：</div></el-col>
-              <el-col :span="6"><div>平台：</div></el-col>
-              <el-col :span="6"><div>店铺：</div></el-col>
+              <el-col :span="6"><div>客户ID：18980893892</div></el-col>
+              <el-col :span="6"><div>平台：天猫</div></el-col>
+              <el-col :span="6"><div>店铺：ECCO爱步官方旗舰店</div></el-col>
               <el-col :span="6"><div>下单门店：</div></el-col>
             </el-row>
             <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>下单日期：</div></el-col>
-              <el-col :span="6"><div>付款日期：</div></el-col>
-              <el-col :span="6"><div>订单金额：</div></el-col>
-              <el-col :span="6"><div>运费金额：</div></el-col>
+              <el-col :span="6"><div>下单日期：2019/1/22</div></el-col>
+              <el-col :span="6"><div>付款日期：2019/1/22</div></el-col>
+              <el-col :span="6"><div>订单金额：1599</div></el-col>
+              <el-col :span="6"><div>运费金额：0</div></el-col>
             </el-row>
             <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>订单来源：</div></el-col>
-              <el-col :span="6"><div>销售渠道：</div></el-col>
+              <el-col :span="6"><div>订单来源：天猫接口</div></el-col>
+              <el-col :span="6"><div>销售渠道：线上-天猫</div></el-col>
             </el-row>
           </div>
         </div>
@@ -41,9 +41,9 @@
           </div>
           <div class="order-basic-body">
             <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>收件人：000001</div></el-col>
-              <el-col :span="6"><div>手机：</div></el-col>
-              <el-col :span="6"><div>地址：</div></el-col>
+              <el-col :span="6"><div>收件人：梁月</div></el-col>
+              <el-col :span="6"><div>手机：18980893892</div></el-col>
+              <el-col :span="6"><div>地址：上海市浦东新区杨高路211号</div></el-col>
               <el-col :span="6"><div>电话：</div></el-col>
             </el-row>
             <el-row :gutter="20" class="row-bg">
@@ -64,10 +64,10 @@
           </div>
           <div class="order-basic-body">
             <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>申请开票：000001</div></el-col>
-              <el-col :span="6"><div>发票类型：</div></el-col>
-              <el-col :span="6"><div>发票抬头：</div></el-col>
-              <el-col :span="6"><div>发票金额：</div></el-col>
+              <el-col :span="6"><div>申请开票：是</div></el-col>
+              <el-col :span="6"><div>发票类型：增值税普通发票</div></el-col>
+              <el-col :span="6"><div>发票抬头：梁月</div></el-col>
+              <el-col :span="6"><div>发票金额：1599</div></el-col>
             </el-row>
           </div>
         </div>

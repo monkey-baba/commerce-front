@@ -85,7 +85,7 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/basic',
+    path: '/dict',
     component: Layout,
     name: 'DictionaryManage',
     meta: {
@@ -94,10 +94,10 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: '/api/v1/dict/info',
+        path: 'info',
         component: () => import('@/views/dictionarys/DictionaryList'),
-        name: 'DictionaryList',
-        meta: { title: 'DictionaryList' }
+        name: 'dictList',
+        meta: { title: 'dictList' }
       }
     ]
   },

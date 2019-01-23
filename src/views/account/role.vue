@@ -497,8 +497,8 @@ export default {
       }
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['编码', '角色名称', '描述', '角色']
-        const filterVal = ['code', 'name', 'description', 'roles']
+        const tHeader = ['编码', '角色名称', '描述', '父级角色', '子级角色']
+        const filterVal = ['code', 'name', 'description', 'parents', 'children']
 
         const data = this.table.select.map(u => filterVal.map(field => {
           return u[field]
