@@ -600,6 +600,72 @@ export default {
         label: '描述',
         placeholder: '请输入描述'
       }
+    },
+    edit: {
+      title: '编辑枚举',
+      code: {
+        label: '代码',
+        placeholder: '请输入代码'
+      },
+      name: {
+        label: '描述',
+        placeholder: '请输入描述'
+      },
+      values: {
+        label: '值列表',
+        code: {
+          label: '值'
+        },
+        name: {
+          label: '名称'
+        },
+        description: {
+          label: '描述'
+        },
+        attribute1: {
+          label: '备用字段1'
+        },
+        attribute2: {
+          label: '备用字段2'
+        },
+        attribute3: {
+          label: '备用字段3'
+        },
+        active: {
+          label: '是否启用'
+        }
+      }
+    },
+    value: {
+      create: {
+        title: '创建枚举值',
+        code: {
+          label: '值',
+          placeholder: '请输入值代码'
+        },
+        name: {
+          label: '名称',
+          placeholder: '请输入值名称'
+        },
+        description: {
+          label: '描述',
+          placeholder: '请输入值描述'
+        },
+        attribute1: {
+          label: '备用字段1'
+        },
+        attribute2: {
+          label: '备用字段2'
+        },
+        attribute3: {
+          label: '备用字段3'
+        },
+        active: {
+          label: '是否启用',
+          yes: '启用',
+          no: '禁用'
+        }
+      }
     }
   },
   store: {
