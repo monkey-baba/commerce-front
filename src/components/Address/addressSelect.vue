@@ -1,5 +1,5 @@
 <template>
-  <area-cascader v-model="sync_value" :level="1" :data="data" placeholder="请选择省市区"/>
+  <area-cascader v-model="sync_value" :level="1" :data="data"/>
 </template>
 
 <script>
