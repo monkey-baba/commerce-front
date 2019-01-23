@@ -23,8 +23,8 @@
             @change="change(scope.row)"/>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('routerRule.type.label')" prop="" />
-      <el-table-column :label="$t('routerRule.modifyUserId.label')" prop=""/>
+      <el-table-column :label="$t('routerRule.type.label')" prop="routerRuleDisplayName" />
+      <el-table-column :label="$t('routerRule.modifyUserName.label')" prop="modifyUserName"/>
       <el-table-column :label="$t('routerRule.modifyDate.label')" prop="modifyDate"/>
     </el-table>
 
@@ -39,7 +39,7 @@
       style="width: 100%"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"/>
-    <el-button type="primary" class="tiffany-btn" size="small" style="display:block;margin:0 auto" @click="update">保存</el-button>
+    <el-button :disabled="saveBtnDisable" type="primary" class="tiffany-btn" size="small" style="display:block;margin:0 auto" @click="update">保存</el-button>
   </div>
 </template>
 
@@ -64,7 +64,8 @@ export default {
       table: {
         loading: false,
         data: null
-      }
+      },
+      saveBtnDisable: true
     }
   },
   created() {
@@ -122,9 +123,11 @@ export default {
       for (const i in items) {
         items[i].modify = value
       }
+      this.saveBtnDisable = true
     },
     change(row) {
       row.modify = true
+      this.saveBtnDisable = false
     }
   }
 }

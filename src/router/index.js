@@ -90,7 +90,7 @@ export const asyncRouterMap = [
     name: 'DictionaryManage',
     meta: {
       title: 'DictionaryManage',
-      icon: 'form'
+      icon: 'tree'
     },
     children: [
       {
@@ -154,7 +154,7 @@ export const asyncRouterMap = [
     name: 'StockManage',
     meta: {
       title: 'stockManage',
-      icon: 'form'
+      icon: 'chart'
     },
     children: [
       {
@@ -177,7 +177,7 @@ export const asyncRouterMap = [
     name: 'CustomerManage',
     meta: {
       title: 'customerManage',
-      icon: 'form'
+      icon: 'peoples'
     },
     children: [
       {
@@ -297,17 +297,26 @@ export const asyncRouterMap = [
       {
         path: 'oauth',
         name: 'Oauth',
-        component: () => import('@/views/account/user'),
+        component: () => import('@/views/auth/router'),
+        hidden: true,
         meta: {
           title: 'oauth'
         }
       },
       {
         path: 'router',
-        name: 'Router',
-        component: () => import('@/views/account/user'),
+        name: 'AuthRouter',
+        component: () => import('@/views/auth/router'),
         meta: {
-          title: 'router'
+          title: 'authRouter'
+        }
+      },
+      {
+        path: 'role',
+        name: 'AuthRole',
+        component: () => import('@/views/auth/role'),
+        meta: {
+          title: 'authRole'
         }
       }
     ]
@@ -332,6 +341,5 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   { path: '*', redirect: '/error/404', hidden: true }
 ]

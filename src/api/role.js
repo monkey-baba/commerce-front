@@ -127,3 +127,21 @@ export function updateChildRole(roleId, roles) {
     data
   })
 }
+
+export function findRoleByName(roleName) {
+  const data = {
+    name: roleName
+  }
+  return request({
+    url: '/auth/api/v1/role/findRoleByName',
+    method: 'get',
+    params: data
+  })
+}
+
+export function roleTree() {
+  return request({
+    url: '/auth/api/v1/role/tree',
+    method: 'get'
+  })
+}
