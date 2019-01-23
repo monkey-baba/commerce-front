@@ -112,9 +112,13 @@
         </ElFormItem>
 
         <ElFormItem :label="$t('store.create.address.label')" prop="address">
+          <address-select v-model="storeCreate.form.paddress" />
+        </ElFormItem>
+
+        <ElFormItem :label="$t('store.create.detailaddress.label')" prop="detailaddress">
           <ElInput
-            v-model="storeCreate.form.address"
-            :placeholder="$t('store.create.address.placeholder')"
+            v-model="storeCreate.form.detailaddress"
+            :placeholder="$t('store.create.detailaddress.placeholder')"
           />
         </ElFormItem>
 
@@ -168,9 +172,11 @@
 
 <script>
 import { getStores, getClassifyData, getStatusData, createStore } from '@/api/store'
+import AddressSelect from '@/components/Address/addressSelect'
 
 export default {
   name: 'StoreList',
+  components: { AddressSelect },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -210,6 +216,7 @@ export default {
       },
       options: [],
       optionsStatus: [],
+
       storeCreate: {
         visible: false,
         rules: {
@@ -217,7 +224,7 @@ export default {
           code: [{ required: true, message: '编码不能为空', trigger: 'change' }],
           status: [{ required: true, message: '门店状态不能为空', trigger: 'change' }],
           classification: [{ required: true, message: '门店分类不能为空', trigger: 'change' }],
-          address: [{ required: true, message: '门店地址不能为空', trigger: 'change' }],
+          detailaddress: [{ required: true, message: '门店详细地址不能为空', trigger: 'change' }],
           contact: [{ required: true, message: '联系方式不能为空', trigger: 'change' }],
           owner: [{ required: true, message: '负责人不能为空', trigger: 'change' }]
         },
@@ -257,8 +264,9 @@ export default {
         name: '',
         status: '',
         classification: '',
-        address: '',
+        paddress: [],
         owner: '',
+        detailaddress: '',
         contact: ''
       }
       this.storeCreate.visible = true
