@@ -54,7 +54,9 @@
     <hr>
     <div class="filter-container">
       <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">新建门店</ElButton>
-      <ElButton type="primary" class="green-btn" size="small">导出列表</ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
+        导出
+      </ElButton>
     </div>
     <ElTable
       v-loading="table.loading"
@@ -66,18 +68,13 @@
       @selection-change="handleSelectionChange"
     >
 
-      <ElTableColumn type="selection" width="50px"/>
+      <ElTableColumn type="selection"/>
       <ElTableColumn label="门店名称" prop="name" />
-      <ElTableColumn label="门店地址" prop="detailaddress"/>
-      <ElTableColumn label="操作" prop="paddress">
+      <ElTableColumn label="门店地址" prop="paddress">
         <template slot-scope="scope">
-          <address-line v-model="paddress"/>
+          <address-line v-model="scope.row.paddress"/>
+          <span style="margin-left: 10px">{{ scope.row.detailaddress }}</span>
         </template>
-
-        <template>
-          <span class="address-line">{{ paddress }}</span>
-        </template>
-
       </ElTableColumn>
       <ElTableColumn label="门店状态" prop="pstatus"/>
       <ElTableColumn label="负责人" prop="owner"/>
@@ -227,7 +224,7 @@ export default {
       },
       options: [],
       optionsStatus: [],
-
+      paddress: [],
       storeCreate: {
         visible: false,
         rules: {
@@ -369,6 +366,31 @@ export default {
       this.getData()
       this.getClassifysData()
       this.getStatusListData()
+    },
+    handleExport() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择门店',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['门店名称', '门店地址', '门店状态', '负责人']
+        const filterVal = ['name', 'detailaddress', 'pstatus', 'owner']
+
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '门店列表'
+        })
+        this.downloadLoading = false
+      })
     }
   }
 }
