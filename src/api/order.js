@@ -7,3 +7,24 @@ export function getOrders(query) {
     'params': query
   })
 }
+
+export function getOrderStatus() {
+  return request({
+    'url': '/order/api/v1/order/orderstatus',
+    'method': 'get'
+  })
+}
+
+export function getOrderTypes() {
+  return request({
+    'url': '/order/api/v1/order/ordertypes',
+    'method': 'get'
+  })
+}
+
+export function getBaseStores() {
+  return request({
+    'url': '/order/api/v1/order/stores',
+    'method': 'get'
+  })
+}

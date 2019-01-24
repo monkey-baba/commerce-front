@@ -34,7 +34,7 @@
       <el-button type="primary" class="blue-btn" size="small">新建</el-button>
       <el-button type="info" size="small">删除</el-button>
       <el-button type="primary" class="green-btn" size="small">保存</el-button>
-      <el-button type="primary" class="green-btn" size="small">导出</el-button>
+      <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出</el-button>
     </div>
     <el-table
       v-loading="table.loading"
@@ -91,7 +91,8 @@ export default {
       table: {
         loading: false,
         data: null
-      }
+      },
+      downloadLoading: false
     }
   },
   created() {
@@ -126,6 +127,31 @@ export default {
       }).catch(() => {
         this.table.loading = false
         this.search.loading = false
+      })
+    },
+    handleExport() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择库存',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['商品编号', '商品名称', '仓库', '可用量']
+        const filterVal = ['skuId', 'skuName', 'warehouse', 'warehouse']
+
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '库存列表'
+        })
+        this.downloadLoading = false
       })
     },
     setSearchLoading() {
