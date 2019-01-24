@@ -395,9 +395,15 @@ export default {
     },
     name: {
       name: 'sku名称'
+    },
+    spec: {
+      name: '规格设置'
     }
   },
   product: {
+    create: {
+      title: '产品编辑'
+    },
     code: {
       name: '商品编号',
       placeholder: '请输入商品编码'

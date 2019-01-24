@@ -24,3 +24,59 @@ export function createProduct(product) {
     data
   })
 }
+
+export function deleteProduct(product) {
+  const data = product
+  return request({
+    url: '/product/api/v1/product/delete',
+    method: 'post',
+    data
+  })
+}
+
+export function approvedProduct(product) {
+  const data = product
+  return request({
+    url: '/product/api/v1/product/approved',
+    method: 'post',
+    data
+  })
+}
+
+export function unApprovedProduct(product) {
+  const data = product
+  return request({
+    url: '/product/api/v1/product/unapproved',
+    method: 'post',
+    data
+  })
+}
+
+export function getChannel() {
+  return request({
+    'url': '/product/api/v1/product/channellist',
+    'method': 'get'
+  })
+}
+
+export function getApprovedStatus() {
+  return request({
+    'url': '/product/api/v1/product/approvedstatuslist',
+    'method': 'get'
+  })
+}
+
+export function getUnit() {
+  return request({
+    'url': '/product/api/v1/product/unitlist',
+    'method': 'get'
+  })
+}
+
+export function getSpec() {
+  return request({
+    'url': '/product/api/v1/sku/speclist',
+    'method': 'get'
+  })
+}
+

@@ -15,10 +15,22 @@
         <ElRow>
           <ElCol>
             <ElFormItem :label=" $t('product.channelId.name')+':' " prop="channelId">
-              <ElInput v-model="productQuery.channelId" :placeholder="$t('product.channelId.placeholder')" auto-complete="on"/>
+              <ElSelect v-model="productQuery.channelId" auto-complete="on">
+                <el-option
+                  v-for="item in channel"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
             <ElFormItem :label=" $t('product.approvedId.name')+':' " prop="approvedId">
-              <ElInput v-model="productQuery.approvedId" :placeholder="$t('product.approvedId.placeholder')" auto-complete="on"/>
+              <ElSelect v-model="productQuery.approvedId" auto-complete="on">
+                <el-option
+                  v-for="item in approvedStatus"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -43,6 +55,15 @@
       </ElButton>
       <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
         导出
+      </ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="el-icon-delete" size="small" @click="handleDeletes">
+        删除
+      </ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleApproved">
+        批量上架
+      </ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="gray-btn" size="small" @click="handleUnApproved">
+        批量下架
       </ElButton>
     </div>
     <ElTable
@@ -73,14 +94,14 @@
       <ElTableColumn :label="$t('product.channelId.name')" prop="channelId">
         <template slot-scope="scope">
           <template>
-            {{ scope.row.channelId }}
+            {{ channelMap[scope.row.channelId] }}
           </template>
         </template>
       </ElTableColumn>
       <ElTableColumn :label="$t('product.approvedId.name')" prop="approvedId">
         <template slot-scope="scope">
           <template>
-            {{ scope.row.approvedId }}
+            {{ approvedStatusMap[scope.row.approvedId] }}
           </template>
         </template>
       </ElTableColumn>
@@ -131,16 +152,13 @@
           />
         </ElFormItem>
         <ElFormItem :label="$t('product.channelId.name')" prop="channelId">
-          <ElInput
-            v-model="productCreate.form.channelId"
-            :placeholder="$t('product.channelId.placeholder')"
-          />
-        </ElFormItem>
-        <ElFormItem :label="$t('product.approvedId.name')" prop="approvedId">
-          <ElInput
-            v-model="productCreate.form.approvedId"
-            :placeholder="$t('product.approvedId.placeholder')"
-          />
+          <ElSelect v-model="productCreate.form.channelId" auto-complete="on">
+            <el-option
+              v-for="item in channel"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </ElSelect>
         </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
@@ -157,8 +175,7 @@
 </template>
 
 <script>
-import { getProducts, updateProduct, createProduct } from '@/api/product'
-import { isEmpty } from '@/utils/validate'
+import { getProducts, createProduct, getApprovedStatus, getChannel, deleteProduct, approvedProduct, unApprovedProduct } from '@/api/product'
 import ProductDetail from './ProductDetail'
 
 export default {
@@ -206,11 +223,17 @@ export default {
         form: {}
       },
       downloadLoading: false,
-      productDetailVisible: false
+      productDetailVisible: false,
+      channel: [],
+      channelMap: {},
+      approvedStatus: [],
+      approvedStatusMap: {}
     }
   },
   created() {
     this.getData()
+    this.initChannel()
+    this.initApprovedStatus()
   },
   methods: {
     resetQuery() {
@@ -223,6 +246,26 @@ export default {
     handleCurrentChange(val) {
       this.productQuery.pageNum = val
       this.getData()
+    },
+    initApprovedStatus() {
+      getApprovedStatus().then(response => {
+        this.approvedStatus = response.data
+        this.approvedStatus.forEach(v => {
+          this.approvedStatusMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initChannel() {
+      getChannel().then(response => {
+        this.channel = response.data
+        this.channel.forEach(v => {
+          this.channelMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
     },
     getData() {
       this.table.loading = true
@@ -245,54 +288,89 @@ export default {
       this.search.loading = true
       this.getData()
     },
-    cancelEdit(row) {
-      const originRow = JSON.parse(row.original)
-      row.code = originRow.code
-      row.name = originRow.name
-      row.channelId = originRow.channelId
-      row.approvedId = originRow.approvedId
-      row.edit = false
+    handleDeletes() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择商品',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      deleteProduct(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '删除失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
     },
-    confirmEdit(row) {
-      if (isEmpty(row.code)) {
+    handleApproved() {
+      if (this.table.select.length <= 0) {
         this.$message({
-          message: '产品编码不能为空',
+          message: '请选择商品',
           type: 'error',
-          duration: 5 * 1000
+          duration: 2 * 1000
         })
         return
       }
-      if (isEmpty(row.name)) {
-        this.$message({
-          message: '产品名称不能为空',
+      approvedProduct(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '上架成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '下架失败',
           type: 'error',
-          duration: 5 * 1000
+          duration: 2000
+        })
+      })
+    },
+    handleUnApproved() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择商品',
+          type: 'error',
+          duration: 2 * 1000
         })
         return
       }
-      updateProduct(row).then(response => {
-        this.$message({
-          message: response.data,
-          type: 'success'
+      unApprovedProduct(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '下架成功',
+          type: 'success',
+          duration: 2000
         })
-        row.original = JSON.stringify(row)
-        row.edit = false
-      }).catch(e => {
-        const response = e.response
-        this.$message({
-          message: response !== undefined ? response.data : e.message,
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '下架失败',
           type: 'error',
-          duration: 5 * 1000
+          duration: 2000
         })
-        this.cancelEdit(row)
       })
     },
     handleCreate() {
       this.productCreate.form = {
         code: '',
         name: '',
-        channelId: '',
-        approvedId: ''
+        channelId: ''
       }
       this.productCreate.visible = true
       this.$nextTick(() => {

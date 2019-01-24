@@ -12,7 +12,13 @@
         <ElRow>
           <ElCol>
             <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
-              <ElInput v-model="priceQuery.channelId" :placeholder="$t('price.channelId.placeholder')" auto-complete="on"/>
+              <ElSelect v-model="priceQuery.channelId" auto-complete="on">
+                <el-option
+                  v-for="item in channel"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -33,7 +39,7 @@
     <hr>
     <div class="filter-container" style="margin: 0 10px">
       <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">创建</ElButton>
-      <el-button type="info" size="small" class="gray-btn" @click="handleDeletes">删除</el-button>
+      <el-button type="primary" size="small" class="el-icon-delete" @click="handleDeletes">删除</el-button>
       <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出</ElButton>
     </div>
     <ElTable
@@ -57,9 +63,15 @@
       </ElTableColumn>
       <ElTableColumn :label="$t('price.channelId.name')" prop="channelId">
         <template slot-scope="scope">
-          <ElInput v-if="scope.row.edit" v-model="scope.row.channelId" class="edit-input" size="mini"/>
+          <ElSelect v-if="scope.row.edit" v-model="scope.row.channelId" auto-complete="on">
+            <el-option
+              v-for="item in channel"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </ElSelect>
           <template v-else>
-            {{ scope.row.channelId }}
+            {{ channelMap[scope.row.channelId] }}
           </template>
         </template>
       </ElTableColumn>
@@ -150,10 +162,13 @@
           />
         </ElFormItem>
         <ElFormItem :label="$t('price.channelId.name')" prop="channelId">
-          <ElInput
-            v-model="priceCreate.form.channelId"
-            :placeholder="$t('price.channelId.placeholder')"
-          />
+          <ElSelect v-model="priceCreate.form.channelId" auto-complete="on">
+            <el-option
+              v-for="item in channel"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </ElSelect>
         </ElFormItem>
         <ElFormItem :label="$t('price.priority.name')" prop="priority">
           <ElInput
@@ -198,7 +213,7 @@
 </template>
 
 <script>
-import { getPrices, updatePrice, createPrice, deletePrice } from '@/api/price'
+import { getPrices, updatePrice, createPrice, deletePrice, getChannel } from '@/api/price'
 import { isEmpty } from '@/utils/validate'
 
 export default {
@@ -216,7 +231,7 @@ export default {
     return {
       priceQuery: {
         name: '',
-        channelId: '',
+        channelId: [],
         pageNum: 1,
         pageSize: 10
       },
@@ -240,11 +255,14 @@ export default {
         },
         form: {}
       },
-      downloadLoading: false
+      downloadLoading: false,
+      channel: [],
+      channelMap: {}
     }
   },
   created() {
     this.getData()
+    this.initChannel()
   },
   methods: {
     resetQuery() {
@@ -257,6 +275,16 @@ export default {
     handleCurrentChange(val) {
       this.priceQuery.pageNum = val
       this.getData()
+    },
+    initChannel() {
+      getChannel().then(response => {
+        this.channel = response.data
+        this.channel.forEach(v => {
+          this.channelMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
     },
     getData() {
       this.table.loading = true
@@ -399,7 +427,7 @@ export default {
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '产品列表'
+            filename: '价目表列表'
           })
           this.downloadLoading = false
         })

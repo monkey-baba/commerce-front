@@ -33,3 +33,9 @@ export function deletePrice(price) {
     data
   })
 }
+export function getChannel() {
+  return request({
+    'url': '/product/api/v1/price/channellist',
+    'method': 'get'
+  })
+}
