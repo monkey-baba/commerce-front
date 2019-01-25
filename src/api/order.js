@@ -36,3 +36,11 @@ export function getCustomers(query) {
     'params': query
   })
 }
+
+export function getPosList(query) {
+  return request({
+    'url': '/order/api/v1/order/pos/list',
+    'method': 'get',
+    'params': query
+  })
+}

@@ -198,7 +198,7 @@ export default {
     },
     customerId: {
       label: '客户编号',
-      placeholder: '请选择客户编号'
+      placeholder: '请选择客户'
     },
     receiver: {
       label: '收货人'
@@ -206,8 +206,9 @@ export default {
     receiverPhone: {
       label: '收货手机号'
     },
-    wareId: {
-      label: '门店'
+    posId: {
+      label: '门店',
+      placeholder: '请选择门店'
     },
     totalPrice: {
       label: '订单金额'
@@ -234,7 +235,7 @@ export default {
       code: {
         label: '订单号'
       },
-      wareId: {
+      posId: {
         label: '下单门店'
       },
       orderTypeName: {
@@ -771,6 +772,16 @@ export default {
         placeholder: '请输入门店详细地址'
       }
     }
-
+  },
+  pos: {
+    search: {
+      title: '门店搜索'
+    },
+    code: {
+      label: '门店编码'
+    },
+    name: {
+      label: '门店名称'
+    }
   }
 }
