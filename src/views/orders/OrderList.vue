@@ -245,7 +245,9 @@ export default {
     },
     getData() {
       this.table.loading = true
-      this.orderQuery.statusId = this.temp.statusId.map(v => this.statusMap[v])
+      this.temp.statusId.forEach((v, index) => {
+        this.orderQuery['statusId[' + index + ']'] = this.statusMap[v]
+      })
       console.log(this.orderQuery.newStatusId)
       getOrders(this.orderQuery).then(response => {
         console.log(response.data)
