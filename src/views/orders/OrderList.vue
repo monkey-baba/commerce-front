@@ -26,7 +26,9 @@
           </el-col>
           <el-col>
             <el-form-item :label="$t('order.customerId.label')+':'" prop="customerId">
-              <el-input v-model="orderQuery.customerId" auto-complete="on"/>
+              <el-input :placeholder="$t('order.customerId.placeholder')" :value="customer.name" readonly @click.native="handleSearchCustomer" >
+                <i slot="suffix" class="el-icon-close" @click="deleteSelectCustomer" @click.stop/>
+              </el-input>
             </el-form-item>
             <el-form-item :label="$t('order.receiver.label')+':'" prop="receiver">
               <el-input v-model="orderQuery.receiver" auto-complete="on"/>
@@ -120,26 +122,26 @@
       stripe
       highlight-current-row>
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="平台订单号" prop="ecsOrderId" />
-      <el-table-column label="店铺" prop="storeName" />
-      <el-table-column :label="$t('order.code.label')" prop="code" >
+      <el-table-column :label="$t('order.list.ecsOrderId.label')" prop="ecsOrderId" />
+      <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
+      <el-table-column :label="$t('order.list.code.label')" prop="code" >
         <template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
-      <el-table-column label="下单门店" prop="wareId" />
-      <el-table-column label="订单类型" prop="orderTypeName" />
-      <el-table-column label="订单状态" prop="statusName" />
-      <el-table-column label="订单金额" prop="totalPrice"/>
-      <el-table-column label="手机号" prop="receiverPhone" />
-      <el-table-column label="收件地址" prop="addressName" />
-      <el-table-column label="下单时间" prop="date">
+      <el-table-column :label="$t('order.list.wareId.label')" prop="wareId" />
+      <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
+      <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
+      <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
+      <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
+      <el-table-column :label="$t('order.list.date.label')" prop="date">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="支付时间" prop="paymentDate">
+      <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -157,26 +159,71 @@
       style="width: 100%"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"/>
+
+    <el-dialog :visible.sync="customerDialog.visible" :title="$t('customer.search.title')">
+      <div class="filter-container">
+        <el-form ref="customerQuery" :model="customerQuery" :inline="true">
+          <el-row>
+            <el-col>
+              <el-form-item :label=" $t('customer.queryCode.label')+':' " prop="">
+                <el-input v-model="customerQuery.code" auto-complete="on"/>
+              </el-form-item>
+              <el-form-item :label=" $t('customer.queryName.label')+':' " prop="">
+                <el-input v-model="customerQuery.name" auto-complete="on"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item>
+              <el-col>
+                <el-button :loading="customerSearch.loading" type="primary" icon="el-icon-search" size="small" @click="queryCustomer">查询
+                </el-button>
+                <el-button size="small" @click="resetCustomerQuery">重置</el-button>
+              </el-col>
+            </el-form-item>
+          </el-row>
+        </el-form>
+      </div>
+      <el-table
+        v-loading="customerTable.loading"
+        :data="customerTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectCustomer">
+        <el-table-column :label="$t('general.index')" type="index" />
+        <el-table-column :label="$t('customer.code.label')" prop="code" />
+        <el-table-column :label="$t('customer.name.label')" prop="name" />
+      </el-table>
+
+      <el-pagination
+        :current-page="customerPagination.page"
+        :page-sizes="customerPagination.pageSizes"
+        :total="customerPagination.total"
+        :background="customerPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handleCusSizeChange"
+        @current-change="handleCusCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="customerDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="handleSelectCustomer">
+          {{ $t('table.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getOrders, getOrderStatus, getOrderTypes, getBaseStores } from '@/api/order'
+import { getOrders, getOrderStatus, getOrderTypes, getBaseStores, getCustomers } from '@/api/order'
 
 export default {
   name: 'OrderList',
-  // filters: {
-  //   statusFilter(status) {
-  //     const statusMap = {
-  //       'COMPLETED': 'success',
-  //       'SHIPPED': 'success',
-  //       'APPROVED': 'primary',
-  //       'CREATED': 'warning',
-  //       'PENDING': 'primary'
-  //     }
-  //     return statusMap[status]
-  //   }
-  // },
   data() {
     return {
       orderQuery: {
@@ -194,9 +241,8 @@ export default {
         endDate: null,
         paymentStartDate: null,
         paymentEndDate: null,
-        newStatusId: [],
+        statusId: [],
         orderTypeId: [],
-        newOrderTypeId: [],
         pageNum: 1,
         pageSize: 10
       },
@@ -206,7 +252,16 @@ export default {
       search: {
         loading: false
       },
+      customerSearch: {
+        loading: false
+      },
       pagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
+      customerPagination: {
         page: 0,
         total: 0,
         background: false,
@@ -216,13 +271,30 @@ export default {
         loading: false,
         data: null
       },
+      customerTable: {
+        loading: false,
+        data: null
+      },
+      customerDialog: {
+        visible: false
+      },
+      customerQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      customer: {
+        name: ''
+      },
       statuses: [],
       orderTypes: [],
       stores: [],
       checkAll: false,
       isIndeterminate: true,
       allStatusId: [],
-      statusMap: {}
+      statusMap: {},
+      currentRow: null
     }
   },
   created() {
@@ -235,6 +307,9 @@ export default {
     resetQuery() {
       this.$refs['orderQuery'].resetFields()
     },
+    resetCustomerQuery() {
+      this.$refs['customerQuery'].resetFields()
+    },
     handleSizeChange(val) {
       this.orderQuery.pageSize = val
       this.getData()
@@ -243,12 +318,19 @@ export default {
       this.orderQuery.pageNum = val
       this.getData()
     },
+    handleCusSizeChange(val) {
+      this.customerQuery.pageSize = val
+      this.getData()
+    },
+    handleCusCurrentChange(val) {
+      this.customerQuery.pageNum = val
+      this.getData()
+    },
     getData() {
       this.table.loading = true
       this.temp.statusId.forEach((v, index) => {
         this.orderQuery['statusId[' + index + ']'] = this.statusMap[v]
       })
-      console.log(this.orderQuery.newStatusId)
       getOrders(this.orderQuery).then(response => {
         console.log(response.data)
         const items = response.data.list
@@ -263,6 +345,23 @@ export default {
       }).catch(() => {
         this.table.loading = false
         this.search.loading = false
+      })
+    },
+    getCustomerData() {
+      this.customerTable.loading = true
+      getCustomers(this.customerQuery).then(response => {
+        const items = response.data.list
+        this.customerTable.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.customerPagination.total = Number.parseInt(response.data.total)
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
+      }).catch(() => {
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
       })
     },
     initOrderStatus() {
@@ -305,12 +404,42 @@ export default {
       this.checkAll = checkedCount === this.statuses.length
       this.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
     },
+    handleSearchCustomer() {
+      this.customerDialog.visible = true
+      this.customerQuery.code = ''
+      this.customerQuery.name = ''
+      this.getCustomerData()
+    },
+    deleteSelectCustomer() {
+      this.customer.name = ''
+      this.orderQuery.customerId = ''
+    },
+    selectCustomer(val) {
+      this.currentRow = val
+    },
+    handleSelectCustomer() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择客户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.customer.name = this.currentRow.name
+      this.orderQuery.customerId = this.currentRow.id
+      this.customerDialog.visible = false
+    },
     setSearchLoading() {
       // this.search.loading = false
     },
     query() {
       this.search.loading = true
       this.getData()
+    },
+    queryCustomer() {
+      this.customerSearch.loading = true
+      this.getCustomerData()
     }
   }
 }
