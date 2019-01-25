@@ -80,7 +80,7 @@
           <el-col>
             <el-form-item :label=" $t('order.statusId.label')+':' " prop="statusId">
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" border @change="handleCheckAllChange">全选</el-checkbox>
-              <el-checkbox-group v-model="orderQuery.statusId" @change="handleCheckedStatusChange">
+              <el-checkbox-group v-model="temp.statusId" @change="handleCheckedStatusChange">
                 <el-checkbox v-for="item in statuses" :label="item.name" :key="item.id" :value="item.id" border/>
               </el-checkbox-group>
             </el-form-item>
@@ -194,12 +194,14 @@ export default {
         endDate: null,
         paymentStartDate: null,
         paymentEndDate: null,
-        statusId: [],
         newStatusId: [],
         orderTypeId: [],
         newOrderTypeId: [],
         pageNum: 1,
         pageSize: 10
+      },
+      temp: {
+        statusId: []
       },
       search: {
         loading: false
@@ -243,9 +245,7 @@ export default {
     },
     getData() {
       this.table.loading = true
-      this.orderQuery.statusId.forEach(v => {
-        this.orderQuery.newStatusId.unshift(this.statusMap[v])
-      })
+      this.orderQuery.statusId = this.temp.statusId.map(v => this.statusMap[v])
       console.log(this.orderQuery.newStatusId)
       getOrders(this.orderQuery).then(response => {
         console.log(response.data)
@@ -289,17 +289,17 @@ export default {
       })
     },
     handleCheckAllChange() {
-      console.log(this.orderQuery.statusId)
+      console.log(this.temp.statusId)
       console.log(this.allStatusId)
-      this.orderQuery.statusId = this.isIndeterminate ? this.allStatusId : []
-      if (this.orderQuery.statusId.length === 0) {
+      this.temp.statusId = this.isIndeterminate ? this.allStatusId : []
+      if (this.temp.statusId.length === 0) {
         this.isIndeterminate = true
       } else {
         this.isIndeterminate = false
       }
     },
     handleCheckedStatusChange() {
-      const checkedCount = this.orderQuery.statusId.length
+      const checkedCount = this.temp.statusId.length
       this.checkAll = checkedCount === this.statuses.length
       this.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
     },
