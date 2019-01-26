@@ -59,6 +59,13 @@ export function getChannel() {
   })
 }
 
+export function getAttr() {
+  return request({
+    'url': '/product/api/v1/product/productattrlist',
+    'method': 'get'
+  })
+}
+
 export function getApprovedStatus() {
   return request({
     'url': '/product/api/v1/product/approvedstatuslist',
@@ -77,6 +84,22 @@ export function getSpec() {
   return request({
     'url': '/product/api/v1/sku/speclist',
     'method': 'get'
+  })
+}
+
+export function getBaicData(id) {
+  return request({
+    'url': '/product/api/v1/product/basic/' + id,
+    'method': 'get'
+  })
+}
+
+export function updateBasic(product) {
+  const data = product
+  return request({
+    'url': '/product/api/v1/product/updatebasic',
+    'method': 'post',
+    data
   })
 }
 

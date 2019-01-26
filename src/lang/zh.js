@@ -420,7 +420,7 @@ export default {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     },
-    attribute: {
+    attr: {
       name: '属性值',
       placeholder: '属性值'
     },
@@ -439,6 +439,10 @@ export default {
   price: {
     create: {
       title: '创建价目表'
+    },
+    productId: {
+      name: '产品',
+      placeholder: '产品'
     },
     active: {
       name: '是否启用',
