@@ -28,3 +28,19 @@ export function getBaseStores() {
     'method': 'get'
   })
 }
+
+export function getCustomers(query) {
+  return request({
+    'url': '/order/api/v1/order/customer/list',
+    'method': 'get',
+    'params': query
+  })
+}
+
+export function getPosList(query) {
+  return request({
+    'url': '/order/api/v1/order/pos/list',
+    'method': 'get',
+    'params': query
+  })
+}

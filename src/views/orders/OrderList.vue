@@ -26,7 +26,9 @@
           </el-col>
           <el-col>
             <el-form-item :label="$t('order.customerId.label')+':'" prop="customerId">
-              <el-input v-model="orderQuery.customerId" auto-complete="on"/>
+              <el-input :placeholder="$t('order.customerId.placeholder')" :value="customer.name" readonly @click.native="handleSearchCustomer" >
+                <i slot="suffix" class="el-icon-close" @click="deleteSelectCustomer" @click.stop/>
+              </el-input>
             </el-form-item>
             <el-form-item :label="$t('order.receiver.label')+':'" prop="receiver">
               <el-input v-model="orderQuery.receiver" auto-complete="on"/>
@@ -34,8 +36,10 @@
             <el-form-item :label="$t('order.receiverPhone.label')+':'" prop="receiverPhone">
               <el-input v-model="orderQuery.receiverPhone" auto-complete="on"/>
             </el-form-item>
-            <el-form-item :label="$t('order.wareId.label')+':'" prop="wareId">
-              <el-input v-model="orderQuery.wareId" auto-complete="on"/>
+            <el-form-item :label="$t('order.posId.label')+':'" prop="posId">
+              <el-input :placeholder="$t('order.posId.placeholder')" :value="pos.name" readonly @click.native="handleSearchPos" >
+                <i slot="suffix" class="el-icon-close" @click="deleteSelectPos" @click.stop/>
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col>
@@ -79,7 +83,7 @@
         <el-row>
           <el-col>
             <el-form-item :label=" $t('order.statusId.label')+':' " prop="statusId">
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" border @change="handleCheckAllChange">全选</el-checkbox>
+              <el-checkbox :indeterminate="status.isIndeterminate" v-model="checkAllStatus" border @change="handleCheckAllStatusChange">全选</el-checkbox>
               <el-checkbox-group v-model="temp.statusId" @change="handleCheckedStatusChange">
                 <el-checkbox v-for="item in statuses" :label="item.name" :key="item.id" :value="item.id" border/>
               </el-checkbox-group>
@@ -89,7 +93,8 @@
         <el-row>
           <el-col>
             <el-form-item :label="$t('order.orderTypeId.label')+':'" prop="orderTypeId">
-              <el-checkbox-group v-model="orderQuery.orderTypeId">
+              <el-checkbox :indeterminate="orderType.isIndeterminate" v-model="checkAllType" border @change="handleCheckAllTypeChange">全选</el-checkbox>
+              <el-checkbox-group v-model="temp.orderTypeId" @change="handleCheckedOrderTypeChange">
                 <el-checkbox v-for="item in orderTypes" :label="item.name" :key="item.id" border>{{ $t(item.name) }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -110,7 +115,7 @@
     <hr>
     <div class="filter-container">
       <el-button type="primary" class="blue-btn" size="small">创建订单</el-button>
-      <el-button type="primary" class="green-btn" size="small">导出列表</el-button>
+      <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出列表</el-button>
     </div>
     <el-table
       v-loading="table.loading"
@@ -118,28 +123,29 @@
       border
       fit
       stripe
-      highlight-current-row>
+      highlight-current-row
+      @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50px"/>
-      <el-table-column label="平台订单号" prop="ecsOrderId" />
-      <el-table-column label="店铺" prop="storeName" />
-      <el-table-column :label="$t('order.code.label')" prop="code" >
+      <el-table-column :label="$t('order.list.ecsOrderId.label')" prop="ecsOrderId" />
+      <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
+      <el-table-column :label="$t('order.list.code.label')" prop="code" >
         <template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
-      <el-table-column label="下单门店" prop="wareId" />
-      <el-table-column label="订单类型" prop="orderTypeName" />
-      <el-table-column label="订单状态" prop="statusName" />
-      <el-table-column label="订单金额" prop="totalPrice"/>
-      <el-table-column label="手机号" prop="receiverPhone" />
-      <el-table-column label="收件地址" prop="addressName" />
-      <el-table-column label="下单时间" prop="date">
+      <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
+      <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
+      <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
+      <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
+      <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
+      <el-table-column :label="$t('order.list.date.label')" prop="date">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="支付时间" prop="paymentDate">
+      <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
         <template slot-scope="scope">
           <i class="el-icon-date"/>
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -157,26 +163,128 @@
       style="width: 100%"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"/>
+
+    <el-dialog :visible.sync="customerDialog.visible" :title="$t('customer.search.title')">
+      <div class="filter-container">
+        <el-form ref="customerQuery" :model="customerQuery" :inline="true">
+          <el-row>
+            <el-col>
+              <el-form-item :label=" $t('customer.queryCode.label')+':' " prop="">
+                <el-input v-model="customerQuery.code" auto-complete="on"/>
+              </el-form-item>
+              <el-form-item :label=" $t('customer.queryName.label')+':' " prop="">
+                <el-input v-model="customerQuery.name" auto-complete="on"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item>
+              <el-col>
+                <el-button :loading="posSearch.loading" type="primary" icon="el-icon-search" size="small" @click="queryCustomer">查询
+                </el-button>
+                <el-button size="small" @click="resetCustomerQuery">重置</el-button>
+              </el-col>
+            </el-form-item>
+          </el-row>
+        </el-form>
+      </div>
+      <el-table
+        v-loading="customerTable.loading"
+        :data="customerTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectCustomer">
+        <el-table-column :label="$t('general.index')" type="index" />
+        <el-table-column :label="$t('customer.code.label')" prop="code" />
+        <el-table-column :label="$t('customer.name.label')" prop="name" />
+      </el-table>
+
+      <el-pagination
+        :current-page="customerPagination.page"
+        :page-sizes="customerPagination.pageSizes"
+        :total="customerPagination.total"
+        :background="customerPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handleCusSizeChange"
+        @current-change="handleCusCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="customerDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="handleSelectCustomer">
+          {{ $t('table.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :visible.sync="posDialog.visible" :title="$t('pos.search.title')">
+      <div class="filter-container">
+        <el-form ref="posQuery" :model="posQuery" :inline="true">
+          <el-row>
+            <el-col>
+              <el-form-item :label=" $t('pos.code.label')+':' " prop="code">
+                <el-input v-model="posQuery.code" auto-complete="on"/>
+              </el-form-item>
+              <el-form-item :label=" $t('pos.name.label')+':' " prop="name">
+                <el-input v-model="posQuery.name" auto-complete="on"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item>
+              <el-col>
+                <el-button :loading="posSearch.loading" type="primary" icon="el-icon-search" size="small" @click="queryPos">查询
+                </el-button>
+                <el-button size="small" @click="resetPosQuery">重置</el-button>
+              </el-col>
+            </el-form-item>
+          </el-row>
+        </el-form>
+      </div>
+      <el-table
+        v-loading="posTable.loading"
+        :data="posTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectPos">
+        <el-table-column :label="$t('general.index')" type="index" />
+        <el-table-column :label="$t('pos.code.label')" prop="code" />
+        <el-table-column :label="$t('pos.name.label')" prop="name" />
+      </el-table>
+
+      <el-pagination
+        :current-page="posPagination.page"
+        :page-sizes="posPagination.pageSizes"
+        :total="posPagination.total"
+        :background="posPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handlePosSizeChange"
+        @current-change="handlePosCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="posDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="handleSelectPos">
+          {{ $t('table.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getOrders, getOrderStatus, getOrderTypes, getBaseStores } from '@/api/order'
+import { getOrders, getOrderStatus, getOrderTypes, getBaseStores, getCustomers, getPosList } from '@/api/order'
 
 export default {
   name: 'OrderList',
-  // filters: {
-  //   statusFilter(status) {
-  //     const statusMap = {
-  //       'COMPLETED': 'success',
-  //       'SHIPPED': 'success',
-  //       'APPROVED': 'primary',
-  //       'CREATED': 'warning',
-  //       'PENDING': 'primary'
-  //     }
-  //     return statusMap[status]
-  //   }
-  // },
   data() {
     return {
       orderQuery: {
@@ -187,23 +295,29 @@ export default {
         customerId: '',
         receiver: '',
         receiverPhone: '',
-        wareId: '',
+        posId: '',
         totalPriceMin: '',
         totalPriceMax: '',
         startDate: null,
         endDate: null,
         paymentStartDate: null,
         paymentEndDate: null,
-        newStatusId: [],
+        statusId: [],
         orderTypeId: [],
-        newOrderTypeId: [],
         pageNum: 1,
         pageSize: 10
       },
       temp: {
-        statusId: []
+        statusId: [],
+        orderTypeId: []
       },
       search: {
+        loading: false
+      },
+      customerSearch: {
+        loading: false
+      },
+      posSearch: {
         loading: false
       },
       pagination: {
@@ -212,17 +326,72 @@ export default {
         background: false,
         pageSizes: [10, 20, 50]
       },
+      customerPagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
+      posPagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
       table: {
         loading: false,
+        data: null,
+        select: []
+      },
+      customerTable: {
+        loading: false,
         data: null
+      },
+      posTable: {
+        loading: false,
+        data: null
+      },
+      customerDialog: {
+        visible: false
+      },
+      posDialog: {
+        visible: false
+      },
+      customerQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      posQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      customer: {
+        name: ''
+      },
+      pos: {
+        name: ''
       },
       statuses: [],
       orderTypes: [],
       stores: [],
-      checkAll: false,
-      isIndeterminate: true,
+      checkAllStatus: false,
+      checkAllType: false,
+      status: {
+        isIndeterminate: true
+      },
+      orderType: {
+        isIndeterminate: true
+      },
       allStatusId: [],
-      statusMap: {}
+      allOrderTypeId: [],
+      statusMap: {},
+      orderTypeMap: {},
+      currentRow: null,
+      downloadLoading: false
     }
   },
   created() {
@@ -235,6 +404,12 @@ export default {
     resetQuery() {
       this.$refs['orderQuery'].resetFields()
     },
+    resetCustomerQuery() {
+      this.$refs['customerQuery'].resetFields()
+    },
+    resetPosQuery() {
+      this.$refs['posQuery'].resetFields()
+    },
     handleSizeChange(val) {
       this.orderQuery.pageSize = val
       this.getData()
@@ -243,12 +418,30 @@ export default {
       this.orderQuery.pageNum = val
       this.getData()
     },
+    handleCusSizeChange(val) {
+      this.customerQuery.pageSize = val
+      this.getData()
+    },
+    handleCusCurrentChange(val) {
+      this.customerQuery.pageNum = val
+      this.getData()
+    },
+    handlePosSizeChange(val) {
+      this.posQuery.pageSize = val
+      this.getData()
+    },
+    handlePosCurrentChange(val) {
+      this.posQuery.pageNum = val
+      this.getData()
+    },
     getData() {
       this.table.loading = true
       this.temp.statusId.forEach((v, index) => {
         this.orderQuery['statusId[' + index + ']'] = this.statusMap[v]
       })
-      console.log(this.orderQuery.newStatusId)
+      this.temp.orderTypeId.forEach((v, index) => {
+        this.orderQuery['orderTypeId[' + index + ']'] = this.orderTypeMap[v]
+      })
       getOrders(this.orderQuery).then(response => {
         console.log(response.data)
         const items = response.data.list
@@ -265,6 +458,40 @@ export default {
         this.search.loading = false
       })
     },
+    getCustomerData() {
+      this.customerTable.loading = true
+      getCustomers(this.customerQuery).then(response => {
+        const items = response.data.list
+        this.customerTable.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.customerPagination.total = Number.parseInt(response.data.total)
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
+      }).catch(() => {
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
+      })
+    },
+    getPosData() {
+      this.posTable.loading = true
+      getPosList(this.posQuery).then(response => {
+        const items = response.data.list
+        this.posTable.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.posPagination.total = Number.parseInt(response.data.total)
+        this.posTable.loading = false
+        this.posSearch.loading = false
+      }).catch(() => {
+        this.posTable.loading = false
+        this.posSearch.loading = false
+      })
+    },
     initOrderStatus() {
       getOrderStatus().then(response => {
         this.statuses = response.data
@@ -279,6 +506,10 @@ export default {
     initOrderTypes() {
       getOrderTypes().then(response => {
         this.orderTypes = response.data
+        this.orderTypes.forEach(v => {
+          this.allOrderTypeId.unshift(v.name)
+          this.orderTypeMap[v.name] = v.id
+        })
       }).catch(() => {
         console.log('查询失败')
       })
@@ -290,20 +521,83 @@ export default {
         console.log('查询失败')
       })
     },
-    handleCheckAllChange() {
-      console.log(this.temp.statusId)
-      console.log(this.allStatusId)
-      this.temp.statusId = this.isIndeterminate ? this.allStatusId : []
+    handleCheckAllStatusChange() {
+      this.temp.statusId = this.status.isIndeterminate ? this.allStatusId : []
       if (this.temp.statusId.length === 0) {
-        this.isIndeterminate = true
+        this.status.isIndeterminate = true
       } else {
-        this.isIndeterminate = false
+        this.status.isIndeterminate = false
+      }
+    },
+    handleCheckAllTypeChange() {
+      this.temp.orderTypeId = this.orderType.isIndeterminate ? this.allOrderTypeId : []
+      if (this.temp.orderTypeId.length === 0) {
+        this.orderType.isIndeterminate = true
+      } else {
+        this.orderType.isIndeterminate = false
       }
     },
     handleCheckedStatusChange() {
       const checkedCount = this.temp.statusId.length
-      this.checkAll = checkedCount === this.statuses.length
-      this.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
+      this.checkAllStatus = checkedCount === this.statuses.length
+      this.status.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
+    },
+    handleCheckedOrderTypeChange() {
+      const checkedCount = this.temp.orderTypeId.length
+      this.checkAllType = checkedCount === this.orderTypes.length
+      this.orderType.isIndeterminate = checkedCount >= 0 && checkedCount < this.orderTypes.length
+    },
+    handleSearchCustomer() {
+      this.customerDialog.visible = true
+      this.customerQuery.code = ''
+      this.customerQuery.name = ''
+      this.getCustomerData()
+    },
+    deleteSelectCustomer() {
+      this.customer.name = ''
+      this.orderQuery.customerId = ''
+    },
+    selectCustomer(val) {
+      this.currentRow = val
+    },
+    handleSelectCustomer() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择客户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.customer.name = this.currentRow.name
+      this.orderQuery.customerId = this.currentRow.id
+      this.customerDialog.visible = false
+    },
+    handleSearchPos() {
+      this.posDialog.visible = true
+      this.posQuery.code = ''
+      this.posQuery.name = ''
+      this.getPosData()
+    },
+    deleteSelectPos() {
+      this.pos.name = ''
+      this.posQuery.posId = ''
+    },
+    selectPos(val) {
+      this.currentRow = val
+    },
+    handleSelectPos() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择客户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.pos.name = this.currentRow.name
+      this.orderQuery.posId = this.currentRow.id
+      this.posDialog.visible = false
     },
     setSearchLoading() {
       // this.search.loading = false
@@ -311,6 +605,42 @@ export default {
     query() {
       this.search.loading = true
       this.getData()
+    },
+    queryCustomer() {
+      this.customerSearch.loading = true
+      this.getCustomerData()
+    },
+    queryPos() {
+      this.posSearch.loading = true
+      this.getPosData()
+    },
+    handleSelectionChange(val) {
+      this.table.select = val
+    },
+    handleExport() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择订单',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['平台订单号', '店铺', '订单号', '下单门店', '订单类型', '订单金额', '收件人', '手机号', '收件地址', '下单时间', '支付时间']
+        const filterVal = ['ecsOrderId', 'storeName', 'code', 'posName', 'orderTypeName', 'statusName', 'totalPrice', 'receiverPhone', 'receiverPhone', 'date', 'paymentDate']
+
+        const data = this.table.select.map(u => filterVal.map(field => {
+          return u[field]
+        }))
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '订单列表'
+        })
+        this.downloadLoading = false
+      })
     }
   }
 }
