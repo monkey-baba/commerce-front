@@ -42,11 +42,12 @@
     <tree-table
       v-loading="table.loading"
       :data="table.data"
+      :eval-func="func"
+      :eval-args="args"
+      :expand-all="expandAll"
       border
       @selection-change="handleSelectionChange"
     >
-      <ElTableColumn type="selection"/>
-      <ElTableColumn :label="$t('general.index')" type="index"/>
       <el-table-column label="分类">
         <template slot-scope="scope">
           <span style="color:sandybrown">{{ scope.row.code }}</span>
@@ -162,6 +163,7 @@
 
 import TreeTable from '@/components/TreeTable'
 import { getCategories, createCategory, createSubCategory, updateCategory, deleteCategory } from '@/api/category'
+import treeToArray from './customEval'
 
 export default {
   name: 'Category',
@@ -207,6 +209,8 @@ export default {
         rules: {},
         form: {}
       },
+      func: treeToArray,
+      expandAll: false,
       table: {
         loading: false,
         data: [],

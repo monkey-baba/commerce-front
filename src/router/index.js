@@ -164,13 +164,13 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'list',
+        path: 'stockList',
         component: () => import('@/views/stocks/StockList'),
         name: 'StockList',
         meta: { title: 'StockList' }
       },
       {
-        path: 'list1',
+        path: 'warehouseList',
         component: () => import('@/views/warehouses/WarehouseList'),
         name: 'WarehouseList',
         meta: { title: 'WarehouseList' }
