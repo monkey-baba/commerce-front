@@ -180,7 +180,7 @@
           </ElRow>
           <ElRow>
             <ElButton type="primary" class="blue-btn" size="mini" icon="el-icon-circle-plus" @click="handleSkuCreate" >新建</ElButton>
-            <ElButton type="primary" class="red-btn" size="mini">删除</ElButton>
+            <ElButton type="primary" class="red-btn" size="mini" @click="handleSkuDeletes">删除</ElButton>
             <ElTable
               v-loading="sku.table.loading"
               :data="sku.table.data"
@@ -192,7 +192,7 @@
               highlight-current-row
               @selection-change="handleSkuChange">
               <ElTableColumn type="selection" width="50px"/>
-              <ElTableColumn :label="$t('order.create.entries.sku.label')" prop="sku" />
+              <ElTableColumn :label="$t('order.create.entries.sku.label')" prop="code" />
               <ElTableColumn :label="$t('order.create.entries.name.label')" prop="name" />
               <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id" />
               <ElTableColumn :label="$t('order.create.entries.quantity.label')" prop="quantity" />
@@ -246,15 +246,15 @@
     </ElForm>
     <ElDialog :visible.sync="sku.visible" :title="$t('order.create.entries.title')">
       <ElForm
-        ref="createEntryForm"
+        ref="createSkuForm"
         :rules="sku.rules"
         :model="sku.form"
         label-position="left"
-        label-width="70px"
+        label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('order.create.entries.sku.label')" prop="sku">
-          <ElInput :placeholder="$t('order.create.entries.sku.placeholder')" :value="sku.name" readonly @click.native="handleSearchSku" >
+        <ElFormItem :label="$t('order.create.entries.sku.label')" prop="code">
+          <ElInput :placeholder="$t('order.create.entries.sku.placeholder')" :value="sku.form.code" readonly @click.native="handleSearchSku" >
             <i slot="suffix" class="el-icon-close" @click="deleteSelectSku" @click.stop/>
           </ElInput>
         </ElFormItem>
@@ -265,7 +265,7 @@
           />
         </ElFormItem>
         <ElFormItem v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id">
-          <ElInput v-model="sku.form[item.id]" disabled />
+          <ElInput v-model="sku.form[item.id+'']" disabled />
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.quantity.label')" prop="quantity">
           <ElInput v-model="sku.form.quantity" :placeholder="$t('order.create.entries.quantity.placeholder')" />
@@ -284,7 +284,7 @@
         <ElButton @click="sku.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
-        <ElButton type="primary" >
+        <ElButton type="primary" @click="skuCreate">
           {{ $t('table.confirm') }}
         </ElButton>
       </div>
@@ -495,9 +495,9 @@
 </template>
 <script>
 import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs, getPaymentTypes } from '@/api/order'
-import { getPosList, getCustomers } from '@/api/order'
+import { getPosList, getCustomers, getSkuList } from '@/api/order'
 import AddressSelect from '@/components/Address/addressSelect'
-import { isEmpty, isDecimal } from '@/utils/validate'
+import { isEmpty, isDecimal, isInteger } from '@/utils/validate'
 
 export default {
   name: 'OrderCreate',
@@ -526,16 +526,30 @@ export default {
         callback()
       }
     }
-    const deliveryCost = (rule, value, callback) => {
+    const moneyValidator = (rule, value, callback) => {
       if (isEmpty(value) || !isDecimal(value, 2, 2)) {
-        callback(new Error('运费为两位小数'))
+        callback(new Error('金额必须为两位小数'))
       } else {
         callback()
       }
     }
-    const paymentAmount = (rule, value, callback) => {
-      if (isEmpty(value) || !isDecimal(value, 2, 2)) {
-        callback(new Error('支付金额为两位小数'))
+    const quantityValidator = (rule, value, callback) => {
+      if (isEmpty(value) || !isInteger(value)) {
+        callback(new Error('数量必须为整数'))
+      } else {
+        callback()
+      }
+    }
+    const shippedQuantityValidator = (rule, value, callback) => {
+      if (isEmpty(value) || !isInteger(value) || (parseInt(value) - parseInt(this.sku.form.quantity) > 0)) {
+        callback(new Error('已发数量必须小于数量'))
+      } else {
+        callback()
+      }
+    }
+    const discountValidator = (rule, value, callback) => {
+      if (isEmpty(value) || !isDecimal(value, 2, 2) || (parseFloat(value) - parseFloat(this.sku.form.basePrice) > 0)) {
+        callback(new Error('优惠必须小于原价'))
       } else {
         callback()
       }
@@ -584,7 +598,7 @@ export default {
         pcd: [{ required: true, message: '省市区不能为空', trigger: 'change' }],
         invoiceType: [{ required: false, validator: invoiceType, trigger: 'change' }],
         invoiceTitle: [{ required: false, validator: invoiceTitle, trigger: 'change' }],
-        deliveryCost: [{ required: true, validator: deliveryCost, trigger: 'change' }]
+        deliveryCost: [{ required: true, validator: moneyValidator, trigger: 'change' }]
       },
       orderType: {
         options: []
@@ -611,14 +625,19 @@ export default {
         options: []
       },
       sku: {
-        name: '',
         table: {
           loading: false,
           data: [],
           select: []
         },
         visible: false,
-        rules: {},
+        rules: {
+          code: [{ required: true, type: 'string', message: 'SKU不能为空', trigger: 'change' }],
+          quantity: [{ required: true, type: 'integer', validator: quantityValidator, trigger: 'change' }],
+          shippedQuantity: [{ required: true, type: 'integer', validator: shippedQuantityValidator, trigger: 'change' }],
+          basePrice: [{ required: true, type: 'string', validator: moneyValidator, trigger: 'change' }],
+          discount: [{ required: true, type: 'string', validator: discountValidator, trigger: 'change' }]
+        },
         form: {}
       },
       skuSpec: {
@@ -661,7 +680,7 @@ export default {
         visible: false,
         rules: {
           type: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
-          amount: [{ required: true, validator: paymentAmount, trigger: 'change' }]
+          amount: [{ required: true, validator: moneyValidator, trigger: 'change' }]
         },
         form: {}
       },
@@ -847,10 +866,16 @@ export default {
     },
     // customer dialog end
     handleSkuCreate() {
-      this.sku.form = {}
+      this.sku.form = {
+        code: '',
+        quantity: '',
+        shippedQuantity: '',
+        basePrice: '',
+        discount: ''
+      }
       this.sku.visible = true
       this.$nextTick(() => {
-        this.$refs['createEntryForm'].clearValidate()
+        this.$refs['createSkuForm'].clearValidate()
       })
     },
     handlePaymentCreate() {
@@ -950,8 +975,7 @@ export default {
       this.getSkuData()
     },
     deleteSelectSku() {
-      this.sku.name = ''
-      // TODO
+      this.sku.form = {}
     },
     selectSku(val) {
       this.currentRow = val
@@ -965,9 +989,11 @@ export default {
         })
         return
       }
-      this.sku.name = this.currentRow.name
-      // TODO
-      // this.form.pos = this.currentRow.id
+      this.sku.form.name = this.currentRow.name
+      this.sku.form.code = this.currentRow.code
+      this.currentRow.meta.forEach((v) => {
+        this.sku.form[v.specId] = v.meta
+      })
       this.skuDialog.visible = false
     },
     handleSkuSizeChange(val) {
@@ -980,7 +1006,7 @@ export default {
     },
     getSkuData() {
       this.skuTable.loading = true
-      getPosList(this.skuQuery).then(response => {
+      getSkuList(this.skuQuery).then(response => {
         this.skuTable.data = response.data.list
         this.skuPagination.total = Number.parseInt(response.data.total)
         this.skuTable.loading = false
@@ -997,8 +1023,34 @@ export default {
       this.skuSearch.loading = true
       this.skuSearch.pageNum = 1
       this.getSkuData()
+    },
+    // sku dialog end
+    skuCreate() {
+      this.$refs['createSkuForm'].validate((valid) => {
+        if (valid) {
+          // 添加到表格里面
+          this.sku.form.price = this.sku.form.basePrice - this.sku.form.discount
+          this.sku.form.totalPrice = this.sku.form.price * this.sku.form.quantity
+          this.sku.table.data.push(this.sku.form)
+          this.sku.visible = false
+        }
+      })
+    },
+    handleSkuDeletes() {
+      if (this.sku.table.select.length <= 0) {
+        this.$message({
+          message: '请选择要删除的行',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      for (const v of this.sku.table.select) {
+        const index = this.sku.table.data.indexOf(v)
+        this.sku.table.data.splice(index, 1)
+      }
     }
-    // pos dialog end
+
   }
 }
 </script>

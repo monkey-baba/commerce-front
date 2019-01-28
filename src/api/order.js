@@ -85,3 +85,11 @@ export function getPaymentTypes() {
     'method': 'get'
   })
 }
+
+export function getSkuList(query) {
+  return request({
+    'url': '/order/api/v1/order/sku/list',
+    'method': 'get',
+    'params': query
+  })
+}

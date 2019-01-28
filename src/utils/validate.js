@@ -33,3 +33,7 @@ export function isDecimal(str, digitMin, digitMax) {
   const options = { decimal_digits: (digitMin || 0) + ',' + (digitMax || '') }
   return validator.isDecimal(str, options)
 }
+
+export function isInteger(str) {
+  return validator.isInt(str)
+}
