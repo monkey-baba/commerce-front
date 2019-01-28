@@ -2,10 +2,18 @@ import request from '@/utils/request'
 
 export function getPriceRows(priceid) {
   return request({
-    'url': '/product/api/v1/pricerow/' + priceid,
+    'url': '/product/api/v1/pricerow/list/' + priceid,
     'method': 'get'
   })
 }
+
+export function getPriceType() {
+  return request({
+    'url': '/product/api/v1/pricerow/pricetypelist',
+    'method': 'get'
+  })
+}
+
 export function updatePrice(price) {
   const data = price
   return request({
@@ -15,10 +23,10 @@ export function updatePrice(price) {
   })
 }
 
-export function createPrice(price) {
-  const data = price
+export function createPriceRow(pricerow) {
+  const data = pricerow
   return request({
-    url: '/product/api/v1/price/create',
+    url: '/product/api/v1/pricerow/create',
     method: 'post',
     data
   })

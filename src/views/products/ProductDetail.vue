@@ -61,7 +61,7 @@
               </ElSelect>
             </ElFormItem>
           </ElRow>
-          <ElRow>
+          <!--          <ElRow>
             <ElFormItem :label="$t('product.attr.name')" prop="attribute.key">
               <ElSelect v-model="basicEdit.form.attrKey" auto-complete="on">
                 <el-option
@@ -76,7 +76,7 @@
                 v-model="basicEdit.form.attrValue"
               />
             </ElFormItem>
-          </ElRow>
+          </ElRow>-->
           <ElRow>
             <ElFormItem :label="$t('product.images.name')" prop="images">
               <el-upload
@@ -164,19 +164,19 @@
         </ElForm>
       </el-tab-pane>
       <el-tab-pane label="价格维护">
-        <ElForm ref="priceQuery" :model="priceQuery" :inline="true">
+        <ElForm ref="priceRowQuery" :model="priceRowQuery" :inline="true">
           <ElRow>
-            <ElFormItem :label=" $t('price.name.name')+':' " prop="name">
-              <ElInput v-model="priceQuery.name" :placeholder="$t('price.name.placeholder')" auto-complete="on"/>
-            </ElFormItem>
-            <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
-              <ElSelect v-model="priceQuery.channelId" auto-complete="on">
+            <ElFormItem :label=" $t('price.name.name')+':' " prop="priceId">
+              <ElSelect v-model="priceRowQuery.priceId" auto-complete="on">
                 <el-option
-                  v-for="item in channel"
+                  v-for="item in priceList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"/>
               </ElSelect>
+            </ElFormItem>
+            <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
+              <ElInput v-model="priceRowQuery.channelId" class="edit-input" size="mini" contenteditable="false"/>
             </ElFormItem>
           </ElRow>
         </ElForm>
@@ -185,7 +185,14 @@
           <ElButton type="primary" class="blue-btn" size="small" @click="handlePriceRowCreate">创建</ElButton>
           <el-button type="primary" size="small" class="el-icon-delete" @click="handlePriceRowDeletes">删除</el-button>
         </div>
-        <ElTable>
+        <ElTable
+          v-loading="priceRowTable.loading"
+          :data="priceRowTable.data"
+          border
+          fit
+          stripe
+          highlight-current-row
+          @selection-change="handleSelectionChange">
           <ElTableColumn type="selection"/>
           <ElTableColumn :label="$t('general.index')" type="index"/>
           <ElTableColumn label="sku编码" prop="skuId">
@@ -205,7 +212,7 @@
           <ElTableColumn label="价格类型" prop="priceType">
             <template slot-scope="scope">
               <template>
-                {{ scope.row.priceType }}
+                {{ priceTypeMap[scope.row.priceType] }}
               </template>
             </template>
           </ElTableColumn>
@@ -253,11 +260,66 @@
         </el-table>
       </el-tab-pane>
     </el-tabs>
+
+    <ElDialog :visible.sync="priceRowCreate.visible" :title="$t('pricerow.create.title')">
+      <ElForm
+        ref="createPriceRowForm"
+        :rules="priceRowCreate.rules"
+        :model="priceRowCreate.form"
+        label-position="left"
+        label-width="100px"
+        style="width: 600px; margin-left:50px;"
+      >
+        <ElFormItem :label="$t('pricerow.priceTypeId.name')" prop="priceTypeId">
+          <ElSelect v-model="priceRowCreate.form.priceTypeId" auto-complete="on">
+            <el-option
+              v-for="item in priceTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </ElSelect>
+        </ElFormItem>
+        <ElFormItem :label="$t('pricerow.skuId.name')" prop="skuId">
+          <ElInput
+            v-model="priceRowCreate.form.skuId"
+            :placeholder="$t('pricerow.skuId.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('pricerow.price.name')" prop="price">
+          <ElInput
+            v-model="priceRowCreate.form.price"
+            :placeholder="$t('pricerow.price.placeholder')"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('pricerow.startTime.name')" prop="startTime">
+          <ElDatePicker
+            v-model="priceRowCreate.form.startTime"
+            :placeholder="$t('pricerow.startTime.placeholder')"
+            type="datetime"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('pricerow.endTime.name')" prop="endTime">
+          <ElDatePicker
+            v-model="priceRowCreate.form.endTime"
+            :placeholder="$t('pricerow.endTime.placeholder')"
+            type="datetime"
+          />
+        </ElFormItem>
+      </ElForm>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="priceRowCreate.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="createPriceRowData">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
   </div>
 </template>
 <script>
 import { getPrice } from '@/api/price'
-import { getPriceRows } from '@/api/pricerow'
+import { getPriceRows, getPriceType, createPriceRow } from '@/api/pricerow'
 import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr } from '@/api/product'
 
 export default {
@@ -271,17 +333,9 @@ export default {
   data() {
     return {
       visible: true,
-      priceQuery: {
-        name: '',
+      priceRowQuery: {
+        priceId: '',
         channelId: ''
-      },
-      search: {
-        loading: false
-      },
-      table: {
-        loading: false,
-        data: undefined,
-        select: []
       },
       basicEdit: {
         visible: true,
@@ -295,8 +349,21 @@ export default {
         },
         form: {}
       },
+      priceRowTable: {
+        loading: false,
+        data: undefined,
+        select: []
+      },
+      priceRowCreate: {
+        visible: false,
+        rules: {
+        },
+        form: {}
+      },
       channel: [],
       channelMap: {},
+      priceList: [],
+      priceChannelList: '',
       approvedStatus: [],
       approvedStatusMap: {},
       attrList: [],
@@ -305,6 +372,8 @@ export default {
       unitMap: {},
       spec: [],
       specMap: {},
+      priceTypeList: [],
+      priceTypeMap: {},
       dialogVisible: false,
       dialogImageUrl: '',
       limitNum: 5,
@@ -321,6 +390,9 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
+    handleSelectionChange(val) {
+      this.table.select = val
+    },
     initApprovedStatus() {
       getApprovedStatus().then(response => {
         this.approvedStatus = response.data
@@ -336,6 +408,16 @@ export default {
         this.spec = response.data
         this.spec.forEach(v => {
           this.specMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initPriceType() {
+      getPriceType().then(response => {
+        this.priceTypeList = response.data
+        this.priceTypeList.forEach(v => {
+          this.priceTypeMap[v.id] = v.name
         })
       }).catch(() => {
         console.log('查询失败')
@@ -371,47 +453,44 @@ export default {
         console.log('查询失败')
       })
     },
-    resetQuery() {
-      this.$refs['priceQuery'].resetFields()
-    },
-    handleSizeChange(val) {
-      this.priceQuery.limit = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.priceQuery.pageNum = val
-      this.getData()
-    },
-    fetchData(id) {
+    fetchData(productId) {
       this.initChannel()
       this.initApprovedStatus()
       this.initUnit()
       this.initSpec()
       this.initAttr()
-      this.fetchBaicData(id)
-      this.fetchPriceData(id)
+      this.initPriceType()
+      this.fetchBaicData(productId)
+      this.fetchPriceData(productId)
     },
     fetchBaicData(id) {
       getBaicData(id).then(response => {
         this.basicEdit.form = response.data
       })
     },
-    fetchPriceData(id) {
-      getPrice(id).then(response => {
-        const items = response.data.list
-        this.table.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
-          if (v.index === 0) {
-            this.fetchPriceRowData(v.id)
-          }
-          return v
-        })
+    fetchPriceData(productId) {
+      getPrice(productId).then(response => {
+        const items = response.data
+        this.priceList = items
+        this.priceRowQuery.channelId = this.priceList[0].channelId[0]
+        this.priceRowQuery.priceId = this.priceList[0].id
+        this.fetchPriceRowData(this.priceList[0].id)
       }).catch((e) => {
       })
     },
     handlePriceRowCreate() {
-
+      this.priceRowCreate.form = {
+        priceId: this.priceRowQuery.priceId,
+        skuId: '',
+        price: 0.00,
+        priceTypeId: '',
+        startTime: '',
+        endTime: ''
+      }
+      this.priceRowCreate.visible = true
+      this.$nextTick(() => {
+        this.$refs['createPriceRowForm'].clearValidate()
+      })
     },
     handlePriceRowDeletes() {
 
@@ -425,6 +504,28 @@ export default {
           return v
         })
       }).catch((e) => {
+      })
+    },
+    createPriceRowData() {
+      this.$refs['createPriceRowForm'].validate((valid) => {
+        if (valid) {
+          createPriceRow(this.priceRowCreate.form).then(() => {
+            this.priceRowCreate.visible = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          }).catch((e) => {
+            this.$notify({
+              title: '失败',
+              message: '价格行创建失败' + e,
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
       })
     },
     saveBasic() {

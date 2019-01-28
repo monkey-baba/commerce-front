@@ -497,6 +497,31 @@ export default {
       placeholder: '结束时间'
     }
   },
+  pricerow: {
+    create: {
+      title: '创建价格行'
+    },
+    skuId: {
+      name: 'sku',
+      placeholder: '请选择sku'
+    },
+    price: {
+      name: '价格',
+      placeholder: '价格'
+    },
+    startTime: {
+      name: '开始时间',
+      placeholder: '开始时间'
+    },
+    endTime: {
+      name: '结束时间',
+      placeholder: '结束时间'
+    },
+    priceTypeId: {
+      name: '价格类型',
+      placeholder: '价格类型'
+    }
+  },
   category: {
     create: {
       title: '创建分类'
