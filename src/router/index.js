@@ -191,6 +191,35 @@ export const asyncRouterMap = [
         component: () => import('@/views/stores/StoresList'),
         name: 'StoreList',
         meta: { title: 'StoreList' }
+      },
+      {
+        path: 'list1',
+        component: () => import('@/views/stores/StoresDetail'),
+        name: 'StoresDetail',
+        meta: { title: 'StoresDetail' }
+      }
+    ]
+  },
+  {
+    path: '/reservoirArea',
+    component: Layout,
+    name: 'ReservoirAreaManage',
+    meta: {
+      title: 'reservoirAreaManage',
+      icon: 'form'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/reservoirArea/ReservoirAreaList'),
+        name: 'ReservoirAreaList',
+        meta: { title: 'ReservoirAreaList' }
+      },
+      {
+        path: 'list1',
+        component: () => import('@/views/reservoirArea/ReservoirAreaDetail'),
+        name: 'ReservoirAreaDetail',
+        meta: { title: 'ReservoirAreaDetail' }
       }
     ]
   },
