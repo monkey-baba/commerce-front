@@ -28,3 +28,8 @@ export function isCharOrNumber(str, min, max) {
   }
   return validator.matches(str, /^[a-zA-Z0-9]+$/)
 }
+
+export function isDecimal(str, digitMin, digitMax) {
+  const options = { decimal_digits: (digitMin || 0) + ',' + (digitMax || '') }
+  return validator.isDecimal(str, options)
+}

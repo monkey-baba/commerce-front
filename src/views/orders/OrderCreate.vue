@@ -70,15 +70,14 @@
           </ElCol>
           <ElCol :span="6">
             <ElFormItem :label="$t('order.create.customer.label')" prop="customer">
-              <ElInput :placeholder="$t('order.create.customer.placeholder')" :value="customer.value" suffix-icon="el-icon-search" readonly @click.native="handleCustomer" >
-                <i slot="suffix" class="el-icon-search" @click="handleIcon"/>
+              <ElInput :placeholder="$t('order.create.customer.placeholder')" :value="customer.name" readonly @click.native="handleSearchCustomer" >
+                <i slot="suffix" class="el-icon-close" @click="deleteSelectCustomer" @click.stop/>
               </ElInput>
-
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
             <ElFormItem :label="$t('order.create.pos.label')" prop="pos">
-              <ElInput :placeholder="$t('order.create.pos.placeholder')" :value="pos.value" suffix-icon="el-icon-search" readonly @click.native="handlePos" />
+              <ElInput :placeholder="$t('order.create.pos.placeholder')" :value="pos.value" suffix-icon="el-icon-search" readonly />
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -168,7 +167,7 @@
           <ElRow>
             <ElCol :span="6">
               <ElFormItem :label="$t('order.create.totalPrice.label')" prop="totalPrice">
-                <ElInput v-model="form.totalPrice" :placeholder="$t('order.create.totalPrice.placeholder')" disabled />
+                <ElInput :value="totalPrice | numFilter" :placeholder="$t('order.create.totalPrice.placeholder')" disabled />
               </ElFormItem>
             </ElCol>
             <ElCol :span="6">
@@ -178,9 +177,9 @@
             </ElCol>
           </ElRow>
           <ElRow>
-            <el-button type="primary" class="blue-btn" size="mini" icon="el-icon-circle-plus" @click="handleSkuCreate" >新建</el-button>
-            <el-button type="primary" class="red-btn" size="mini">删除</el-button>
-            <el-table
+            <ElButton type="primary" class="blue-btn" size="mini" icon="el-icon-circle-plus" @click="handleSkuCreate" >新建</ElButton>
+            <ElButton type="primary" class="red-btn" size="mini">删除</ElButton>
+            <ElTable
               v-loading="sku.table.loading"
               :data="sku.table.data"
               :header-cell-style="valueHeaderStyle"
@@ -190,64 +189,190 @@
               stripe
               highlight-current-row
               @selection-change="handleSkuChange">
-              <el-table-column type="selection" width="50px"/>
-              <el-table-column :label="$t('order.create.entries.sku.label')" prop="sku" />
-              <el-table-column :label="$t('order.create.entries.name.label')" prop="name" />
-              <el-table-column v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id" />
-              <el-table-column :label="$t('order.create.entries.quantity.label')" prop="quantity" />
-              <el-table-column :label="$t('order.create.entries.shippedQuantity.label')" prop="shippedQuantity" />
-              <el-table-column :label="$t('order.create.entries.basePrice.label')" prop="basePrice" />
-              <el-table-column :label="$t('order.create.entries.discount.label')" prop="discount" />
-              <el-table-column :label="$t('order.create.entries.price.label')" prop="price" />
-              <el-table-column :label="$t('order.create.entries.totalPrice.label')" prop="totalPrice" />
-            </el-table>
+              <ElTableColumn type="selection" width="50px"/>
+              <ElTableColumn :label="$t('order.create.entries.sku.label')" prop="sku" />
+              <ElTableColumn :label="$t('order.create.entries.name.label')" prop="name" />
+              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id" />
+              <ElTableColumn :label="$t('order.create.entries.quantity.label')" prop="quantity" />
+              <ElTableColumn :label="$t('order.create.entries.shippedQuantity.label')" prop="shippedQuantity" />
+              <ElTableColumn :label="$t('order.create.entries.basePrice.label')" prop="basePrice" />
+              <ElTableColumn :label="$t('order.create.entries.discount.label')" prop="discount" />
+              <ElTableColumn :label="$t('order.create.entries.price.label')" prop="price" />
+              <ElTableColumn :label="$t('order.create.entries.totalPrice.label')" prop="totalPrice" />
+            </ElTable>
           </ElRow>
         </ElTabPane>
-        <ElTabPane label="支付信息">支付信息</ElTabPane>
+        <ElTabPane label="支付信息">
+          <ElRow>
+            <ElCol :span="6">
+              <ElFormItem :label="$t('order.create.totalPrice.label')" prop="totalPrice">
+                <ElInput :value="totalPrice | numFilter" :placeholder="$t('order.create.totalPrice.placeholder')" disabled />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="6">
+              <ElFormItem :label="$t('order.create.paymentTotal.label')" prop="paymentTotal">
+                <ElInput :value="paymentTotal | numFilter" :placeholder="$t('order.create.paymentTotal.placeholder')" disabled />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="6">
+              <ElFormItem :label="$t('order.create.totalDiff.label')" prop="totalDiff">
+                <ElInput :value="totalDiff | numFilter" :placeholder="$t('order.create.totalDiff.placeholder')" disabled/>
+              </ElFormItem>
+            </ElCol>
+          </ElRow>
+          <ElRow>
+            <ElButton type="primary" class="blue-btn" size="mini" icon="el-icon-circle-plus" @click="handlePaymentCreate" >新建</ElButton>
+            <ElButton type="primary" class="red-btn" size="mini" @click="handlePaymentDeletes">删除</ElButton>
+            <ElTable
+              v-loading="payment.table.loading"
+              :data="payment.table.data"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row
+              @selection-change="handlePaymentChange">
+              <ElTableColumn type="selection" width="50px"/>
+              <ElTableColumn :label="$t('general.index')" type="index" width="55px"/>
+              <ElTableColumn :label="$t('order.create.payment.type.label')" prop="type.name" />
+              <ElTableColumn :label="$t('order.create.payment.amount.label')" prop="amount" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
       </ElTabs>
     </ElForm>
-    <ElDialog :visible.sync="entry.visible" :title="$t('order.create.entries.title')">
+    <ElDialog :visible.sync="sku.visible" :title="$t('order.create.entries.title')">
       <ElForm
         ref="createEntryForm"
-        :rules="entry.rules"
-        :model="entry.form"
+        :rules="sku.rules"
+        :model="sku.form"
         label-position="left"
         label-width="70px"
         style="width: 400px; margin-left:50px;"
       >
         <ElFormItem :label="$t('order.create.entries.sku.label')" prop="sku">
           <ElInput
-            v-model="entry.form.sku"
+            v-model="sku.form.sku"
             :placeholder="$t('order.create.entries.sku.placeholder')"
           />
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.name.label')" prop="name">
           <ElInput
-            v-model="entry.form.name"
+            v-model="sku.form.name"
             disabled
           />
         </ElFormItem>
         <ElFormItem v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id">
-          <ElInput v-model="entry.form[item.id]" disabled />
+          <ElInput v-model="sku.form[item.id]" disabled />
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.quantity.label')" prop="quantity">
-          <ElInput v-model="entry.form.quantity" :placeholder="$t('order.create.entries.quantity.placeholder')" />
+          <ElInput v-model="sku.form.quantity" :placeholder="$t('order.create.entries.quantity.placeholder')" />
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.shippedQuantity.label')" prop="shippedQuantity">
-          <ElInput v-model="entry.form.shippedQuantity" :placeholder="$t('order.create.entries.shippedQuantity.placeholder')"/>
+          <ElInput v-model="sku.form.shippedQuantity" :placeholder="$t('order.create.entries.shippedQuantity.placeholder')"/>
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.basePrice.label')" prop="basePrice">
-          <ElInput v-model="entry.form.basePrice" :placeholder="$t('order.create.entries.basePrice.placeholder')"/>
+          <ElInput v-model="sku.form.basePrice" :placeholder="$t('order.create.entries.basePrice.placeholder')"/>
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.discount.label')" prop="discount">
-          <ElInput v-model="entry.form.discount" :placeholder="$t('order.create.entries.discount.placeholder')" />
+          <ElInput v-model="sku.form.discount" :placeholder="$t('order.create.entries.discount.placeholder')" />
         </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
-        <ElButton @click="entry.visible = false">
+        <ElButton @click="sku.visible = false">
           {{ $t('table.cancel') }}
         </ElButton>
-        <ElButton type="primary" @click="createValueData">
+        <ElButton type="primary" >
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+
+    <ElDialog :visible.sync="payment.visible" :title="$t('order.create.payment.title')">
+      <ElForm
+        ref="createPaymentForm"
+        :rules="payment.rules"
+        :model="payment.form"
+        label-position="left"
+        label-width="100px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <ElFormItem :label="$t('order.create.payment.type.label')" prop="type">
+          <ElSelect v-model="payment.form.type" :placeholder="$t('order.create.payment.type.placeholder')">
+            <ElOption
+              v-for="item in paymentType.options"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </ElSelect>
+        </ElFormItem>
+        <ElFormItem :label="$t('order.create.payment.amount.label')" prop="amount">
+          <ElInput v-model="payment.form.amount" :placeholder="$t('order.create.payment.amount.placeholder')" />
+        </ElFormItem>
+      </ElForm>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="payment.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="paymentCreate">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
+
+    <ElDialog :visible.sync="customerDialog.visible" :title="$t('customer.search.title')">
+      <div class="filter-container">
+        <ElForm ref="customerQuery" :model="customerQuery" :inline="true">
+          <ElRow>
+            <ElCol>
+              <ElFormItem :label=" $t('customer.queryCode.label')+':' " >
+                <ElInput v-model="customerQuery.code" auto-complete="on"/>
+              </ElFormItem>
+              <ElFormItem :label=" $t('customer.queryName.label')+':' ">
+                <ElInput v-model="customerQuery.name" auto-complete="on"/>
+              </ElFormItem>
+            </ElCol>
+          </ElRow>
+          <ElRow>
+            <ElFormItem>
+              <ElCol>
+                <ElButton :loading="customerSearch.loading" type="primary" icon="el-icon-search" size="small" @click="queryCustomer">查询
+                </ElButton>
+                <ElButton size="small" @click="resetCustomerQuery">重置</ElButton>
+              </ElCol>
+            </ElFormItem>
+          </ElRow>
+        </ElForm>
+      </div>
+      <ElTable
+        v-loading="customerTable.loading"
+        :data="customerTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectCustomer">
+        <ElTableColumn :label="$t('general.index')" type="index" />
+        <ElTableColumn :label="$t('customer.code.label')" prop="code" />
+        <ElTableColumn :label="$t('customer.name.label')" prop="name" />
+      </ElTable>
+
+      <ElPagination
+        :current-page="customerPagination.page"
+        :page-sizes="customerPagination.pageSizes"
+        :total="customerPagination.total"
+        :background="customerPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handleCusSizeChange"
+        @current-change="handleCusCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="customerDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="handleSelectCustomer">
           {{ $t('table.confirm') }}
         </ElButton>
       </div>
@@ -255,13 +380,22 @@
   </div>
 </template>
 <script>
-import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs } from '@/api/order'
+import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs, getCustomers, getPaymentTypes } from '@/api/order'
 import AddressSelect from '@/components/Address/addressSelect'
-import { isEmpty } from '@/utils/validate'
+import { isEmpty, isDecimal } from '@/utils/validate'
 
 export default {
   name: 'OrderCreate',
   components: { AddressSelect },
+  filters: {
+    numFilter(value) {
+      // 截取当前数据到小数点后两位
+      const realVal = parseFloat(value).toFixed(2)
+      // num.toFixed(2)获取的是字符串
+      return realVal
+    }
+
+  },
   data() {
     const invoiceType = (rule, value, callback) => {
       if (this.form.invoice && isEmpty(value)) {
@@ -273,6 +407,20 @@ export default {
     const invoiceTitle = (rule, value, callback) => {
       if (this.form.invoice && isEmpty(value)) {
         callback(new Error('发票抬头不能为空'))
+      } else {
+        callback()
+      }
+    }
+    const deliveryCost = (rule, value, callback) => {
+      if (isEmpty(value) || !isDecimal(value, 2, 2)) {
+        callback(new Error('运费为两位小数'))
+      } else {
+        callback()
+      }
+    }
+    const paymentAmount = (rule, value, callback) => {
+      if (isEmpty(value) || !isDecimal(value, 2, 2)) {
+        callback(new Error('支付金额为两位小数'))
       } else {
         callback()
       }
@@ -296,8 +444,11 @@ export default {
         invoice: false,
         invoiceType: '',
         invoiceTitle: '',
-        totalPrice: '0.00',
-        deliveryCost: ''
+        totalPrice: 0.00,
+        deliveryCost: '',
+        paymentTotal: 0.00,
+        payments: [],
+        entries: []
       },
       rules: {
         orderType: [{ required: true, message: '订单类型不能为空', trigger: 'change' }],
@@ -318,7 +469,7 @@ export default {
         pcd: [{ required: true, message: '省市区不能为空', trigger: 'change' }],
         invoiceType: [{ required: false, validator: invoiceType, trigger: 'change' }],
         invoiceTitle: [{ required: false, validator: invoiceTitle, trigger: 'change' }],
-        deliveryCost: [{ required: true, message: '运费金额不能为空', trigger: 'change' }]
+        deliveryCost: [{ required: true, validator: deliveryCost, trigger: 'change' }]
       },
       orderType: {
         options: []
@@ -336,7 +487,7 @@ export default {
         options: []
       },
       customer: {
-        value: ''
+        name: ''
       },
       pos: {
         value: ''
@@ -347,25 +498,99 @@ export default {
       sku: {
         table: {
           loading: false,
-          data: null,
+          data: [],
           select: []
-        }
+        },
+        visible: false,
+        rules: {},
+        form: {}
       },
       skuSpec: {
         options: []
       },
       entry: {
+
+      },
+      // customer dialog start
+      customerQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      customerPagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
+      customerSearch: {
+        loading: false
+      },
+      customerTable: {
+        loading: false,
+        data: null
+      },
+      customerDialog: {
+        visible: false
+      },
+      // customer dialog end
+      totalDiff: 0.00,
+      payment: {
+        table: {
+          loading: false,
+          data: [],
+          select: []
+        },
         visible: false,
-        rules: {},
+        rules: {
+          type: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
+          amount: [{ required: true, validator: paymentAmount, trigger: 'change' }]
+        },
         form: {}
+      },
+      paymentType: {
+        options: []
       }
     }
   },
+  computed: {
+    totalPrice() {
+      return this.form.totalPrice
+    },
+    paymentTotal() {
+      return this.form.paymentTotal
+    },
+    paymentTableData() {
+      return this.payment.table.data
+    }
+  },
+  watch: {
+    totalPrice(val) {
+      this.totalDiff = val - this.form.paymentTotal
+    },
+    paymentTotal(val) {
+      this.totalDiff = this.form.totalPrice - val
+    },
+    paymentTableData: {
+      deep: true,
+      handler(val) {
+        let total = 0
+        val.forEach((item) => {
+          total += parseFloat(item.amount)
+        })
+        this.form.paymentTotal = total
+      }
+    }
+  },
+  mounted() {
+    this.totalDiff = this.form.totalPrice - this.form.paymentTotal
+  },
   created() {
-    this.getData()
+    this.getOptions()
   },
   methods: {
-    getData() {
+    getOptions() {
       // 获取订单类型
       getOrderTypes().then((response) => {
         this.orderType.options = response.data
@@ -388,28 +613,119 @@ export default {
       getSkuSpecs().then((response) => {
         this.skuSpec.options = response.data
       })
-    },
-    handleCustomer() {
-      alert('TODO')
-    },
-    handlePos() {
-      alert('TODO')
+      getPaymentTypes().then((response) => {
+        this.paymentType.options = response.data
+      })
     },
     handleSkuChange(val) {
       this.sku.table.select = val
     },
+    handlePaymentChange(val) {
+      this.payment.table.select = val
+    },
     valueHeaderStyle() {
       return 'padding:5px'
     },
-    handleIcon() {
-      alert(11)
+    // customer dialog start
+    handleSearchCustomer() {
+      this.customerDialog.visible = true
+      this.customerQuery.code = ''
+      this.customerQuery.name = ''
+      this.getCustomerData()
     },
+    deleteSelectCustomer() {
+      this.customer.name = ''
+      this.orderQuery.customerId = ''
+    },
+    selectCustomer(val) {
+      this.currentRow = val
+    },
+    handleSelectCustomer() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择客户',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.customer.name = this.currentRow.name
+      this.form.customer = this.currentRow.id
+      this.customerDialog.visible = false
+    },
+    handleCusSizeChange(val) {
+      this.customerQuery.pageSize = val
+      this.getCustomerData()
+    },
+    handleCusCurrentChange(val) {
+      this.customerQuery.pageNum = val
+      this.getCustomerData()
+    },
+    getCustomerData() {
+      this.customerTable.loading = true
+      getCustomers(this.customerQuery).then(response => {
+        const items = response.data.list
+        this.customerTable.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
+          return v
+        })
+        this.customerPagination.total = Number.parseInt(response.data.total)
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
+      }).catch(() => {
+        this.customerTable.loading = false
+        this.customerSearch.loading = false
+      })
+    },
+    resetCustomerQuery() {
+      this.$refs['customerQuery'].resetFields()
+    },
+    queryCustomer() {
+      this.customerSearch.loading = true
+      this.customerQuery.pageNum = 1
+      this.getCustomerData()
+    },
+    // customer dialog end
     handleSkuCreate() {
-      this.entry.form = {}
-      this.entry.visible = true
+      this.sku.form = {}
+      this.sku.visible = true
       this.$nextTick(() => {
         this.$refs['createEntryForm'].clearValidate()
       })
+    },
+    handlePaymentCreate() {
+      this.payment.form = {
+        type: '',
+        amount: ''
+      }
+      this.payment.visible = true
+      this.$nextTick(() => {
+        this.$refs['createPaymentForm'].clearValidate()
+      })
+    },
+    paymentCreate() {
+      this.$refs['createPaymentForm'].validate((valid) => {
+        if (valid) {
+          // 添加到表格里面
+          this.payment.table.data.push(this.payment.form)
+          this.payment.visible = false
+        }
+      })
+    },
+    handlePaymentDeletes() {
+      if (this.payment.table.select.length <= 0) {
+        this.$message({
+          message: '请选择要删除的支付信息',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      for (const v of this.payment.table.select) {
+        const index = this.payment.table.data.indexOf(v)
+        this.payment.table.data.splice(index, 1)
+      }
     }
   }
 }

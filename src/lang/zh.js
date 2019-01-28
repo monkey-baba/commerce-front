@@ -339,6 +339,14 @@ export default {
         label: '运费金额',
         placeholder: '运费金额'
       },
+      paymentTotal: {
+        label: '支付总额',
+        placeholder: '支付总额'
+      },
+      totalDiff: {
+        label: '支付差额',
+        placeholder: '支付差额'
+      },
       entries: {
         title: '创建订单行',
         sku: {
@@ -373,6 +381,17 @@ export default {
           placeholder: '金额小计'
         }
 
+      },
+      payment: {
+        title: '创建支付信息',
+        type: {
+          label: '支付方式',
+          placeholder: '支付方式'
+        },
+        amount: {
+          label: '支付金额',
+          placeholder: '支付金额'
+        }
       }
     }
   },
