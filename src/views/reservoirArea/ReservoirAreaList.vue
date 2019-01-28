@@ -5,16 +5,15 @@
       <ElForm ref="storeQuery" :model="storeQuery" :inline="true">
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('store.name.name')+':' " prop="name">
+            <ElFormItem label="大仓名称:" prop="name">
               <ElInput v-model="storeQuery.name" />
             </ElFormItem>
-            <ElFormItem :label=" $t('store.code.code')+':' " prop="code">
+            <ElFormItem label="大仓编号:" prop="code">
               <ElInput v-model="storeQuery.code"/>
             </ElFormItem>
           </ElCol>
           <ElCol>
-
-            <el-form-item label="门店分类:" prop="classification">
+            <el-form-item label="大仓分类:" prop="classification">
               <el-select v-model="storeQuery.classification" auto-complete="on">
                 <el-option
                   v-for="item in options"
@@ -24,7 +23,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="门店状态:" prop="status">
+            <el-form-item label="大仓状态:" prop="status">
               <el-select v-model="storeQuery.status" auto-complete="on">
                 <el-option
                   v-for="item in optionsStatus"
@@ -34,7 +33,7 @@
               </el-select>
             </el-form-item>
 
-            <ElFormItem :label=" $t('store.people.name')+':' " prop="people">
+            <ElFormItem label="负责人员:" prop="people">
               <ElInput v-model="storeQuery.people"/>
             </ElFormItem>
           </ElCol>
@@ -53,7 +52,7 @@
     </div>
     <hr>
     <div class="filter-container">
-      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">新建门店</ElButton>
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">新建大仓</ElButton>
       <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
         导出
       </ElButton>
@@ -65,19 +64,20 @@
       fit
       stripe
       highlight-current-row
-      @selection-change="handleSelectionChange">
+      @selection-change="handleSelectionChange"
+    >
 
       <ElTableColumn type="selection"/>
 
-      <ElTableColumn label="门店名字" prop="name">
+      <ElTableColumn label="大仓名称" prop="name">
         <template slot-scope="scope">
           <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
           <template v-else>
-            <router-link :to="{name:'StoresDetail',params: {id: scope.row.id ,name:scope.row.name,paddress:scope.row.paddress,contact:scope.row.contact}}" class="link-type"> {{ scope.row.name }}</router-link>
+            <router-link :to="{name:'ReservoirAreaDetail',params: {id: scope.row.id ,name:scope.row.name,paddress:scope.row.paddress,contact:scope.row.contact}}" class="link-type"> {{ scope.row.name }}</router-link>
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn label="门店地址" prop="paddress" min-width="200px" position="absolute">
+      <ElTableColumn label="大仓地址" prop="paddress" min-width="200px" position="absolute" >
         <template slot-scope="scope">
           <address-select v-if="scope.row.edit" v-model="scope.row.paddress" class="edit-input"/>
           <el-input v-if="scope.row.edit" v-model="scope.row.detailaddress" class="edit-input" size="mini"/>
@@ -91,7 +91,7 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn label="门店状态" prop="pstatus">
+      <ElTableColumn label="大仓状态" prop="pstatus">
         <template slot-scope="scope">
           <el-select v-if="scope.row.edit" v-model="scope.row.status" auto-complete="on" size="mini">
             <el-option
@@ -162,45 +162,45 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <ElFormItem :label="$t('store.create.name.label')" prop="name">
+        <ElFormItem label="大仓名字" prop="name">
           <ElInput
             v-model="storeCreate.form.name"
             :placeholder="$t('store.create.name.placeholder')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('store.create.code.label')" prop="code">
+        <ElFormItem label="大仓编码" prop="code">
           <ElInput
             v-model="storeCreate.form.code"
             :placeholder="$t('store.create.code.placeholder')"
           />
         </ElFormItem>
 
-        <ElFormItem :label="$t('store.create.address.label')" prop="address">
+        <ElFormItem label="大仓地址" prop="address">
           <address-select v-model="storeCreate.form.paddress" />
         </ElFormItem>
 
-        <ElFormItem :label="$t('store.create.detailaddress.label')" prop="detailaddress">
+        <ElFormItem label="详细地址" prop="detailaddress">
           <ElInput
             v-model="storeCreate.form.detailaddress"
             :placeholder="$t('store.create.detailaddress.placeholder')"
           />
         </ElFormItem>
 
-        <ElFormItem :label="$t('store.create.contact.label')" prop="contact">
+        <ElFormItem label="联系方式" prop="contact">
           <ElInput
             v-model="storeCreate.form.contact"
             :placeholder="$t('store.create.contact.placeholder')"
           />
         </ElFormItem>
 
-        <ElFormItem :label="$t('store.create.owner.label')" prop="owner">
+        <ElFormItem label="负责人" prop="owner">
           <ElInput
             v-model="storeCreate.form.owner"
             :placeholder="$t('store.create.owner.placeholder')"
           />
         </ElFormItem>
 
-        <el-form-item label="门店分类" prop="classification">
+        <el-form-item label="大仓分类" prop="classification">
           <el-select v-model="storeCreate.form.classification" auto-complete="on">
             <el-option
               v-for="item in options"
@@ -210,7 +210,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="门店状态" prop="status">
+        <el-form-item label="大仓状态" prop="status">
           <el-select v-model="storeCreate.form.status" auto-complete="on">
             <el-option
               v-for="item in optionsStatus"
@@ -235,7 +235,7 @@
 </template>
 
 <script>
-import { getStores, getClassifyData, getStatusData, createStore, updateStore } from '@/api/store'
+import { getStores, getClassifyData, getStatusData, createStore, updateStore } from '@/api/reservoirArea'
 import AddressSelect from '@/components/Address/addressSelect'
 import AddressLine from '../../components/Address/addressLine'
 import { isEmpty } from '@/utils/validate'
@@ -286,11 +286,11 @@ export default {
       storeCreate: {
         visible: false,
         rules: {
-          name: [{ required: true, message: '用户姓名不能为空', trigger: 'change' }],
+          name: [{ required: true, message: '大仓名称不能为空', trigger: 'change' }],
           code: [{ required: true, message: '编码不能为空', trigger: 'change' }],
-          status: [{ required: true, message: '门店状态不能为空', trigger: 'change' }],
-          classification: [{ required: true, message: '门店分类不能为空', trigger: 'change' }],
-          detailaddress: [{ required: true, message: '门店详细地址不能为空', trigger: 'change' }],
+          status: [{ required: true, message: '大仓状态不能为空', trigger: 'change' }],
+          classification: [{ required: true, message: '大仓分类不能为空', trigger: 'change' }],
+          detailaddress: [{ required: true, message: '大仓详细地址不能为空', trigger: 'change' }],
           contact: [{ required: true, message: '联系方式不能为空', trigger: 'change' }],
           owner: [{ required: true, message: '负责人不能为空', trigger: 'change' }]
         },
@@ -358,7 +358,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '门店创建失败',
+              message: '库区创建失败',
               type: 'error',
               duration: 2000
             })
@@ -446,7 +446,7 @@ export default {
 
       if (isEmpty(row.detailaddress)) {
         this.$message({
-          message: '门店详细地址不能为空',
+          message: '库区详细地址不能为空',
           type: 'error',
           duration: 5 * 1000
         })
@@ -454,7 +454,7 @@ export default {
       }
       if (isEmpty(row.name)) {
         this.$message({
-          message: '门店名字不能为空',
+          message: '库区名字不能为空',
           type: 'error',
           duration: 5 * 1000
         })
@@ -481,7 +481,7 @@ export default {
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择门店',
+          message: '请选择大仓',
           type: 'error',
           duration: 2 * 1000
         })
@@ -489,7 +489,7 @@ export default {
       }
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['门店名称', '门店地址', '门店状态', '负责人']
+        const tHeader = ['大仓名称', '大仓地址', '大仓状态', '负责人']
         const filterVal = ['name', 'detailaddress', 'pstatus', 'owner']
 
         const data = this.table.select.map(u => filterVal.map(field => {
@@ -498,7 +498,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '门店列表'
+          filename: '大仓列表'
         })
         this.downloadLoading = false
       })
@@ -512,9 +512,6 @@ export default {
     border: 0;
     border-bottom: 1px solid #eaeaea;
     height: 4px;
-  }
-  .cell,.el-table__body-wrapper,.el-table {
-    overflow: visible !important;
   }
 
 </style>

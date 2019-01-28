@@ -111,19 +111,25 @@ export const asyncRouterMap = [
     },
     children: [
       {
+        path: 'create',
+        component: () => import('@/views/orders/OrderCreate'),
+        name: 'OrderCreate',
+        meta: { title: 'OrderCreate' }
+      },
+      {
         path: 'order',
         component: () => import('@/views/orders/OrderList'),
         name: 'OrderList',
         meta: { title: 'OrderList' }
       },
       {
-        path: 'Consignment',
+        path: 'consignment',
         component: () => import('@/views/orders/ConsignmentList'),
         name: 'ConsignmentList',
         meta: { title: 'ConsignmentList' }
       },
       {
-        path: 'OrderRouterRules',
+        path: 'orderRouterRules',
         component: () => import('@/views/orders/OrderRouterRules'),
         name: 'OrderRouterRules',
         meta: { title: 'OrderRouterRules' }
@@ -158,13 +164,13 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'list',
+        path: 'stockList',
         component: () => import('@/views/stocks/StockList'),
         name: 'StockList',
         meta: { title: 'StockList' }
       },
       {
-        path: 'list1',
+        path: 'warehouseList',
         component: () => import('@/views/warehouses/WarehouseList'),
         name: 'WarehouseList',
         meta: { title: 'WarehouseList' }
@@ -177,7 +183,7 @@ export const asyncRouterMap = [
     name: 'StoreManage',
     meta: {
       title: 'storeManage',
-      icon: 'form'
+      icon: 'component'
     },
     children: [
       {
@@ -185,6 +191,35 @@ export const asyncRouterMap = [
         component: () => import('@/views/stores/StoresList'),
         name: 'StoreList',
         meta: { title: 'StoreList' }
+      },
+      {
+        path: 'list1',
+        component: () => import('@/views/stores/StoresDetail'),
+        name: 'StoresDetail',
+        meta: { title: 'StoresDetail' }
+      }
+    ]
+  },
+  {
+    path: '/reservoirArea',
+    component: Layout,
+    name: 'ReservoirAreaManage',
+    meta: {
+      title: 'reservoirAreaManage',
+      icon: 'tab'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/reservoirArea/ReservoirAreaList'),
+        name: 'ReservoirAreaList',
+        meta: { title: 'ReservoirAreaList' }
+      },
+      {
+        path: 'list1',
+        component: () => import('@/views/reservoirArea/ReservoirAreaDetail'),
+        name: 'ReservoirAreaDetail',
+        meta: { title: 'ReservoirAreaDetail' }
       }
     ]
   },

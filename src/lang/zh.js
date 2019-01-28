@@ -65,6 +65,7 @@ export default {
     serviceManage: '微服务后台',
     orderManage: '订单管理',
     OrderList: '订单列表',
+    OrderCreate: '订单创建',
     ConsignmentList: '发货单列表',
     OrderDetail: '订单详情',
     account: '账户管理',
@@ -85,8 +86,11 @@ export default {
     CategoryList: '分类列表',
     ProductDetail: '产品详情',
     storeManage: '门店管理',
-    StoreDetail: '门店详情',
+    StoresDetail: '门店详情',
     StoreList: '门店列表',
+    reservoirAreaManage: '大仓管理',
+    ReservoirAreaDetail: '大仓详情',
+    ReservoirAreaList: '大仓列表',
     PriceList: '价目表管理',
     dictList: '枚举管理',
     DictionaryManage: '枚举管理',
@@ -258,6 +262,117 @@ export default {
       },
       paymentDate: {
         label: '支付时间'
+      }
+    },
+    create: {
+      type: {
+        label: '订单类型',
+        placeholder: '请选择'
+      },
+      code: {
+        label: '订单号',
+        placeholder: '订单号'
+      },
+      platform: {
+        label: '平台',
+        placeholder: '请选择'
+      },
+      store: {
+        label: '店铺',
+        placeholder: '请选择'
+      },
+      deliveryType: {
+        label: '配送方式',
+        placeholder: '请选择'
+      },
+      carrier: {
+        label: '承运商',
+        placeholder: '请选择'
+      },
+      customer: {
+        label: '客户',
+        placeholder: '请点击搜索'
+      },
+      pos: {
+        label: '门店',
+        placeholder: '请点击搜索'
+      },
+      receiver: {
+        label: '收件人',
+        placeholder: '收件人'
+      },
+      receiverPhone: {
+        label: '联系方式',
+        placeholder: '联系方式'
+      },
+      address: {
+        label: '地址',
+        placeholder: '地址'
+      },
+      pcd: {
+        label: '省/市/区'
+      },
+      remark: {
+        label: '买家留言',
+        placeholder: '买家留言'
+      },
+      buyerRemark: {
+        label: '卖家备注',
+        placeholder: '卖家备注'
+      },
+      invoice: {
+        label: '申请开票'
+      },
+      invoiceType: {
+        label: '发票类型',
+        placeholder: '请选择'
+      },
+      invoiceTitle: {
+        label: '发票抬头',
+        placeholder: '发票抬头'
+      },
+      totalPrice: {
+        label: '结算总金额',
+        placeholder: '结算总金额'
+      },
+      deliveryCost: {
+        label: '运费金额',
+        placeholder: '运费金额'
+      },
+      entries: {
+        title: '创建订单行',
+        sku: {
+          label: 'SKU编码',
+          placeholder: 'SKU编码'
+        },
+        name: {
+          label: '产品名称'
+        },
+        quantity: {
+          label: '数量',
+          placeholder: '数量'
+        },
+        shippedQuantity: {
+          label: '已发数量',
+          placeholder: '已发数量'
+        },
+        basePrice: {
+          label: '原价',
+          placeholder: '原价'
+        },
+        discount: {
+          label: '优惠',
+          placeholder: '优惠'
+        },
+        price: {
+          label: '销售价',
+          placeholder: '销售价'
+        },
+        totalPrice: {
+          label: '金额小计',
+          placeholder: '金额小计'
+        }
+
       }
     }
   },
