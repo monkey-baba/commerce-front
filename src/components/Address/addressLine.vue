@@ -24,6 +24,7 @@ export default {
       addressLine: ''
     }
   },
+
   watch: {
     sync_value(val) {
       if (val.length > 0) {

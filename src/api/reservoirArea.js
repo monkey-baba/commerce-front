@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function getStores(param) {
   const data = param
   return request({
-    'url': '/stock/api/v1/store/info',
+    'url': '/stock/api/v1/reservoirarea/info',
     'method': 'post',
     data
   })
@@ -11,7 +11,7 @@ export function getStores(param) {
 export function createStore(store) {
   const data = store
   return request({
-    url: '/stock/api/v1/store/add',
+    url: '/stock/api/v1/reservoirarea/add',
     method: 'post',
     data
   })
@@ -19,14 +19,14 @@ export function createStore(store) {
 
 export function getClassifyData() {
   return request({
-    url: '/stock/api/v1/store/classify',
+    url: '/stock/api/v1/reservoirarea/classify',
     method: 'get'
   })
 }
 
 export function getStatusData() {
   return request({
-    url: '/stock/api/v1/store/status',
+    url: '/stock/api/v1/reservoirarea/status',
     method: 'get'
   })
 }
@@ -34,7 +34,7 @@ export function getStatusData() {
 export function updateStore(store) {
   const data = store
   return request({
-    url: '/stock/api/v1/store/update',
+    url: '/stock/api/v1/reservoirarea/update',
     method: 'post',
     data
   })
@@ -46,7 +46,7 @@ export function getStoresDetail(storeId) {
     id: storeId
   }
   return request({
-    url: '/stock/api/v1/store/detail',
+    url: '/stock/api/v1/reservoirarea/detail',
     method: 'get',
     params: param
   })
