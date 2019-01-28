@@ -117,13 +117,13 @@ export const asyncRouterMap = [
         meta: { title: 'OrderList' }
       },
       {
-        path: 'Consignment',
+        path: 'consignment',
         component: () => import('@/views/orders/ConsignmentList'),
         name: 'ConsignmentList',
         meta: { title: 'ConsignmentList' }
       },
       {
-        path: 'OrderRouterRules',
+        path: 'orderRouterRules',
         component: () => import('@/views/orders/OrderRouterRules'),
         name: 'OrderRouterRules',
         meta: { title: 'OrderRouterRules' }
