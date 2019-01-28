@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function getPrices(query) {
+export function getPriceRows(priceid) {
   return request({
-    'url': '/product/api/v1/price/list',
-    'method': 'get',
-    'params': query
+    'url': '/product/api/v1/pricerow/' + priceid,
+    'method': 'get'
   })
 }
 export function updatePrice(price) {

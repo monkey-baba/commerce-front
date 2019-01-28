@@ -3,9 +3,9 @@
     <el-tabs type="border-card">
       <el-tab-pane label="基本信息">
         <ElForm
-          ref="updateProductForm"
-          :rules="productEdit.rules"
-          :model="productEdit.form"
+          ref="basicForm"
+          :rules="basicEdit.rules"
+          :model="basicEdit.form"
           :inline="true"
           label-position="left"
           label-width="120px"
@@ -13,13 +13,13 @@
           <ElRow>
             <ElFormItem :label="$t('product.name.name')" prop="name">
               <ElInput
-                v-model="productEdit.form.name"
+                v-model="basicEdit.form.name"
                 :placeholder="$t('product.name.placeholder')"
               />
             </ElFormItem>
             <ElFormItem :label="$t('product.code.name')" prop="code">
               <ElInput
-                v-model="productEdit.form.code"
+                v-model="basicEdit.form.code"
                 :placeholder="$t('product.code.placeholder')"
               />
             </ElFormItem>
@@ -27,46 +27,55 @@
           <ElRow>
             <ElFormItem :label="$t('product.categoryId.name')" prop="categoryId">
               <ElInput
-                v-model="productEdit.form.categoryId"
+                v-model="basicEdit.form.categoryId"
                 :placeholder="$t('product.categoryId.placeholder')"
               />
             </ElFormItem>
             <ElFormItem :label="$t('product.channelId.name')" prop="channelId">
-              <ElInput
-                v-model="productEdit.form.channelId"
-                :placeholder="$t('product.channelId.placeholder')"
-              />
+              <ElSelect v-model="basicEdit.form.channelId" auto-complete="on">
+                <el-option
+                  v-for="item in channel"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElRow>
           <ElRow>
             <ElFormItem :label="$t('product.unitId.name')" prop="unitId">
-              <ElInput
-                v-model="productEdit.form.unitId"
-                :placeholder="$t('product.unitId.placeholder')"
-              />
+              <ElSelect v-model="basicEdit.form.unitId" auto-complete="on">
+                <el-option
+                  v-for="item in unit"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
             <ElFormItem :label="$t('product.approvedId.name')" prop="approvedId">
-              <ElInput
-                v-model="productEdit.form.approvedId"
-                :placeholder="$t('product.approvedId.placeholder')"
-              />
+              <ElSelect v-model="basicEdit.form.approvedId" auto-complete="on">
+                <el-option
+                  v-for="item in approvedStatus"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElRow>
           <ElRow>
-            <ElTable border="1">
-              <ElFormItem :label="$t('product.attribute.name')" prop="attribute">
-                <ElInput
-                  v-model="productEdit.form.attribute"
-                  :placeholder="$t('product.attribute.placeholder')"
-                  label="product.unitId.name"
-                />
-                <ElInput
-                  v-model="productEdit.form.attribute"
-                  :placeholder="$t('product.attribute.placeholder')"
-                  label="product.attribute.name"
-                />
-              </ElFormItem>
-            </ElTable>
+            <ElFormItem :label="$t('product.attr.name')" prop="attribute.key">
+              <ElSelect v-model="basicEdit.form.attrKey" auto-complete="on">
+                <el-option
+                  v-for="item in attrList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
+            </ElFormItem>
+            <ElFormItem :label="$t('product.attr.name')" prop="attribute.value">
+              <ElInput
+                v-model="basicEdit.form.attrValue"
+              />
+            </ElFormItem>
           </ElRow>
           <ElRow>
             <ElFormItem :label="$t('product.images.name')" prop="images">
@@ -90,17 +99,8 @@
           </ElRow>
           <ElRow >
             <ElCol align="center">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit">
+              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="saveBasic">
                 保存
-              </ElButton>
-              <ElButton
-                class="cancel-btn"
-                size="mini"
-                icon="el-icon-refresh"
-                type="warning"
-                @click="cancelEdit"
-              >
-                取消
               </ElButton>
             </ElCol>
           </ElRow>
@@ -116,23 +116,18 @@
           label-width="120px"
         >
           <ElRow>
-            <ElFormItem :label="$t('product.name.name')" prop="name">
-              <ElInput
-                v-model="skuEdit.form.name"
-                :placeholder="$t('product.name.placeholder')"
-              />
+            <ElFormItem :label="$t('sku.spec.name')" prop="name">
+              <ElSelect v-model="skuEdit.form.name" auto-complete="on">
+                <el-option
+                  v-for="item in spec"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElRow>
           <ElRow>
-            <ElFormItem :label="$t('product.code.name')" prop="code">
-              <ElInput
-                v-model="skuEdit.form.code"
-                :placeholder="$t('product.code.placeholder')"
-              />
-            </ElFormItem>
-          </ElRow>
-          <ElRow>
-            <ElTable border="1">
+            <ElTable border>
               <ElTableColumn :label="$t('sku.attributecode.name')" prop="endTime">
                 <template slot-scope="scope">
                   <template>
@@ -161,63 +156,89 @@
           </ElRow>
           <ElRow >
             <ElCol align="center">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit">
+              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="saveSku">
                 保存
-              </ElButton>
-              <ElButton
-                class="cancel-btn"
-                size="mini"
-                icon="el-icon-refresh"
-                type="warning"
-                @click="cancelEdit"
-              >
-                取消
               </ElButton>
             </ElCol>
           </ElRow>
         </ElForm>
       </el-tab-pane>
       <el-tab-pane label="价格维护">
-        <ElForm ref="priceRowQuery" :model="priceQuery" :inline="true">
+        <ElForm ref="priceQuery" :model="priceQuery" :inline="true">
           <ElRow>
             <ElFormItem :label=" $t('price.name.name')+':' " prop="name">
               <ElInput v-model="priceQuery.name" :placeholder="$t('price.name.placeholder')" auto-complete="on"/>
             </ElFormItem>
             <ElFormItem :label=" $t('price.channelId.name')+':' " prop="channelId">
-              <ElInput v-model="priceQuery.channelId" :placeholder="$t('price.channelId.placeholder')" auto-complete="on"/>
-            </ElFormItem>
-          </ElRow>
-          <ElRow>
-            <ElFormItem>
-              <ElCol>
-                <ElButton :loading="search.loading" type="primary" icon="el-icon-search" size="small" @click="query">
-                  查询
-                </ElButton>
-                <ElButton size="small" @click="resetQuery">
-                  重置
-                </ElButton>
-              </ElCol>
+              <ElSelect v-model="priceQuery.channelId" auto-complete="on">
+                <el-option
+                  v-for="item in channel"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </ElSelect>
             </ElFormItem>
           </ElRow>
         </ElForm>
         <hr>
         <div class="filter-container" style="margin: 0 10px">
-          <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate(undefined,0)">
-            创建
-          </ElButton>
+          <ElButton type="primary" class="blue-btn" size="small" @click="handlePriceRowCreate">创建</ElButton>
+          <el-button type="primary" size="small" class="el-icon-delete" @click="handlePriceRowDeletes">删除</el-button>
         </div>
-        <el-table
-          border
-          fit
-          stripe
-          highlight-current-row>
-          <el-table-column label="sku编码" prop="skuId" />
-          <el-table-column label="规格信息" prop="" />
-          <el-table-column label="价格类型" prop="priceTypeId" />
-          <el-table-column label="价格" prop="price" />
-          <el-table-column label="有效期起" prop="startTime" type="date"/>
-          <el-table-column label="有效期止" prop="endTime" type="date"/>
-        </el-table>
+        <ElTable>
+          <ElTableColumn type="selection"/>
+          <ElTableColumn :label="$t('general.index')" type="index"/>
+          <ElTableColumn label="sku编码" prop="skuId">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.skuId }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="规格信息" prop="spec">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.spec }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="价格类型" prop="priceType">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.priceType }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="价格" prop="price">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.price }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="有效期起" prop="startTime">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.startTime }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="有效期止" prop="endTime">
+            <template slot-scope="scope">
+              <template>
+                {{ scope.row.endTime }}
+              </template>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="操作" min-width="200px">
+            <template slot-scope="scope">
+              <router-link :to="'./ProductDetail/'+scope.row.id">
+                <el-button type="primary" size="small" icon="el-icon-edit">Edit</el-button>
+              </router-link>
+            </template>
+          </ElTableColumn>
+        </ElTable>
+
       </el-tab-pane>
       <el-tab-pane label="库存信息">
         <el-table
@@ -236,20 +257,20 @@
 </template>
 <script>
 import { getPrice } from '@/api/price'
-import ElUploadDrag from 'element-ui/packages/upload/src/upload-dragger'
+import { getPriceRows } from '@/api/pricerow'
+import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr } from '@/api/product'
 
 export default {
   name: 'ProductDetail',
-  components: { ElUploadDrag },
-  filters: {
-    stepFilter: (value) => {
-      const stepMap = {
-      }
-      return stepMap[value]
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
+      visible: true,
       priceQuery: {
         name: '',
         channelId: ''
@@ -262,7 +283,7 @@ export default {
         data: undefined,
         select: []
       },
-      productEdit: {
+      basicEdit: {
         visible: true,
         rules: {
         },
@@ -273,12 +294,82 @@ export default {
         rules: {
         },
         form: {}
-      }
+      },
+      channel: [],
+      channelMap: {},
+      approvedStatus: [],
+      approvedStatusMap: {},
+      attrList: [],
+      attrMap: {},
+      unit: [],
+      unitMap: {},
+      spec: [],
+      specMap: {},
+      dialogVisible: false,
+      dialogImageUrl: '',
+      limitNum: 5,
+      tempRoute: {}
     }
   },
+  created() {
+    const id = this.$route.params && this.$route.params.id
+    this.fetchData(id)
+
+    // Why need to make a copy of this.$route here?
+    // Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
+    // https://github.com/PanJiaChen/vue-element-admin/issues/1221
+    this.tempRoute = Object.assign({}, this.$route)
+  },
   methods: {
-    init(id) {
-      this.visible = true
+    initApprovedStatus() {
+      getApprovedStatus().then(response => {
+        this.approvedStatus = response.data
+        this.approvedStatus.forEach(v => {
+          this.approvedStatusMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initSpec() {
+      getSpec().then(response => {
+        this.spec = response.data
+        this.spec.forEach(v => {
+          this.specMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initChannel() {
+      getChannel().then(response => {
+        this.channel = response.data
+        this.channel.forEach(v => {
+          this.channelMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initUnit() {
+      getUnit().then(response => {
+        this.unit = response.data
+        this.unit.forEach(v => {
+          this.unitMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initAttr() {
+      getAttr().then(response => {
+        this.attrList = response.data
+        this.attrList.forEach(v => {
+          this.attrMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
     },
     resetQuery() {
       this.$refs['priceQuery'].resetFields()
@@ -291,65 +382,107 @@ export default {
       this.priceQuery.pageNum = val
       this.getData()
     },
-    getData() {
-      this.table.loading = true
-      getPrice(this.priceQuery).then(response => {
+    fetchData(id) {
+      this.initChannel()
+      this.initApprovedStatus()
+      this.initUnit()
+      this.initSpec()
+      this.initAttr()
+      this.fetchBaicData(id)
+      this.fetchPriceData(id)
+    },
+    fetchBaicData(id) {
+      getBaicData(id).then(response => {
+        this.basicEdit.form = response.data
+      })
+    },
+    fetchPriceData(id) {
+      getPrice(id).then(response => {
+        const items = response.data.list
+        this.table.data = items.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
+          if (v.index === 0) {
+            this.fetchPriceRowData(v.id)
+          }
+          return v
+        })
+      }).catch((e) => {
+      })
+    },
+    handlePriceRowCreate() {
+
+    },
+    handlePriceRowDeletes() {
+
+    },
+    fetchPriceRowData(priceId) {
+      getPriceRows(priceId).then(response => {
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
           v.original = JSON.stringify(v) //  will be used when price click the cancel botton
           return v
         })
-        this.pagination.total = Number.parseInt(response.data.total)
-        this.table.loading = false
-        this.search.loading = false
       }).catch((e) => {
-        this.table.loading = false
-        this.search.loading = false
       })
     },
-    query() {
-      this.search.loading = true
-      this.getData()
-    }
-  },
-  // 上传文件之前的钩子
-  handleBeforeUpload(file) {
-    console.log('before')
-    if (!(file.type === 'image/png' || file.type === 'image/gif' || file.type === 'image/jpg' || file.type === 'image/jpeg')) {
-      this.$notify.warning({
-        title: '警告',
-        message: '请上传格式为image/png, image/gif, image/jpg, image/jpeg的图片'
+    saveBasic() {
+      updateBasic(this.basicEdit.form).then(response => {
+        alert(this.basicEdit.form)
+        this.$message({
+          message: response.data,
+          type: 'success'
+        })
+      }).catch(e => {
+        const response = e.response
+        this.$message({
+          message: response !== undefined ? response.data : e.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
       })
-    }
-    const size = file.size / 1024 / 1024 / 2
-    if (size > 2) {
-      this.$notify.warning({
-        title: '警告',
-        message: '图片大小必须小于2M'
-      })
-    }
-  },
-  // 文件超出个数限制时的钩子
-  handleExceed(files, fileList) {
+    },
+    saveSku() {
 
-  },
-  // 文件列表移除文件时的钩子
-  handleRemove(file, fileList) {
-    console.log(file, fileList)
-  },
-  // 点击文件列表中已上传的文件时的钩子
-  handlePictureCardPreview(file) {
-    this.dialogImageUrl = file.url
-    this.dialogVisible = true
-  },
-  uploadFile() {
-    this.$refs.upload.submit()
-  },
-  cancelEdit() {
-    this.visible = false
+    },
+    // 上传文件之前的钩子
+    handleBeforeUpload(file) {
+      console.log('before')
+      if (!(file.type === 'image/png' || file.type === 'image/gif' || file.type === 'image/jpg' || file.type === 'image/jpeg')) {
+        this.$notify.warning({
+          title: '警告',
+          message: '请上传格式为image/png, image/gif, image/jpg, image/jpeg的图片'
+        })
+      }
+      const size = file.size / 1024 / 1024 / 2
+      if (size > 2) {
+        this.$notify.warning({
+          title: '警告',
+          message: '图片大小必须小于2M'
+        })
+      }
+    },
+    // 文件超出个数限制时的钩子
+    handleExceed(files, fileList) {
+
+    },
+    // 文件列表移除文件时的钩子
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    // 点击文件列表中已上传的文件时的钩子
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    uploadFile() {
+      this.$refs.upload.submit()
+    },
+    cancelEdit() {
+      this.visible = false
+    }
   }
-
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>

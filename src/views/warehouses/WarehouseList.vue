@@ -30,7 +30,7 @@
       <el-button type="info" size="small" class="gray-btn" @click="handleDeletes">删除</el-button>
       <el-button type="success" size="small" @click="handleEnables(true)">启用</el-button>
       <el-button type="danger" size="small" @click="handleEnables(false)">禁用</el-button>
-      <el-button type="primary" class="green-btn" size="small" @click="handleExport">导出</el-button>
+      <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出</el-button>
     </div>
     <el-table
       v-loading="table.loading"
@@ -64,11 +64,11 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('warehouse.posId.label')" prop="posId" >
+      <el-table-column :label="$t('warehouse.posId.label')" prop="posName" >
         <template slot-scope="scope">
           <el-input v-if="scope.row.edit" v-model="scope.row.posId" class="edit-input" size="mini"/>
           <template v-else>
-            {{ scope.row.posId }}
+            {{ scope.row.posName }}
           </template>
         </template>
       </el-table-column>

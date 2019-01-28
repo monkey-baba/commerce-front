@@ -200,7 +200,8 @@ export default {
       label: '网店'
     },
     customerId: {
-      label: '客户编号'
+      label: '客户编号',
+      placeholder: '请选择客户'
     },
     receiver: {
       label: '收货人'
@@ -208,8 +209,9 @@ export default {
     receiverPhone: {
       label: '收货手机号'
     },
-    wareId: {
-      label: '门店'
+    posId: {
+      label: '门店',
+      placeholder: '请选择门店'
     },
     totalPrice: {
       label: '订单金额'
@@ -224,18 +226,42 @@ export default {
       label: '订单类型'
     },
     statusId: {
-      label: '订单状态',
-      CREATED: '已创建',
-      PENDING: '待审核',
-      APPROVED: '已审核',
-      SHIPPED: '已发货',
-      COMPLETED: '已完成'
+      label: '订单状态'
     },
-    platform: {
-      TM: '天猫',
-      JD: '京东',
-      LGT: '立购台',
-      DMS: 'DMS'
+    list: {
+      ecsOrderId: {
+        label: '平台订单号'
+      },
+      storeName: {
+        label: '店铺'
+      },
+      code: {
+        label: '订单号'
+      },
+      posId: {
+        label: '下单门店'
+      },
+      orderTypeName: {
+        label: '订单类型'
+      },
+      statusName: {
+        label: '订单状态'
+      },
+      totalPrice: {
+        label: '订单金额'
+      },
+      receiverPhone: {
+        label: '手机号'
+      },
+      addressName: {
+        label: '收件地址'
+      },
+      date: {
+        label: '下单时间'
+      },
+      paymentDate: {
+        label: '支付时间'
+      }
     }
   },
   user: {
@@ -398,9 +424,15 @@ export default {
     },
     name: {
       name: 'sku名称'
+    },
+    spec: {
+      name: '规格设置'
     }
   },
   product: {
+    create: {
+      title: '产品编辑'
+    },
     code: {
       name: '商品编号',
       placeholder: '请输入商品编码'
@@ -417,7 +449,7 @@ export default {
       name: '销售渠道',
       placeholder: '请选择销售渠道'
     },
-    attribute: {
+    attr: {
       name: '属性值',
       placeholder: '属性值'
     },
@@ -436,6 +468,10 @@ export default {
   price: {
     create: {
       title: '创建价目表'
+    },
+    productId: {
+      name: '产品',
+      placeholder: '产品'
     },
     active: {
       name: '是否启用',
@@ -581,6 +617,9 @@ export default {
       statusId: {
         label: '状态'
       }
+    },
+    search: {
+      title: '客户搜索'
     }
   },
   routerRule: {
@@ -740,6 +779,16 @@ export default {
         placeholder: '请输入门店详细地址'
       }
     }
-
+  },
+  pos: {
+    search: {
+      title: '门店搜索'
+    },
+    code: {
+      label: '门店编码'
+    },
+    name: {
+      label: '门店名称'
+    }
   }
 }
