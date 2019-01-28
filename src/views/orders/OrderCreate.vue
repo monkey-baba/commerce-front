@@ -254,10 +254,9 @@
         style="width: 400px; margin-left:50px;"
       >
         <ElFormItem :label="$t('order.create.entries.sku.label')" prop="sku">
-          <ElInput
-            v-model="sku.form.sku"
-            :placeholder="$t('order.create.entries.sku.placeholder')"
-          />
+          <ElInput :placeholder="$t('order.create.entries.sku.placeholder')" :value="sku.name" readonly @click.native="handleSearchSku" >
+            <i slot="suffix" class="el-icon-close" @click="deleteSelectSku" @click.stop/>
+          </ElInput>
         </ElFormItem>
         <ElFormItem :label="$t('order.create.entries.name.label')" prop="name">
           <ElInput
@@ -435,6 +434,63 @@
         </ElButton>
       </div>
     </ElDialog>
+
+    <ElDialog :visible.sync="skuDialog.visible" :title="$t('sku_search.search.title')">
+      <div class="filter-container">
+        <ElForm ref="skuQuery" :model="skuQuery" :inline="true">
+          <ElRow>
+            <ElCol>
+              <ElFormItem :label=" $t('sku_search.code.label')+':' " prop="code">
+                <ElInput v-model="skuQuery.code" auto-complete="on"/>
+              </ElFormItem>
+              <ElFormItem :label=" $t('sku_search.name.label')+':' " prop="name">
+                <ElInput v-model="skuQuery.name" auto-complete="on"/>
+              </ElFormItem>
+            </ElCol>
+          </ElRow>
+          <ElRow>
+            <ElFormItem>
+              <ElCol>
+                <ElButton :loading="skuSearch.loading" type="primary" icon="el-icon-search" size="small" @click="querySku">查询
+                </ElButton>
+                <ElButton size="small" @click="resetSkuQuery">重置</ElButton>
+              </ElCol>
+            </ElFormItem>
+          </ElRow>
+        </ElForm>
+      </div>
+      <ElTable
+        v-loading="skuTable.loading"
+        :data="skuTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectSku">
+        <ElTableColumn :label="$t('general.index')" type="index" />
+        <ElTableColumn :label="$t('sku_search.code.label')" prop="code" />
+        <ElTableColumn :label="$t('sku_search.name.label')" prop="name" />
+      </ElTable>
+
+      <ElPagination
+        :current-page="skuPagination.page"
+        :page-sizes="skuPagination.pageSizes"
+        :total="skuPagination.total"
+        :background="skuPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handleSkuSizeChange"
+        @current-change="handleSkuCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="skuDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="handleSelectSku">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
   </div>
 </template>
 <script>
@@ -555,6 +611,7 @@ export default {
         options: []
       },
       sku: {
+        name: '',
         table: {
           loading: false,
           data: [],
@@ -611,7 +668,7 @@ export default {
       paymentType: {
         options: []
       },
-      // customer dialog start
+      // pos dialog start
       posQuery: {
         code: '',
         name: '',
@@ -633,8 +690,32 @@ export default {
       },
       posDialog: {
         visible: false
+      },
+      // pos dialog end
+      // sku dialog start
+      skuQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      skuPagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
+      skuSearch: {
+        loading: false
+      },
+      skuTable: {
+        loading: false,
+        data: null
+      },
+      skuDialog: {
+        visible: false
       }
-      // customer dialog end
+      // sku dialog end
     }
   },
   computed: {
@@ -813,7 +894,7 @@ export default {
       this.getPosData()
     },
     deleteSelectPos() {
-      this.customer.name = ''
+      this.pos.name = ''
       this.form.pos = ''
     },
     selectPos(val) {
@@ -859,6 +940,63 @@ export default {
       this.posSearch.loading = true
       this.posSearch.pageNum = 1
       this.getPosData()
+    },
+    // pos dialog end
+    // sku dialog start
+    handleSearchSku() {
+      this.skuDialog.visible = true
+      this.skuQuery.code = ''
+      this.skuQuery.name = ''
+      this.getSkuData()
+    },
+    deleteSelectSku() {
+      this.sku.name = ''
+      // TODO
+    },
+    selectSku(val) {
+      this.currentRow = val
+    },
+    handleSelectSku() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择SKU',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.sku.name = this.currentRow.name
+      // TODO
+      // this.form.pos = this.currentRow.id
+      this.skuDialog.visible = false
+    },
+    handleSkuSizeChange(val) {
+      this.skuQuery.pageSize = val
+      this.getSkuData()
+    },
+    handleSkuCurrentChange(val) {
+      this.skuQuery.pageNum = val
+      this.getSkuData()
+    },
+    getSkuData() {
+      this.skuTable.loading = true
+      getPosList(this.skuQuery).then(response => {
+        this.skuTable.data = response.data.list
+        this.skuPagination.total = Number.parseInt(response.data.total)
+        this.skuTable.loading = false
+        this.skuSearch.loading = false
+      }).catch(() => {
+        this.skuTable.loading = false
+        this.skuSearch.loading = false
+      })
+    },
+    resetSkuQuery() {
+      this.$refs['skuQuery'].resetFields()
+    },
+    querySku() {
+      this.skuSearch.loading = true
+      this.skuSearch.pageNum = 1
+      this.getSkuData()
     }
     // pos dialog end
   }

@@ -946,5 +946,16 @@ export default {
     name: {
       label: '门店名称'
     }
+  },
+  sku_search: {
+    search: {
+      title: 'SKU搜索'
+    },
+    code: {
+      label: 'SKU编码'
+    },
+    name: {
+      label: 'SKU名称'
+    }
   }
 }
