@@ -604,6 +604,7 @@ export default {
     },
     query() {
       this.search.loading = true
+      this.orderQuery.pageNum = 1
       this.getData()
     },
     queryCustomer() {
