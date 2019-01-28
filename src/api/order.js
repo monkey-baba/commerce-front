@@ -28,3 +28,37 @@ export function getBaseStores() {
     'method': 'get'
   })
 }
+
+export function getPlatforms() {
+  return request({
+    'url': '/order/api/v1/order/platforms',
+    'method': 'get'
+  })
+}
+
+export function getDeliveryTypes() {
+  return request({
+    'url': '/order/api/v1/order/deliveryTypes',
+    'method': 'get'
+  })
+}
+
+export function getCarriers() {
+  return request({
+    'url': '/order/api/v1/order/carriers',
+    'method': 'get'
+  })
+}
+
+export function getInvoiceTypes() {
+  return request({
+    'url': '/order/api/v1/order/invoiceTypes',
+    'method': 'get'
+  })
+}
+export function getSkuSpecs() {
+  return request({
+    'url': '/order/api/v1/order/skuSpecs',
+    'method': 'get'
+  })
+}
