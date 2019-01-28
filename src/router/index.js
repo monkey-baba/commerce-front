@@ -183,7 +183,7 @@ export const asyncRouterMap = [
     name: 'StoreManage',
     meta: {
       title: 'storeManage',
-      icon: 'form'
+      icon: 'component'
     },
     children: [
       {
@@ -206,7 +206,7 @@ export const asyncRouterMap = [
     name: 'ReservoirAreaManage',
     meta: {
       title: 'reservoirAreaManage',
-      icon: 'form'
+      icon: 'tab'
     },
     children: [
       {
