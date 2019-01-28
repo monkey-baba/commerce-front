@@ -114,7 +114,8 @@
       <el-table-column label="平台订单号" prop="ecsOrderId" />
       <el-table-column label="店铺" prop="storeId" />
       <el-table-column :label="$t('order.code.label')" prop="code" />
-      <!--<template slot-scope="scope">
+      <!--<el-table-column>
+      <template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>-->
