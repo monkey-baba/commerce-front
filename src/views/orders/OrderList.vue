@@ -461,12 +461,7 @@ export default {
     getCustomerData() {
       this.customerTable.loading = true
       getCustomers(this.customerQuery).then(response => {
-        const items = response.data.list
-        this.customerTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.customerTable.data = response.data.list
         this.customerPagination.total = Number.parseInt(response.data.total)
         this.customerTable.loading = false
         this.customerSearch.loading = false
@@ -478,12 +473,7 @@ export default {
     getPosData() {
       this.posTable.loading = true
       getPosList(this.posQuery).then(response => {
-        const items = response.data.list
-        this.posTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.posTable.data = response.data.list
         this.posPagination.total = Number.parseInt(response.data.total)
         this.posTable.loading = false
         this.posSearch.loading = false

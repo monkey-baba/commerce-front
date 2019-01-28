@@ -77,7 +77,9 @@
           </ElCol>
           <ElCol :span="6">
             <ElFormItem :label="$t('order.create.pos.label')" prop="pos">
-              <ElInput :placeholder="$t('order.create.pos.placeholder')" :value="pos.value" suffix-icon="el-icon-search" readonly />
+              <ElInput :placeholder="$t('order.create.pos.placeholder')" :value="pos.name" readonly @click.native="handleSearchPos" >
+                <i slot="suffix" class="el-icon-close" @click="deleteSelectPos" @click.stop/>
+              </ElInput>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -377,10 +379,67 @@
         </ElButton>
       </div>
     </ElDialog>
+    <ElDialog :visible.sync="posDialog.visible" :title="$t('pos.search.title')">
+      <div class="filter-container">
+        <ElForm ref="posQuery" :model="posQuery" :inline="true">
+          <ElRow>
+            <ElCol>
+              <ElFormItem :label=" $t('pos.code.label')+':' " prop="code">
+                <ElInput v-model="posQuery.code" auto-complete="on"/>
+              </ElFormItem>
+              <ElFormItem :label=" $t('pos.name.label')+':' " prop="name">
+                <ElInput v-model="posQuery.name" auto-complete="on"/>
+              </ElFormItem>
+            </ElCol>
+          </ElRow>
+          <ElRow>
+            <ElFormItem>
+              <ElCol>
+                <ElButton :loading="posSearch.loading" type="primary" icon="el-icon-search" size="small" @click="queryPos">查询
+                </ElButton>
+                <ElButton size="small" @click="resetPosQuery">重置</ElButton>
+              </ElCol>
+            </ElFormItem>
+          </ElRow>
+        </ElForm>
+      </div>
+      <ElTable
+        v-loading="posTable.loading"
+        :data="posTable.data"
+        border
+        fit
+        stripe
+        highlight-current-row
+        @current-change="selectPos">
+        <ElTableColumn :label="$t('general.index')" type="index" />
+        <ElTableColumn :label="$t('pos.code.label')" prop="code" />
+        <ElTableColumn :label="$t('pos.name.label')" prop="name" />
+      </ElTable>
+
+      <ElPagination
+        :current-page="posPagination.page"
+        :page-sizes="posPagination.pageSizes"
+        :total="posPagination.total"
+        :background="posPagination.background"
+        align="right"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="width: 100%"
+        @size-change="handlePosSizeChange"
+        @current-change="handlePosCurrentChange"/>
+      <div slot="footer" class="dialog-footer">
+        <ElButton @click="posDialog.visible = false">
+          {{ $t('table.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="handleSelectPos">
+          {{ $t('table.confirm') }}
+        </ElButton>
+      </div>
+    </ElDialog>
   </div>
 </template>
 <script>
-import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs, getCustomers, getPaymentTypes } from '@/api/order'
+import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs, getPaymentTypes } from '@/api/order'
+import { getPosList, getCustomers } from '@/api/order'
 import AddressSelect from '@/components/Address/addressSelect'
 import { isEmpty, isDecimal } from '@/utils/validate'
 
@@ -490,7 +549,7 @@ export default {
         name: ''
       },
       pos: {
-        value: ''
+        name: ''
       },
       invoiceType: {
         options: []
@@ -551,7 +610,31 @@ export default {
       },
       paymentType: {
         options: []
+      },
+      // customer dialog start
+      posQuery: {
+        code: '',
+        name: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      posPagination: {
+        page: 0,
+        total: 0,
+        background: false,
+        pageSizes: [10, 20, 50]
+      },
+      posSearch: {
+        loading: false
+      },
+      posTable: {
+        loading: false,
+        data: null
+      },
+      posDialog: {
+        visible: false
       }
+      // customer dialog end
     }
   },
   computed: {
@@ -635,7 +718,7 @@ export default {
     },
     deleteSelectCustomer() {
       this.customer.name = ''
-      this.orderQuery.customerId = ''
+      this.form.customer = ''
     },
     selectCustomer(val) {
       this.currentRow = val
@@ -664,12 +747,7 @@ export default {
     getCustomerData() {
       this.customerTable.loading = true
       getCustomers(this.customerQuery).then(response => {
-        const items = response.data.list
-        this.customerTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.customerTable.data = response.data.list
         this.customerPagination.total = Number.parseInt(response.data.total)
         this.customerTable.loading = false
         this.customerSearch.loading = false
@@ -726,7 +804,63 @@ export default {
         const index = this.payment.table.data.indexOf(v)
         this.payment.table.data.splice(index, 1)
       }
+    },
+    // pos dialog start
+    handleSearchPos() {
+      this.posDialog.visible = true
+      this.posQuery.code = ''
+      this.posQuery.name = ''
+      this.getPosData()
+    },
+    deleteSelectPos() {
+      this.customer.name = ''
+      this.form.pos = ''
+    },
+    selectPos(val) {
+      this.currentRow = val
+    },
+    handleSelectPos() {
+      if (this.currentRow == null) {
+        this.$message({
+          message: '请选择门店',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      this.pos.name = this.currentRow.name
+      this.form.pos = this.currentRow.id
+      this.posDialog.visible = false
+    },
+    handlePosSizeChange(val) {
+      this.posQuery.pageSize = val
+      this.getCustomerData()
+    },
+    handlePosCurrentChange(val) {
+      this.posQuery.pageNum = val
+      this.getCustomerData()
+    },
+    getPosData() {
+      this.posTable.loading = true
+      getPosList(this.posQuery).then(response => {
+        this.posTable.data = response.data.list
+        this.posPagination.total = Number.parseInt(response.data.total)
+        this.posTable.loading = false
+        this.posSearch.loading = false
+      }).catch(() => {
+        this.posTable.loading = false
+        this.posSearch.loading = false
+      })
+    },
+    resetPosQuery() {
+      this.$refs['posQuery'].resetFields()
+    },
+    queryPos() {
+      this.posSearch.loading = true
+      this.posSearch.pageNum = 1
+      this.getPosData()
     }
+    // pos dialog end
   }
 }
 </script>
