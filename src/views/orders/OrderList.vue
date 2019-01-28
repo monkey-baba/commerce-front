@@ -126,38 +126,32 @@
       highlight-current-row
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50px"/>
-
-      <el-table-column label="平台订单号" prop="ecsOrderId" />
-      <el-table-column label="店铺" prop="storeId" />
-      <el-table-column :label="$t('order.code.label')" prop="code" />
-
       <el-table-column :label="$t('order.list.ecsOrderId.label')" prop="ecsOrderId" />
       <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
       <el-table-column :label="$t('order.list.code.label')" prop="code" >
-        <el-table-column>
-          <!--<template slot-scope="scope">
+        <template slot-scope="scope">
           <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
-      </el-table-column>-->
-          <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
-          <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
-          <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
-          <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
-          <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
-          <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
-          <el-table-column :label="$t('order.list.date.label')" prop="date">
-            <template slot-scope="scope">
-              <i class="el-icon-date"/>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
-            <template slot-scope="scope">
-              <i class="el-icon-date"/>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-          </el-table-column>
-    </el-table-column></el-table-column></el-table>
+      </el-table-column>
+      <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
+      <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
+      <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
+      <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
+      <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
+      <el-table-column :label="$t('order.list.date.label')" prop="date">
+        <template slot-scope="scope">
+          <i class="el-icon-date"/>
+          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
+        <template slot-scope="scope">
+          <i class="el-icon-date"/>
+          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <el-pagination
       :current-page="pagination.page"
