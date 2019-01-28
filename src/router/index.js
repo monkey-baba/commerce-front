@@ -239,7 +239,7 @@ export const asyncRouterMap = [
         meta: { title: 'CategoryList' }
       },
       {
-        path: ':productdetail',
+        path: ':productdetail/:id(\\d+)',
         hidden: true,
         name: 'ProductDetail',
         component: () => import('@/views/products/ProductDetail'),

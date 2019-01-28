@@ -170,6 +170,12 @@
               :value="item.id"/>
           </ElSelect>
         </ElFormItem>
+        <ElFormItem :label="$t('price.productId.name')" prop="channelId">
+          <ElInput
+            v-model="priceCreate.form.productId"
+            :placeholder="$t('price.productId.placeholder')"
+          />
+        </ElFormItem>
         <ElFormItem :label="$t('price.priority.name')" prop="priority">
           <ElInput
             v-model="priceCreate.form.priority"
@@ -261,8 +267,8 @@ export default {
     }
   },
   created() {
-    this.getData()
     this.initChannel()
+    this.getData()
   },
   methods: {
     resetQuery() {

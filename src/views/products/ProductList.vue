@@ -91,6 +91,13 @@
           </template>
         </template>
       </ElTableColumn>
+      <ElTableColumn :label="$t('product.unitId.name')" prop="unitId">
+        <template slot-scope="scope">
+          <template>
+            {{ unitMap[scope.row.unitId] }}
+          </template>
+        </template>
+      </ElTableColumn>
       <ElTableColumn :label="$t('product.channelId.name')" prop="channelId">
         <template slot-scope="scope">
           <template>
@@ -107,13 +114,9 @@
       </ElTableColumn>
       <ElTableColumn label="操作" min-width="200px">
         <template slot-scope="scope">
-          <div>
-            <template>
-              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">
-                编辑
-              </ElButton>
-            </template>
-          </div>
+          <router-link :to="'./ProductDetail/'+scope.row.id">
+            <el-button type="primary" size="small" icon="el-icon-edit">Edit</el-button>
+          </router-link>
         </template>
       </ElTableColumn>
     </ElTable>
@@ -160,6 +163,15 @@
               :value="item.id"/>
           </ElSelect>
         </ElFormItem>
+        <ElFormItem :label="$t('product.unitId.name')" prop="unitId">
+          <ElSelect v-model="productCreate.form.unitId" auto-complete="on">
+            <el-option
+              v-for="item in unit"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </ElSelect>
+        </ElFormItem>
       </ElForm>
       <div slot="footer" class="dialog-footer">
         <ElButton @click="productCreate.visible = false">
@@ -175,7 +187,7 @@
 </template>
 
 <script>
-import { getProducts, createProduct, getApprovedStatus, getChannel, deleteProduct, approvedProduct, unApprovedProduct } from '@/api/product'
+import { getProducts, createProduct, getApprovedStatus, getChannel, getUnit, deleteProduct, approvedProduct, unApprovedProduct } from '@/api/product'
 import ProductDetail from './ProductDetail'
 
 export default {
@@ -226,14 +238,17 @@ export default {
       productDetailVisible: false,
       channel: [],
       channelMap: {},
+      unit: [],
+      unitMap: {},
       approvedStatus: [],
       approvedStatusMap: {}
     }
   },
   created() {
-    this.getData()
     this.initChannel()
     this.initApprovedStatus()
+    this.initUnit()
+    this.getData()
   },
   methods: {
     resetQuery() {
@@ -262,6 +277,16 @@ export default {
         this.channel = response.data
         this.channel.forEach(v => {
           this.channelMap[v.id] = v.name
+        })
+      }).catch(() => {
+        console.log('查询失败')
+      })
+    },
+    initUnit() {
+      getUnit().then(response => {
+        this.unit = response.data
+        this.unit.forEach(v => {
+          this.unitMap[v.id] = v.name
         })
       }).catch(() => {
         console.log('查询失败')
