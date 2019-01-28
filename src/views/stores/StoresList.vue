@@ -65,8 +65,7 @@
       fit
       stripe
       highlight-current-row
-      @selection-change="handleSelectionChange"
-    >
+      @selection-change="handleSelectionChange">
 
       <ElTableColumn type="selection"/>
 
@@ -78,7 +77,7 @@
           </template>
         </template>
       </ElTableColumn>
-      <ElTableColumn label="门店地址" prop="paddress" min-width="200px" position="absolute" >
+      <ElTableColumn label="门店地址" prop="paddress" min-width="200px" position="absolute">
         <template slot-scope="scope">
           <address-select v-if="scope.row.edit" v-model="scope.row.paddress" class="edit-input"/>
           <el-input v-if="scope.row.edit" v-model="scope.row.detailaddress" class="edit-input" size="mini"/>
@@ -513,6 +512,9 @@ export default {
     border: 0;
     border-bottom: 1px solid #eaeaea;
     height: 4px;
+  }
+  .cell,.el-table__body-wrapper,.el-table {
+    overflow: visible !important;
   }
 
 </style>
