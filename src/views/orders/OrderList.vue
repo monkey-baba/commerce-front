@@ -114,7 +114,7 @@
     </div>
     <hr>
     <div class="filter-container">
-      <el-button type="primary" class="blue-btn" size="small">创建订单</el-button>
+      <el-button type="primary" class="blue-btn" size="small" @click="toOrderCreate" >创建订单</el-button>
       <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出列表</el-button>
     </div>
     <el-table
@@ -632,6 +632,9 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+    toOrderCreate() {
+      this.$router.push({ path: '/order/create' })
     }
   }
 }

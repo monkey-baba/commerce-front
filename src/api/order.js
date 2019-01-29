@@ -93,3 +93,12 @@ export function getSkuList(query) {
     'params': query
   })
 }
+
+export function createOrder(form) {
+  const data = form
+  return request({
+    'url': '/order/api/v1/order/create',
+    'method': 'post',
+    data
+  })
+}

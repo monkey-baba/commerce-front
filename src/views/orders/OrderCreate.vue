@@ -300,7 +300,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <ElFormItem :label="$t('order.create.payment.type.label')" prop="type">
-          <ElSelect v-model="payment.form.type" :placeholder="$t('order.create.payment.type.placeholder')">
+          <ElSelect :value="payment.name" :placeholder="$t('order.create.payment.type.placeholder')" @change="paymentSelect">
             <ElOption
               v-for="item in paymentType.options"
               :key="item.id"
@@ -491,11 +491,16 @@
         </ElButton>
       </div>
     </ElDialog>
+    <!--<hr>-->
+    <div style="padding: 20px;float: right">
+      <el-button type="primary" size="large" @click="handleCreate">创建</el-button>
+      <el-button type="info" size="large" @click="handleClose">关闭</el-button>
+    </div>
   </div>
 </template>
 <script>
 import { getOrderTypes, getPlatforms, getBaseStores, getDeliveryTypes, getCarriers, getInvoiceTypes, getSkuSpecs, getPaymentTypes } from '@/api/order'
-import { getPosList, getCustomers, getSkuList } from '@/api/order'
+import { getPosList, getCustomers, getSkuList, createOrder } from '@/api/order'
 import AddressSelect from '@/components/Address/addressSelect'
 import { isEmpty, isDecimal, isInteger } from '@/utils/validate'
 
@@ -682,7 +687,8 @@ export default {
           type: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
           amount: [{ required: true, validator: moneyValidator, trigger: 'change' }]
         },
-        form: {}
+        form: {},
+        name: ''
       },
       paymentType: {
         options: []
@@ -746,6 +752,9 @@ export default {
     },
     paymentTableData() {
       return this.payment.table.data
+    },
+    skuTableData() {
+      return this.sku.table.data
     }
   },
   watch: {
@@ -763,6 +772,16 @@ export default {
           total += parseFloat(item.amount)
         })
         this.form.paymentTotal = total
+      }
+    },
+    skuTableData: {
+      deep: true,
+      handler(val) {
+        let total = 0
+        val.forEach((item) => {
+          total += parseFloat(item.totalPrice)
+        })
+        this.form.totalPrice = total
       }
     }
   },
@@ -883,6 +902,7 @@ export default {
         type: '',
         amount: ''
       }
+      this.payment.name = ''
       this.payment.visible = true
       this.$nextTick(() => {
         this.$refs['createPaymentForm'].clearValidate()
@@ -989,6 +1009,7 @@ export default {
         })
         return
       }
+      this.sku.form.id = this.currentRow.id
       this.sku.form.name = this.currentRow.name
       this.sku.form.code = this.currentRow.code
       this.currentRow.meta.forEach((v) => {
@@ -1039,7 +1060,7 @@ export default {
     handleSkuDeletes() {
       if (this.sku.table.select.length <= 0) {
         this.$message({
-          message: '请选择要删除的行',
+          message: '请选择要删除的商品信息',
           type: 'error',
           duration: 2 * 1000
         })
@@ -1049,6 +1070,96 @@ export default {
         const index = this.sku.table.data.indexOf(v)
         this.sku.table.data.splice(index, 1)
       }
+    },
+    handleClose() {
+      this.$store.dispatch('delView', this.$route).then(({ visitedViews }) => {
+        const latestView = visitedViews.slice(-1)[0]
+        if (latestView) {
+          this.$router.push(latestView)
+        } else {
+          this.$router.push('/')
+        }
+      })
+    },
+    handleCreate() {
+      this.$refs['createForm'].validate((valid) => {
+        if (valid) {
+          // 判断行是否为空
+          if (this.sku.table.data.length <= 0) {
+            this.$message({
+              message: '请添加商品信息',
+              type: 'error',
+              duration: 2 * 1000
+            })
+            return
+          }
+          // entry 和 payment 移至form
+          this.form.entries = this.sku.table.data
+          this.form.payments = this.payment.table.data
+          // 提交表单
+          createOrder(this.form).then(() => {
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.resetEverything()
+          }).catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '创建失败，请检查订单号或稍后再试',
+              type: 'error',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    resetEverything() {
+      this.form = {
+        orderType: '',
+        code: '',
+        platform: '',
+        store: '',
+        deliveryType: '',
+        carrier: '',
+        customer: '',
+        pos: '',
+        receiver: '',
+        receiverPhone: '',
+        address: '',
+        pcd: [],
+        remark: '',
+        buyerRemark: '',
+        invoice: false,
+        invoiceType: '',
+        invoiceTitle: '',
+        totalPrice: 0.00,
+        deliveryCost: '',
+        paymentTotal: 0.00,
+        payments: [],
+        entries: []
+      }
+      this.customer.name = ''
+      this.pos.name = ''
+      this.sku.table = {
+        loading: false,
+        data: [],
+        select: []
+      }
+      this.payment.table = {
+        loading: false,
+        data: [],
+        select: []
+      }
+      this.$nextTick(() => {
+        this.$refs['createForm'].clearValidate()
+      })
+    },
+    paymentSelect(val) {
+      this.payment.name = val.name
+      this.payment.form.type = val
     }
 
   }
@@ -1057,5 +1168,11 @@ export default {
 <style>
   .el-card__header{
     padding: 10px 10px;
+  }
+  hr {
+    display: block;
+    border: 0;
+    border-bottom: 1px solid #eaeaea;
+    height: 1px;
   }
 </style>

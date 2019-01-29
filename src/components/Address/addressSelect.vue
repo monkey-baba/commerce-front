@@ -1,5 +1,5 @@
 <template>
-  <area-cascader v-model="sync_value" :level="1" :data="data"/>
+  <area-cascader ref="area-cascader" v-model="sync_value" :level="1" :data="data"/>
 </template>
 
 <script>
@@ -25,6 +25,17 @@ export default {
   data() {
     return {
       data: pcaa
+    }
+  },
+  watch: {
+    sync_value: {
+      deep: true,
+      handler(val) {
+        if (val.length === 0) {
+          // 清空input
+          this.$refs['area-cascader'].$vnode.elm.firstChild.childNodes[0].innerText = '请选择'
+        }
+      }
     }
   }
 }

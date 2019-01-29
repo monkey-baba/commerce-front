@@ -114,6 +114,7 @@ export const asyncRouterMap = [
         path: 'create',
         component: () => import('@/views/orders/OrderCreate'),
         name: 'OrderCreate',
+        hidden: true,
         meta: { title: 'OrderCreate' }
       },
       {
