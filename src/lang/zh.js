@@ -991,6 +991,36 @@ export default {
       }
     }
   },
+  ReservoirArea: {
+    create: {
+      title: '创建大仓',
+      name: {
+        label: '大仓名字',
+        placeholder: '请输入大仓名称'
+      },
+      code: {
+        label: '大仓编码',
+        placeholder: '请输入大仓编码'
+      },
+      address: {
+        label: '门店地址',
+        placeholder: '请输入大仓地址'
+      },
+      contact: {
+        label: '联系方式',
+        placeholder: '请输入大仓联系方式'
+      },
+      owner: {
+        label: '联系人',
+        placeholder: '请输入大仓联系人'
+      },
+      detailaddress: {
+        label: '详细地址',
+        placeholder: '请输入大仓详细地址'
+      }
+    }
+  },
+
   store: {
     name: {
       name: '门店名称'
@@ -1028,7 +1058,7 @@ export default {
       },
       owner: {
         label: '门店联系人',
-        placeholder: '请输入门店联系联系人'
+        placeholder: '请输入门店联系人'
       },
       detailaddress: {
         label: '详细地址',
@@ -1036,6 +1066,7 @@ export default {
       }
     }
   },
+
   pos: {
     search: {
       title: '门店搜索'
