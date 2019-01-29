@@ -102,3 +102,14 @@ export function createOrder(form) {
     data
   })
 }
+
+export function getOrderDetail(id) {
+  const param = {
+    id: id
+  }
+  return request({
+    'url': '/order/api/v1/order/detail',
+    'method': 'get',
+    'params': param
+  })
+}

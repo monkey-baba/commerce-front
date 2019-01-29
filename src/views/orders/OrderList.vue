@@ -130,7 +130,7 @@
       <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
       <el-table-column :label="$t('order.list.code.label')" prop="code" >
         <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
+          <router-link :to="{name:'OrderDetail',params: {id: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('order.list.posId.label')" prop="posName" />

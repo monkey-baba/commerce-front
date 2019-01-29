@@ -164,7 +164,7 @@
   </div>
 </template>
 <script>
-import { getSkuSpecs } from '@/api/order'
+import { getSkuSpecs, getOrderDetail } from '@/api/order'
 import AddressLine from '@/components/Address/addressLine'
 export default {
   name: 'OrderCreate',
@@ -179,30 +179,7 @@ export default {
   },
   data() {
     return {
-      form: {
-        orderType: '',
-        code: '',
-        platform: '',
-        store: '',
-        deliveryType: '',
-        carrier: '',
-        customer: '',
-        pos: '',
-        receiver: '',
-        receiverPhone: '',
-        address: '',
-        pcd: [],
-        remark: '',
-        sellerRemark: '',
-        invoice: false,
-        invoiceType: '',
-        invoiceTitle: '',
-        totalPrice: 0.00,
-        deliveryCost: '',
-        paymentTotal: 0.00,
-        payments: [],
-        entries: []
-      },
+      data: {},
       sku: {
         table: {
           loading: false,
@@ -224,11 +201,24 @@ export default {
   },
   created() {
     this.getOptions()
+    this.getOrderData()
   },
   methods: {
     getOptions() {
       getSkuSpecs().then((response) => {
         this.skuSpec.options = response.data
+      })
+    },
+    getOrderData() {
+      getOrderDetail(this.$route.params.id).then((response) => {
+        this.data = response.data
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取订单详情失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
       })
     },
     valueHeaderStyle() {
