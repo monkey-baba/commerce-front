@@ -126,10 +126,10 @@
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.create.buyerRemark.label')" prop="buyerRemark">
+            <ElFormItem :label="$t('order.create.sellerRemark.label')" prop="sellerRemark">
               <ElInput
-                v-model="form.buyerRemark"
-                :placeholder="$t('order.create.buyerRemark.placeholder')"
+                v-model="form.sellerRemark"
+                :placeholder="$t('order.create.sellerRemark.placeholder')"
                 :autosize="{ minRows: 2, maxRows: 6 }"
                 type="textarea" />
             </ElFormItem>
@@ -574,7 +574,7 @@ export default {
         address: '',
         pcd: [],
         remark: '',
-        buyerRemark: '',
+        sellerRemark: '',
         invoice: false,
         invoiceType: '',
         invoiceTitle: '',
@@ -833,6 +833,7 @@ export default {
       this.customerDialog.visible = true
       this.customerQuery.code = ''
       this.customerQuery.name = ''
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     deleteSelectCustomer() {
@@ -936,6 +937,7 @@ export default {
       this.posDialog.visible = true
       this.posQuery.code = ''
       this.posQuery.name = ''
+      this.posSearch.pageNum = 1
       this.getPosData()
     },
     deleteSelectPos() {
@@ -1131,7 +1133,7 @@ export default {
         address: '',
         pcd: [],
         remark: '',
-        buyerRemark: '',
+        sellerRemark: '',
         invoice: false,
         invoiceType: '',
         invoiceTitle: '',

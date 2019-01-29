@@ -316,7 +316,7 @@ export default {
         label: '买家留言',
         placeholder: '买家留言'
       },
-      buyerRemark: {
+      sellerRemark: {
         label: '卖家备注',
         placeholder: '卖家备注'
       },
@@ -391,6 +391,106 @@ export default {
         amount: {
           label: '支付金额',
           placeholder: '支付金额'
+        }
+      }
+    },
+    detail: {
+      type: {
+        label: '订单类型'
+      },
+      code: {
+        label: '订单号'
+      },
+      platform: {
+        label: '平台'
+      },
+      store: {
+        label: '店铺'
+      },
+      deliveryType: {
+        label: '配送方式'
+      },
+      carrier: {
+        label: '承运商'
+      },
+      customer: {
+        label: '客户'
+      },
+      pos: {
+        label: '门店'
+      },
+      receiver: {
+        label: '收件人'
+      },
+      receiverPhone: {
+        label: '联系方式'
+      },
+      address: {
+        label: '地址'
+      },
+      pcd: {
+        label: '省/市/区'
+      },
+      remark: {
+        label: '买家留言'
+      },
+      sellerRemark: {
+        label: '卖家备注'
+      },
+      invoice: {
+        label: '申请开票'
+      },
+      invoiceType: {
+        label: '发票类型'
+      },
+      invoiceTitle: {
+        label: '发票抬头'
+      },
+      totalPrice: {
+        label: '结算总金额'
+      },
+      deliveryCost: {
+        label: '运费金额'
+      },
+      paymentTotal: {
+        label: '支付总额'
+      },
+      totalDiff: {
+        label: '支付差额'
+      },
+      entries: {
+        sku: {
+          label: 'SKU编码'
+        },
+        name: {
+          label: '产品名称'
+        },
+        quantity: {
+          label: '数量'
+        },
+        shippedQuantity: {
+          label: '已发数量'
+        },
+        basePrice: {
+          label: '原价'
+        },
+        discount: {
+          label: '优惠'
+        },
+        price: {
+          label: '销售价'
+        },
+        totalPrice: {
+          label: '金额小计'
+        }
+
+      },
+      payment: {
+        type: {
+          label: '支付方式'
+        },
+        amount: {
+          label: '支付金额'
         }
       }
     }

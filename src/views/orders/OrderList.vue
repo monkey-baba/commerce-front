@@ -130,7 +130,7 @@
       <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
       <el-table-column :label="$t('order.list.code.label')" prop="code" >
         <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
+          <router-link :to="{name:'OrderDetail',params: {code: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
@@ -541,6 +541,7 @@ export default {
       this.customerDialog.visible = true
       this.customerQuery.code = ''
       this.customerQuery.name = ''
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     deleteSelectCustomer() {
@@ -567,6 +568,7 @@ export default {
       this.posDialog.visible = true
       this.posQuery.code = ''
       this.posQuery.name = ''
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     deleteSelectPos() {
@@ -599,10 +601,12 @@ export default {
     },
     queryCustomer() {
       this.customerSearch.loading = true
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     queryPos() {
       this.posSearch.loading = true
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     handleSelectionChange(val) {
