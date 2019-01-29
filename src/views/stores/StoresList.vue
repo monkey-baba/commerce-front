@@ -422,6 +422,7 @@ export default {
 
     query() {
       this.search.loading = true
+      this.storeQuery.pageNum = 1
       this.getData()
       this.getClassifysData()
       this.getStatusListData()
