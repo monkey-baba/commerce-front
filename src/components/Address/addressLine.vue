@@ -27,14 +27,25 @@ export default {
 
   watch: {
     sync_value(val) {
+      console.log('addressLine:' + val)
       if (val.length > 0) {
-        console.log(val[0])
         const pro = pcaa['86'][val[0]]
         const city = pcaa[val[0]][val[1]]
         const dis = pcaa[val[1]][val[2]]
         console.log(pro + city)
         this.addressLine = pro + city + dis
       }
+    }
+  },
+  mounted() {
+    console.log('addressLine:' + this.sync_value)
+    const val = this.sync_value
+    if (val.length > 0) {
+      const pro = pcaa['86'][val[0]]
+      const city = pcaa[val[0]][val[1]]
+      const dis = pcaa[val[1]][val[2]]
+      console.log(pro + city)
+      this.addressLine = pro + city + dis
     }
   }
 }

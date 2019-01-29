@@ -114,7 +114,7 @@
     </div>
     <hr>
     <div class="filter-container">
-      <el-button type="primary" class="blue-btn" size="small">创建订单</el-button>
+      <el-button type="primary" class="blue-btn" size="small" @click="toOrderCreate" >创建订单</el-button>
       <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出列表</el-button>
     </div>
     <el-table
@@ -126,38 +126,32 @@
       highlight-current-row
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50px"/>
-
-      <el-table-column label="平台订单号" prop="ecsOrderId" />
-      <el-table-column label="店铺" prop="storeId" />
-      <el-table-column :label="$t('order.code.label')" prop="code" />
-
       <el-table-column :label="$t('order.list.ecsOrderId.label')" prop="ecsOrderId" />
       <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
       <el-table-column :label="$t('order.list.code.label')" prop="code" >
-        <el-table-column>
-          <!--<template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
+        <template slot-scope="scope">
+          <router-link :to="{name:'OrderDetail',params: {code: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
-      </el-table-column>-->
-          <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
-          <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
-          <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
-          <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
-          <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
-          <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
-          <el-table-column :label="$t('order.list.date.label')" prop="date">
-            <template slot-scope="scope">
-              <i class="el-icon-date"/>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
-            <template slot-scope="scope">
-              <i class="el-icon-date"/>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-          </el-table-column>
-    </el-table-column></el-table-column></el-table>
+      </el-table-column>
+      <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
+      <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
+      <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
+      <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
+      <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
+      <el-table-column :label="$t('order.list.date.label')" prop="date">
+        <template slot-scope="scope">
+          <i class="el-icon-date"/>
+          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('order.list.paymentDate.label')" prop="paymentDate">
+        <template slot-scope="scope">
+          <i class="el-icon-date"/>
+          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <el-pagination
       :current-page="pagination.page"
@@ -467,12 +461,7 @@ export default {
     getCustomerData() {
       this.customerTable.loading = true
       getCustomers(this.customerQuery).then(response => {
-        const items = response.data.list
-        this.customerTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.customerTable.data = response.data.list
         this.customerPagination.total = Number.parseInt(response.data.total)
         this.customerTable.loading = false
         this.customerSearch.loading = false
@@ -484,12 +473,7 @@ export default {
     getPosData() {
       this.posTable.loading = true
       getPosList(this.posQuery).then(response => {
-        const items = response.data.list
-        this.posTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.posTable.data = response.data.list
         this.posPagination.total = Number.parseInt(response.data.total)
         this.posTable.loading = false
         this.posSearch.loading = false
@@ -557,6 +541,7 @@ export default {
       this.customerDialog.visible = true
       this.customerQuery.code = ''
       this.customerQuery.name = ''
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     deleteSelectCustomer() {
@@ -583,6 +568,7 @@ export default {
       this.posDialog.visible = true
       this.posQuery.code = ''
       this.posQuery.name = ''
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     deleteSelectPos() {
@@ -610,14 +596,17 @@ export default {
     },
     query() {
       this.search.loading = true
+      this.orderQuery.pageNum = 1
       this.getData()
     },
     queryCustomer() {
       this.customerSearch.loading = true
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     queryPos() {
       this.posSearch.loading = true
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     handleSelectionChange(val) {
@@ -647,6 +636,9 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+    toOrderCreate() {
+      this.$router.push({ path: '/order/create' })
     }
   }
 }

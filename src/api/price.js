@@ -42,7 +42,7 @@ export function getChannel() {
 
 export function getPrice(productid) {
   return request({
-    'url': '/product/api/v1/price/' + productid,
+    'url': '/product/api/v1/price/list/' + productid,
     'method': 'get'
   })
 }

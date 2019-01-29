@@ -111,6 +111,13 @@ export const asyncRouterMap = [
     },
     children: [
       {
+        path: 'create',
+        component: () => import('@/views/orders/OrderCreate'),
+        name: 'OrderCreate',
+        hidden: true,
+        meta: { title: 'OrderCreate' }
+      },
+      {
         path: 'order',
         component: () => import('@/views/orders/OrderList'),
         name: 'OrderList',
@@ -158,13 +165,13 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'list',
+        path: 'stockList',
         component: () => import('@/views/stocks/StockList'),
         name: 'StockList',
         meta: { title: 'StockList' }
       },
       {
-        path: 'list1',
+        path: 'warehouseList',
         component: () => import('@/views/warehouses/WarehouseList'),
         name: 'WarehouseList',
         meta: { title: 'WarehouseList' }
@@ -177,7 +184,7 @@ export const asyncRouterMap = [
     name: 'StoreManage',
     meta: {
       title: 'storeManage',
-      icon: 'form'
+      icon: 'component'
     },
     children: [
       {
@@ -200,7 +207,7 @@ export const asyncRouterMap = [
     name: 'ReservoirAreaManage',
     meta: {
       title: 'reservoirAreaManage',
-      icon: 'form'
+      icon: 'tab'
     },
     children: [
       {
