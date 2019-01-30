@@ -431,6 +431,9 @@ export default {
     },
     getData() {
       this.table.loading = true
+      this.consignmentStatuses.forEach((v, index) => {
+        this.consignmentQuery['consignmentStatusIds[' + index + ']'] = null
+      })
       this.temp.consignmentStatusId.forEach((v, index) => {
         this.consignmentQuery['consignmentStatusIds[' + index + ']'] = this.consignmentStatusMap[v]
       })
@@ -469,7 +472,7 @@ export default {
       }
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['平台订单号', '配货单号', '配货单状态', '店铺', '下单门店', '运单编号', '收件人', '手机号', '收件地址', '下单时间', '发货时间']
+        const tHeader = ['平台订单号', '配货单号', '配货单状态', '店铺', '下单门店', '运单号', '收货人', '收货手机号', '收件地址', '下单时间', '发货时间']
         const filterVal = ['ecsOrderId', 'code', 'consignmentStatusName', 'storeName', 'posName', 'expressNum', 'receiver', 'receiverPhone', 'receiverAddress', 'date', 'deliveryDate']
         const data = this.table.select.map(u => filterVal.map(field => {
           return u[field]

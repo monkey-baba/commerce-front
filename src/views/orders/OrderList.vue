@@ -437,8 +437,14 @@ export default {
     },
     getData() {
       this.table.loading = true
+      this.statuses.forEach((v, index) => {
+        this.orderQuery['statusId[' + index + ']'] = null
+      })
       this.temp.statusId.forEach((v, index) => {
         this.orderQuery['statusId[' + index + ']'] = this.statusMap[v]
+      })
+      this.orderTypes.forEach((v, index) => {
+        this.orderQuery['orderTypeId[' + index + ']'] = null
       })
       this.temp.orderTypeId.forEach((v, index) => {
         this.orderQuery['orderTypeId[' + index + ']'] = this.orderTypeMap[v]
