@@ -468,7 +468,16 @@ export default {
         label: '买家留言'
       },
       sellerRemark: {
-        label: '卖家备注'
+        label: '卖家备注',
+        date: {
+          label: '添加时间'
+        },
+        user: {
+          label: '添加人'
+        },
+        remark: {
+          label: '备注'
+        }
       },
       invoice: {
         label: '申请开票'
@@ -478,6 +487,9 @@ export default {
       },
       invoiceTitle: {
         label: '发票抬头'
+      },
+      invoiceAmount: {
+        label: '发票金额'
       },
       totalPrice: {
         label: '结算总金额'

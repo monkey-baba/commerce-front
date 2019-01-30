@@ -140,43 +140,76 @@
       </ElCard>
       <ElCard shadow="never" style="margin: 10px">
         <div slot="header" class="clearfix">
-          <span class="title">备注信息</span>
+          <span class="title">发票信息</span>
         </div>
         <ElRow>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.remark.label')">
-              111
+            <ElFormItem :label="$t('order.detail.invoice.label')+':'" >
+              <div v-if="data.invoice">
+                <!-- TODO -->
+                {{ data.invoice.applied }}
+              </div>
+              <div v-else>
+                否
+              </div>
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.sellerRemark.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.invoiceType.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.type }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceTitle.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.title }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceAmount.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.amount }}
+              </div>
             </ElFormItem>
           </ElCol>
         </ElRow>
       </ElCard>
       <ElCard shadow="never" style="margin: 10px">
         <div slot="header" class="clearfix">
-          <span class="title">平台发票信息</span>
+          <span class="title">备注信息</span>
         </div>
         <ElRow>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoice.label')" >
-              111
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.remark.label')+':'">
+              <div class="remark">
+                {{ data.remark }}
+              </div>
             </ElFormItem>
           </ElCol>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoiceType.label')">
-              1111
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoiceTitle.label')">
-              111
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.sellerRemark.label')+':'" >
+              <ElTable
+                v-loading="loading"
+                :data="data.sellerRemarks"
+                :header-cell-style="valueHeaderStyle"
+                border
+                fit
+                stripe
+                highlight-current-row
+                max-height="300"
+                style="width: 600px">
+                <ElTableColumn :label="$t('order.detail.sellerRemark.date.label')" prop="date" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.user.label')" prop="user" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.remark.label')" prop="remark" />
+              </ElTable>
             </ElFormItem>
           </ElCol>
         </ElRow>
       </ElCard>
+
       <ElTabs type="border-card" style="margin: 10px;box-shadow: none" >
         <ElTabPane label="商品信息">
           <ElRow>
@@ -257,7 +290,8 @@ export default {
       },
       skuSpec: {
         options: []
-      }
+      },
+      loading: true
     }
   },
   created() {
@@ -273,6 +307,7 @@ export default {
     getOrderData() {
       getOrderDetail(this.$route.params.id).then((response) => {
         this.data = response.data
+        this.loading = false
       }).catch(() => {
         this.$notify({
           title: '失败',
@@ -300,5 +335,13 @@ export default {
     border: 0;
     border-bottom: 1px solid #eaeaea;
     height: 1px;
+  }
+  .remark{
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    display: block;
+    width: 400px;
+    min-height: 100px;
+    padding-left: 10px;
   }
 </style>
