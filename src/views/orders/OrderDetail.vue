@@ -1,6 +1,6 @@
 <template>
   <div class="order-detail">
-    <ElForm ref="createForm" :model="form" :inline="true">
+    <ElForm ref="createForm" :inline="true">
       <ElCard shadow="never" style="margin: 10px">
         <div slot="header" class="clearfix">
           <span class="title">订单头信息</span>
@@ -214,23 +214,22 @@
         <ElTabPane label="商品信息">
           <ElRow>
             <ElTable
-              v-loading="sku.table.loading"
-              :data="sku.table.data"
+              v-loading="loading"
+              :data="data.entries"
               :header-cell-style="valueHeaderStyle"
               max-height="300"
               border
               fit
               stripe
               highlight-current-row>
-              <ElTableColumn type="selection" width="50px"/>
               <ElTableColumn :label="$t('order.detail.entries.sku.label')" prop="code" />
               <ElTableColumn :label="$t('order.detail.entries.name.label')" prop="name" />
-              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id" />
+              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="'meta.'+[item.id]" :key="item.id" />
               <ElTableColumn :label="$t('order.detail.entries.quantity.label')" prop="quantity" />
               <ElTableColumn :label="$t('order.detail.entries.shippedQuantity.label')" prop="shippedQuantity" />
               <ElTableColumn :label="$t('order.detail.entries.basePrice.label')" prop="basePrice" />
               <ElTableColumn :label="$t('order.detail.entries.discount.label')" prop="discount" />
-              <ElTableColumn :label="$t('order.detail.entries.price.label')" prop="price" />
+              <ElTableColumn :label="$t('order.detail.entries.price.label')" prop="sellPrice" />
               <ElTableColumn :label="$t('order.detail.entries.totalPrice.label')" prop="totalPrice" />
             </ElTable>
           </ElRow>
@@ -261,7 +260,7 @@
 import { getSkuSpecs, getOrderDetail } from '@/api/order'
 import AddressLine from '@/components/Address/addressLine'
 export default {
-  name: 'OrderCreate',
+  name: 'OrderDetail',
   components: { AddressLine },
   filters: {
     numFilter(value) {
