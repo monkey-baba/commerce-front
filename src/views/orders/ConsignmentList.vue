@@ -574,7 +574,7 @@ export default {
     handleSelectPos() {
       if (this.currentRow == null) {
         this.$message({
-          message: '请选择客户',
+          message: '请选择门店',
           type: 'error',
           duration: 2 * 1000
         })
