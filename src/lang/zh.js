@@ -537,6 +537,20 @@ export default {
         amount: {
           label: '支付金额'
         }
+      },
+      consignment: {
+        code: {
+          label: '配货单号'
+        },
+        status: {
+          label: '配货单状态'
+        },
+        carrier: {
+          label: '快递公司'
+        },
+        expressNum: {
+          label: '快递单号'
+        }
       }
     }
   },

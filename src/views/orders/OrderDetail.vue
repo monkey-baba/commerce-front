@@ -237,18 +237,35 @@
         <ElTabPane label="支付信息">
           <ElRow>
             <ElTable
-              v-loading="payment.table.loading"
-              :data="payment.table.data"
+              v-loading="loading"
+              :data="data.payments"
               :header-cell-style="valueHeaderStyle"
               max-height="300"
               border
               fit
               stripe
               highlight-current-row>
-              <ElTableColumn type="selection" width="50px"/>
               <ElTableColumn :label="$t('general.index')" type="index" width="55px"/>
-              <ElTableColumn :label="$t('order.detail.payment.type.label')" prop="type.name" />
+              <ElTableColumn :label="$t('order.detail.payment.type.label')" prop="type" />
               <ElTableColumn :label="$t('order.detail.payment.amount.label')" prop="amount" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+        <ElTabPane label="配货信息">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="data.consignments"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('order.detail.consignment.code.label')" prop="code" />
+              <ElTableColumn :label="$t('order.detail.consignment.status.label')" prop="status" />
+              <ElTableColumn :label="$t('order.detail.consignment.carrier.label')" prop="carrier" />
+              <ElTableColumn :label="$t('order.detail.consignment.expressNum.label')" prop="expressNum" />
             </ElTable>
           </ElRow>
         </ElTabPane>
@@ -273,20 +290,6 @@ export default {
   data() {
     return {
       data: {},
-      sku: {
-        table: {
-          loading: false,
-          data: [],
-          select: []
-        }
-      },
-      payment: {
-        table: {
-          loading: false,
-          data: [],
-          select: []
-        }
-      },
       skuSpec: {
         options: []
       },
