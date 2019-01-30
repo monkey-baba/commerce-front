@@ -432,7 +432,7 @@ export default {
     getData() {
       this.table.loading = true
       this.temp.consignmentStatusId.forEach((v, index) => {
-        this.consignmentQuery['consignmentStatusId[' + index + ']'] = this.consignmentStatusMap[v]
+        this.consignmentQuery['consignmentStatusIds[' + index + ']'] = this.consignmentStatusMap[v]
       })
       getConsignments(this.consignmentQuery).then(response => {
         this.table.data = response.data.list
