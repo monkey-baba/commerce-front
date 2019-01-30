@@ -395,7 +395,13 @@ export default {
       }
     },
     detail: {
-      type: {
+      ecsOrderId: {
+        label: '平台订单号'
+      },
+      status: {
+        label: '订单状态'
+      },
+      orderType: {
         label: '订单类型'
       },
       code: {
@@ -417,7 +423,19 @@ export default {
         label: '客户'
       },
       pos: {
-        label: '门店'
+        label: '下单门店'
+      },
+      date: {
+        label: '下单时间'
+      },
+      paymentDate: {
+        label: '付款时间'
+      },
+      orderSource: {
+        label: '订单来源'
+      },
+      channel: {
+        label: '销售渠道'
       },
       receiver: {
         label: '收件人'
@@ -428,8 +446,20 @@ export default {
       address: {
         label: '地址'
       },
-      pcd: {
-        label: '省/市/区'
+      pointPos: {
+        name: {
+          label: '指定发货点名称'
+        },
+        code: {
+          label: '指定发货点编码'
+        },
+        address: {
+          label: '地址'
+        },
+        phone: {
+          label: '联系方式'
+        }
+
       },
       remark: {
         label: '买家留言'
