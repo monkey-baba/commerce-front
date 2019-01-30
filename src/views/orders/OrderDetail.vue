@@ -1,6 +1,6 @@
 <template>
   <div class="order-detail">
-    <ElForm ref="createForm" :model="form" :inline="true">
+    <ElForm ref="createForm" :inline="true">
       <ElCard shadow="never" style="margin: 10px">
         <div slot="header" class="clearfix">
           <span class="title">订单头信息</span>
@@ -199,38 +199,48 @@
                 fit
                 stripe
                 highlight-current-row
-                max-height="300"
+                max-height="200"
                 style="width: 600px">
                 <ElTableColumn :label="$t('order.detail.sellerRemark.date.label')" prop="date" />
                 <ElTableColumn :label="$t('order.detail.sellerRemark.user.label')" prop="user" />
                 <ElTableColumn :label="$t('order.detail.sellerRemark.remark.label')" prop="remark" />
               </ElTable>
+              <ElRow>
+                <ElCol :span="20">
+                  <ElInput v-model="remark" style="margin-top: 5px " />
+                </ElCol>
+                <ElCol :span="1">
+                  <blockquote />
+                </ElCol>
+                <ElCol :span="3">
+                  <ElButton style="margin-top: 5px" type="primary" @click="handleRemark">添加备注</ElButton>
+                </ElCol>
+              </ElRow>
             </ElFormItem>
           </ElCol>
         </ElRow>
       </ElCard>
 
-      <ElTabs type="border-card" style="margin: 10px;box-shadow: none" >
+      <ElTabs type="border-card" style="box-shadow: none;margin: 10px 10px 50px;" >
         <ElTabPane label="商品信息">
           <ElRow>
             <ElTable
-              v-loading="sku.table.loading"
-              :data="sku.table.data"
+              v-loading="loading"
+              :data="data.entries"
               :header-cell-style="valueHeaderStyle"
               max-height="300"
               border
               fit
               stripe
               highlight-current-row>
-              <ElTableColumn type="selection" width="50px"/>
               <ElTableColumn :label="$t('order.detail.entries.sku.label')" prop="code" />
               <ElTableColumn :label="$t('order.detail.entries.name.label')" prop="name" />
-              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="item.id" :key="item.id" />
+              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="'meta.'+[item.id]" :key="item.id" />
               <ElTableColumn :label="$t('order.detail.entries.quantity.label')" prop="quantity" />
               <ElTableColumn :label="$t('order.detail.entries.shippedQuantity.label')" prop="shippedQuantity" />
               <ElTableColumn :label="$t('order.detail.entries.basePrice.label')" prop="basePrice" />
               <ElTableColumn :label="$t('order.detail.entries.discount.label')" prop="discount" />
-              <ElTableColumn :label="$t('order.detail.entries.price.label')" prop="price" />
+              <ElTableColumn :label="$t('order.detail.entries.price.label')" prop="sellPrice" />
               <ElTableColumn :label="$t('order.detail.entries.totalPrice.label')" prop="totalPrice" />
             </ElTable>
           </ElRow>
@@ -238,18 +248,35 @@
         <ElTabPane label="支付信息">
           <ElRow>
             <ElTable
-              v-loading="payment.table.loading"
-              :data="payment.table.data"
+              v-loading="loading"
+              :data="data.payments"
               :header-cell-style="valueHeaderStyle"
               max-height="300"
               border
               fit
               stripe
               highlight-current-row>
-              <ElTableColumn type="selection" width="50px"/>
               <ElTableColumn :label="$t('general.index')" type="index" width="55px"/>
-              <ElTableColumn :label="$t('order.detail.payment.type.label')" prop="type.name" />
+              <ElTableColumn :label="$t('order.detail.payment.type.label')" prop="type" />
               <ElTableColumn :label="$t('order.detail.payment.amount.label')" prop="amount" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+        <ElTabPane label="配货信息">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="data.consignments"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('order.detail.consignment.code.label')" prop="code" />
+              <ElTableColumn :label="$t('order.detail.consignment.status.label')" prop="status" />
+              <ElTableColumn :label="$t('order.detail.consignment.carrier.label')" prop="carrier" />
+              <ElTableColumn :label="$t('order.detail.consignment.expressNum.label')" prop="expressNum" />
             </ElTable>
           </ElRow>
         </ElTabPane>
@@ -258,10 +285,12 @@
   </div>
 </template>
 <script>
-import { getSkuSpecs, getOrderDetail } from '@/api/order'
+import { getSkuSpecs, getOrderDetail, addRemark } from '@/api/order'
 import AddressLine from '@/components/Address/addressLine'
+import { isEmpty } from '@/utils/validate'
+
 export default {
-  name: 'OrderCreate',
+  name: 'OrderDetail',
   components: { AddressLine },
   filters: {
     numFilter(value) {
@@ -274,24 +303,11 @@ export default {
   data() {
     return {
       data: {},
-      sku: {
-        table: {
-          loading: false,
-          data: [],
-          select: []
-        }
-      },
-      payment: {
-        table: {
-          loading: false,
-          data: [],
-          select: []
-        }
-      },
       skuSpec: {
         options: []
       },
-      loading: true
+      loading: true,
+      remark: ''
     }
   },
   created() {
@@ -319,6 +335,22 @@ export default {
     },
     valueHeaderStyle() {
       return 'padding:5px'
+    },
+    handleRemark() {
+      if (isEmpty(this.remark)) {
+        return
+      }
+      addRemark(this.$route.params.id, this.remark).then((response) => {
+        this.data.sellerRemarks.push(response.data)
+        this.remark = ''
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '创建失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
   }
 }

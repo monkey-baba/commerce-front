@@ -103,3 +103,19 @@ export function updateBasic(product) {
   })
 }
 
+export function getSkuMeta(specid) {
+  return request({
+    'url': '/product/api/v1/skumeta/list/' + specid,
+    'method': 'get'
+  })
+}
+
+export function saveSku(productid, skus) {
+  const data = skus
+  return request({
+    'url': '/product/api/v1/sku/savesku/' + productid,
+    'method': 'post',
+    data
+  })
+}
+

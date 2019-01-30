@@ -1,158 +1,273 @@
 <template>
-  <div class="app-container">
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>配货单头信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>平台订单号：000001</div></el-col>
-              <el-col :span="6"><div>配货单号：</div></el-col>
-              <el-col :span="6"><div>配货单状态：</div></el-col>
-              <el-col :span="6"><div>配送方式：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>客户ID：</div></el-col>
-              <el-col :span="6"><div>平台：</div></el-col>
-              <el-col :span="6"><div>店铺：</div></el-col>
-              <el-col :span="6"><div>下单门店：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>下单日期：</div></el-col>
-              <el-col :span="6"><div>付款日期：</div></el-col>
-              <el-col :span="6"><div>订单金额：</div></el-col>
-              <el-col :span="6"><div>运费金额：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>订单来源：</div></el-col>
-              <el-col :span="6"><div>销售渠道：</div></el-col>
-            </el-row>
-          </div>
+  <div class="consignment-detail">
+    <ElForm :inline="true">
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">配货单头信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>收件人信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>收件人：000001</div></el-col>
-              <el-col :span="6"><div>手机：</div></el-col>
-              <el-col :span="6"><div>地址：</div></el-col>
-              <el-col :span="6"><div>电话：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>指定发货点编码：</div></el-col>
-              <el-col :span="6"><div>指定发货点名称：</div></el-col>
-              <el-col :span="6"><div>地址：</div></el-col>
-              <el-col :span="6"><div>联系电话：</div></el-col>
-            </el-row>
-          </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.ecsOrderId.name')+':'" >
+              {{ consignment.ecsOrderId }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.consignmentCode.name')+':'" >
+              {{ consignment.consignmentCode }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.consignmentStatus.name')+':'">
+              {{ consignment.consignmentStatusName }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.deliveryType.name')+':'">
+              {{ consignment.deliveryTypeName }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.customer.name')+':'" >
+              {{ consignment.customer }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.deliveryPos.name')+':'" >
+              {{ consignment.posName }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.carrier.name')+':'" >
+              {{ consignment.carrierName }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.expressNum.name')+':'">
+              {{ consignment.expressNum }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.date.name')+':'" >
+              {{ consignment.date }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.deliveryDate.name')+':'" >
+              {{ consignment.deliveryDate }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.consignmentTotalPrice.name')+':'" >
+              {{ consignment.totalPrice }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.deliveryCost.name')+':'">
+              {{ consignment.deliveryCost }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px;overflow: visible">
+        <div slot="header" class="clearfix">
+          <span class="title">收件人信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>备注信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="12">
-                <div>买家留言</div>
-              </el-col>
-              <el-col :span="12">
-                <div class="order-basic" >
-                  <div class="order-basic-header clearfix">
-                    <span>客服信息</span>
-                  </div>
-                  <div class="order-basic-body">
-                    <el-table
-                      border
-                      fit
-                      stripe
-                      highlight-current-row>
-                      <el-table-column label="添加时间" prop="" />
-                      <el-table-column label="添加人" prop="" />
-                      <el-table-column label="备注" prop="" />
-                    </el-table>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.receiver.name')+':'">
+              {{ consignment.receiver }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.receiverPhone.name')+':'">
+              {{ consignment.receiverPhone }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('consignment.detail.receiverAddress.name')+':'">
+              <div v-if="consignment.address">
+                <address-line v-model="consignment.address.address"/> {{ consignment.address.detail }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">备注信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-tabs type="border-card">
-      <el-tab-pane label="配货单行">
-        <el-table
-          border
-          fit
-          stripe
-          highlight-current-row>
-          <el-table-column label="行号" prop="" />
-          <el-table-column label="SKU" prop="code" >
-            <template slot-scope="scope">
-              <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="商品名称" prop="" />
-          <el-table-column label="颜色" prop="" />
-          <el-table-column label="尺码" prop="" />
-          <el-table-column label="数量" prop="" />
-          <el-table-column label="已发货数量" prop=""/>
-        </el-table>
-      </el-tab-pane>
-    </el-tabs>
+        <ElRow>
+          <ElCol :span="12">
+            <ElFormItem :label="$t('consignment.detail.remark.name')+':'">
+              <div class="remark">
+                {{ consignment.remark }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem :label="$t('consignment.detail.sellRemark.name')+':'" >
+              <ElTable
+                v-loading="loading"
+                :data="consignment.sellerRemarks"
+                :header-cell-style="valueHeaderStyle"
+                border
+                fit
+                stripe
+                highlight-current-row
+                max-height="200"
+                style="width: 600px">
+                <ElTableColumn :label="$t('consignment.detail.sellRemark.date.name')" prop="date" />
+                <ElTableColumn :label="$t('consignment.detail.sellRemark.userName.name')" prop="user" />
+                <ElTableColumn :label="$t('consignment.detail.sellRemark.remark.name')" prop="remark" />
+              </ElTable>
+              <ElRow>
+                <ElCol :span="20">
+                  <ElInput v-model="remark" style="margin-top: 5px " />
+                </ElCol>
+                <ElCol :span="1">
+                  <blockquote />
+                </ElCol>
+                <ElCol :span="3">
+                  <ElButton style="margin-top: 5px" type="primary" @click="handleRemark">添加备注</ElButton>
+                </ElCol>
+              </ElRow>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+
+      <ElTabs type="border-card" style="margin: 10px;box-shadow: none" >
+        <ElTabPane label="配货单行">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="consignment.entries"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('consignment.detail.entries.skuCode.name')" prop="skuCode" />
+              <ElTableColumn :label="$t('consignment.detail.entries.skuName.name')" prop="skuName" />
+              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="'meta.'+[item.id]" :key="item.id" />
+              <ElTableColumn :label="$t('consignment.detail.entries.quantity.name')" prop="quantity" />
+              <ElTableColumn :label="$t('consignment.detail.entries.shippedQuantity.name')" prop="shippedQuantity" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+      </ElTabs>
+    </ElForm>
   </div>
 </template>
 <script>
+import { getConsignmentDetail } from '@/api/consignment'
+import { getSkuSpecs, addRemark } from '@/api/order'
+import AddressLine from '@/components/Address/addressLine'
+import { isEmpty } from '@/utils/validate'
 export default {
-  name: 'OrderDetail',
-  filters: {
-    stepFilter: (value) => {
-      const stepMap = {
-        'CREATED': '1',
-        'PENDING': '2',
-        'APPROVED': '3',
-        'SHIPPED': '4',
-        'COMPLETED': '5'
-      }
-      return stepMap[value]
-    }
-  },
+  name: 'ConsignmentDetail',
+  components: { AddressLine },
   data() {
     return {
-      order: {
-        status: 'COMPLETED'
+      consignment: {
+        orderId: '',
+        ecsOrderId: '',
+        consignmentCode: '',
+        consignmentStatusName: '',
+        deliveryTypeName: '',
+        customer: '',
+        posId: '',
+        posName: '',
+        carrierName: '',
+        expressNum: '',
+        date: '',
+        deliveryDate: '',
+        totalPrice: '',
+        deliveryCost: '',
+        receiver: '',
+        receiverPhone: '',
+        address: {},
+        remark: '',
+        sellerRemarks: [],
+        entries: []
+      },
+      loading: true,
+      skuSpec: {
+        options: []
+      },
+      remark: ''
+    }
+  },
+  created() {
+    this.getOptions()
+    this.getDetails()
+  },
+  methods: {
+    getOptions() {
+      getSkuSpecs().then((response) => {
+        this.skuSpec.options = response.data
+      })
+    },
+    getDetails() {
+      getConsignmentDetail(this.$route.params.consignmentId).then((response) => {
+        this.consignment = response.data
+        this.loading = false
+        console.log(this.consignment)
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取配货单详情失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    valueHeaderStyle() {
+      return 'padding:5px'
+    },
+    handleRemark() {
+      if (isEmpty(this.remark)) {
+        return
       }
+      addRemark(this.consignment.orderId, this.remark).then((response) => {
+        this.consignment.sellerRemarks.push(response.data)
+        this.remark = ''
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '创建失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
   }
 }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .order-basic {
-    border: 1px solid #ebeef5;
-    margin: 10px auto;
-    border-radius: 4px;
-    .order-basic-header{
-      padding: 10px;
-      font-size: 16px;
-      font-weight: 500;
-      border-bottom: 1px solid #ebeef5;
-    }
-    .order-basic-body{
-      font-size: 13px;
-    }
+<style>
+  .consignment-detail .el-form-item__label{
+    font-weight: 400;
   }
-  .row-bg {
-    padding: 10px 0;
+  .consignment-detail .el-form-item{
+    margin-bottom: 0 !important;
+  }
+  hr {
+    display: block;
+    border: 0;
+    border-bottom: 1px solid #eaeaea;
+    height: 1px;
+  }
+  .remark{
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    display: block;
+    width: 400px;
+    min-height: 100px;
+    padding-left: 10px;
   }
 </style>

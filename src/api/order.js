@@ -113,3 +113,15 @@ export function getOrderDetail(id) {
     'params': param
   })
 }
+
+export function addRemark(id, remark) {
+  const data = {
+    remark: remark,
+    orderId: id
+  }
+  return request({
+    'url': '/order/api/v1/order/addRemark',
+    'method': 'post',
+    data
+  })
+}

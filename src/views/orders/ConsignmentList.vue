@@ -4,22 +4,22 @@
       <el-form ref="consignmentQuery" :model="consignmentQuery" :inline="true">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="配货单号:" prop="code">
+            <el-form-item :label="$t('consignment.list.consignmentCode.name')+':'" prop="code">
               <el-input v-model="consignmentQuery.code" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="平台订单号" prop="ecsOrderId">
+            <el-form-item :label="$t('consignment.list.ecsOrderId.name')+':'" prop="ecsOrderId">
               <el-input v-model="consignmentQuery.ecsOrderId" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="订单编号:" prop="orderCode">
+            <el-form-item :label="$t('consignment.list.orderCoe.name')+':'" prop="orderCode">
               <el-input v-model="consignmentQuery.orderCode" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="店铺:" prop="storeId">
+            <el-form-item :label="$t('consignment.list.store.name')+':'" prop="storeId">
               <el-select v-model="consignmentQuery.storeId" auto-complete="on">
                 <el-option
                   v-for="item in stores"
@@ -32,24 +32,24 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="会员编号:" prop="customerId">
+            <el-form-item :label="$t('consignment.list.customerId.name')+':'" prop="customerId">
               <el-input :placeholder="'请选择客户'" :value="customer.name" readonly @click.native="handleSearchCustomer" >
                 <i slot="suffix" class="el-icon-close" @click="deleteSelectCustomer" @click.stop/>
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="收货人:" prop="receiver">
+            <el-form-item :label="$t('consignment.list.receiver.name')+':'" prop="receiver">
               <el-input v-model="consignmentQuery.receiver" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="收货手机号:" prop="receiverPhone">
+            <el-form-item :label="$t('consignment.list.receiverPhone.name')+':'" prop="receiverPhone">
               <el-input v-model="consignmentQuery.receiverPhone" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="门店:" prop="posId">
+            <el-form-item :label="$t('consignment.list.pointofservice.name')+':'" prop="posId">
               <el-input :placeholder="'请选择门店'" :value="pos.name" readonly @click.native="handleSearchPos" >
                 <i slot="suffix" class="el-icon-close" @click="deleteSelectPos" @click.stop/>
               </el-input>
@@ -58,14 +58,14 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="订单金额:">
+            <el-form-item :label="$t('consignment.list.orderTotalPrice.name')+':'">
               <el-input v-model="consignmentQuery.totalPriceMin" class="total-price"/>
               ~
               <el-input v-model="consignmentQuery.totalPriceMax" class="total-price"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="承运商:" prop="carrierId">
+            <el-form-item :label="$t('consignment.list.carrier.name')+':'" prop="carrierId">
               <el-select v-model="consignmentQuery.carrierId" auto-complete="on">
                 <el-option
                   v-for="item in carriers"
@@ -76,12 +76,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="运单号:" prop="expressNum">
+            <el-form-item :label="$t('consignment.list.expressNum.name')+':'" prop="expressNum">
               <el-input v-model="consignmentQuery.expressNum" auto-complete="on"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="配送方式:" prop="deliveryTypeId">
+            <el-form-item :label="$t('consignment.list.deliveryType.name')+':'" prop="deliveryTypeId">
               <el-select v-model="consignmentQuery.deliveryTypeId" auto-complete="on">
                 <el-option
                   v-for="item in deliveryTypes"
@@ -94,7 +94,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="发货日期:">
+            <el-form-item :label="$t('consignment.list.deliveryDate.name')+':'">
               <el-date-picker
                 v-model="consignmentQuery.deliveryStartDate"
                 type="datetime"
@@ -109,7 +109,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="下单日期:">
+            <el-form-item :label="$t('consignment.list.date.name')+':'">
               <el-date-picker
                 v-model="consignmentQuery.startDate"
                 type="date"
@@ -124,7 +124,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="配货单状态" prop="consignmentStatusId">
+            <el-form-item :label="$t('consignment.list.consignmentStatus.name')+':'" prop="consignmentStatusId">
               <el-checkbox :indeterminate="consignmentStatus.isIndeterminate" v-model="checkAllConsignmentStatus" border @change="handleCheckAllConsignmentStatusChange">全选</el-checkbox>
               <el-checkbox-group v-model="temp.consignmentStatusId" @change="handleCheckedConsignmentStatusChange">
                 <el-checkbox v-for="item in consignmentStatuses" :label="item.name" :key="item.id" :value="item.id" border/>
@@ -157,17 +157,21 @@
       highlight-current-row
       @selection-change="handleSelectionChange">
       <el-table-column type="selection"/>
-      <el-table-column label="平台订单号" prop="ecsOrderId"/>
-      <el-table-column label="配货单号" prop="code"/>
-      <el-table-column label="配货单状态" prop="consignmentStatusName"/>
-      <el-table-column label="店铺" prop="storeName"/>
-      <el-table-column label="下单门店" prop="posName"/>
-      <el-table-column label="运单编号" prop="expressNum"/>
-      <el-table-column label="收件人" prop="receiver"/>
-      <el-table-column label="手机号" prop="receiverPhone"/>
-      <el-table-column label="收件地址" prop="receiverAddress"/>
-      <el-table-column label="下单时间" prop="date"/>
-      <el-table-column label="发货时间" prop="deliveryDate"/>
+      <el-table-column :label="$t('consignment.list.ecsOrderId.name')" prop="ecsOrderId"/>
+      <el-table-column :label="$t('consignment.list.consignmentCode.name')" prop="code">
+        <template slot-scope="scope">
+          <router-link :to="{name:'ConsignmentDetail',params: {consignmentId: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('consignment.list.consignmentStatus.name')" prop="consignmentStatusName"/>
+      <el-table-column :label="$t('consignment.list.store.name')" prop="storeName"/>
+      <el-table-column :label="$t('consignment.list.pos.name')" prop="posName"/>
+      <el-table-column :label="$t('consignment.list.expressNum.name')" prop="expressNum"/>
+      <el-table-column :label="$t('consignment.list.receiver.name')" prop="receiver"/>
+      <el-table-column :label="$t('consignment.list.receiverPhone.name')" prop="receiverPhone"/>
+      <el-table-column :label="$t('consignment.list.receiverAddress.name')" prop="receiverAddress"/>
+      <el-table-column :label="$t('consignment.list.datetime.name')" prop="date"/>
+      <el-table-column :label="$t('consignment.list.deliveryDateTime.name')" prop="deliveryDate"/>
     </el-table>
 
     <el-pagination
@@ -350,7 +354,7 @@ export default {
       consignmentStatuses: [],
       checkAllConsignmentStatus: false,
       consignmentStatus: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       allConsignmentStatusId: [],
       consignmentStatusMap: {},
@@ -427,8 +431,11 @@ export default {
     },
     getData() {
       this.table.loading = true
+      this.consignmentStatuses.forEach((v, index) => {
+        this.consignmentQuery['consignmentStatusIds[' + index + ']'] = null
+      })
       this.temp.consignmentStatusId.forEach((v, index) => {
-        this.consignmentQuery['consignmentStatusId[' + index + ']'] = this.consignmentStatusMap[v]
+        this.consignmentQuery['consignmentStatusIds[' + index + ']'] = this.consignmentStatusMap[v]
       })
       getConsignments(this.consignmentQuery).then(response => {
         this.table.data = response.data.list
@@ -465,7 +472,7 @@ export default {
       }
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['平台订单号', '配货单号', '配货单状态', '店铺', '下单门店', '运单编号', '收件人', '手机号', '收件地址', '下单时间', '发货时间']
+        const tHeader = ['平台订单号', '配货单号', '配货单状态', '店铺', '下单门店', '运单号', '收货人', '收货手机号', '收件地址', '下单时间', '发货时间']
         const filterVal = ['ecsOrderId', 'code', 'consignmentStatusName', 'storeName', 'posName', 'expressNum', 'receiver', 'receiverPhone', 'receiverAddress', 'date', 'deliveryDate']
         const data = this.table.select.map(u => filterVal.map(field => {
           return u[field]
@@ -489,18 +496,14 @@ export default {
         console.log('查询失败')
       })
     },
-    handleCheckAllConsignmentStatusChange() {
-      this.temp.consignmentStatusId = this.consignmentStatus.isIndeterminate ? this.allConsignmentStatusId : []
-      if (this.temp.consignmentStatusId.length === 0) {
-        this.consignmentStatus.isIndeterminate = true
-      } else {
-        this.consignmentStatus.isIndeterminate = false
-      }
+    handleCheckAllConsignmentStatusChange(val) {
+      this.temp.consignmentStatusId = val ? this.allConsignmentStatusId : []
+      this.consignmentStatus.isIndeterminate = false
     },
-    handleCheckedConsignmentStatusChange() {
-      const checkedCount = this.temp.consignmentStatusId.length
+    handleCheckedConsignmentStatusChange(value) {
+      const checkedCount = value.length
       this.checkAllConsignmentStatus = checkedCount === this.consignmentStatuses.length
-      this.consignmentStatus.isIndeterminate = checkedCount >= 0 && checkedCount < this.consignmentStatuses.length
+      this.consignmentStatus.isIndeterminate = checkedCount > 0 && checkedCount < this.consignmentStatuses.length
     },
     getCustomerData() {
       this.customerTable.loading = true
@@ -535,7 +538,7 @@ export default {
     },
     deleteSelectCustomer() {
       this.customer.name = ''
-      this.orderQuery.customerId = ''
+      this.consignmentQuery.customerId = ''
     },
     selectCustomer(val) {
       this.currentRow = val
@@ -550,7 +553,7 @@ export default {
         return
       }
       this.customer.name = this.currentRow.name
-      this.orderQuery.customerId = this.currentRow.id
+      this.consignmentQuery.customerId = this.currentRow.id
       this.customerDialog.visible = false
     },
     handleSearchPos() {
@@ -570,14 +573,14 @@ export default {
     handleSelectPos() {
       if (this.currentRow == null) {
         this.$message({
-          message: '请选择客户',
+          message: '请选择门店',
           type: 'error',
           duration: 2 * 1000
         })
         return
       }
       this.pos.name = this.currentRow.name
-      this.orderQuery.posId = this.currentRow.id
+      this.consignmentQuery.posId = this.currentRow.id
       this.posDialog.visible = false
     },
     queryCustomer() {
