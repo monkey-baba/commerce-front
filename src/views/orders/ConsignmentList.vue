@@ -354,7 +354,7 @@ export default {
       consignmentStatuses: [],
       checkAllConsignmentStatus: false,
       consignmentStatus: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       allConsignmentStatusId: [],
       consignmentStatusMap: {},
@@ -496,18 +496,14 @@ export default {
         console.log('查询失败')
       })
     },
-    handleCheckAllConsignmentStatusChange() {
-      this.temp.consignmentStatusId = this.consignmentStatus.isIndeterminate ? this.allConsignmentStatusId : []
-      if (this.temp.consignmentStatusId.length === 0) {
-        this.consignmentStatus.isIndeterminate = true
-      } else {
-        this.consignmentStatus.isIndeterminate = false
-      }
+    handleCheckAllConsignmentStatusChange(val) {
+      this.temp.consignmentStatusId = val ? this.allConsignmentStatusId : []
+      this.consignmentStatus.isIndeterminate = false
     },
-    handleCheckedConsignmentStatusChange() {
-      const checkedCount = this.temp.consignmentStatusId.length
+    handleCheckedConsignmentStatusChange(value) {
+      const checkedCount = value.length
       this.checkAllConsignmentStatus = checkedCount === this.consignmentStatuses.length
-      this.consignmentStatus.isIndeterminate = checkedCount >= 0 && checkedCount < this.consignmentStatuses.length
+      this.consignmentStatus.isIndeterminate = checkedCount > 0 && checkedCount < this.consignmentStatuses.length
     },
     getCustomerData() {
       this.customerTable.loading = true

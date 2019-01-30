@@ -382,10 +382,10 @@ export default {
       checkAllStatus: false,
       checkAllType: false,
       status: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       orderType: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       allStatusId: [],
       allOrderTypeId: [],
@@ -518,31 +518,23 @@ export default {
         console.log('查询失败')
       })
     },
-    handleCheckAllStatusChange() {
-      this.temp.statusId = this.status.isIndeterminate ? this.allStatusId : []
-      if (this.temp.statusId.length === 0) {
-        this.status.isIndeterminate = true
-      } else {
-        this.status.isIndeterminate = false
-      }
+    handleCheckAllStatusChange(val) {
+      this.temp.statusId = val ? this.allStatusId : []
+      this.status.isIndeterminate = false
     },
-    handleCheckAllTypeChange() {
-      this.temp.orderTypeId = this.orderType.isIndeterminate ? this.allOrderTypeId : []
-      if (this.temp.orderTypeId.length === 0) {
-        this.orderType.isIndeterminate = true
-      } else {
-        this.orderType.isIndeterminate = false
-      }
+    handleCheckAllTypeChange(val) {
+      this.temp.orderTypeId = val ? this.allOrderTypeId : []
+      this.orderType.isIndeterminate = false
     },
-    handleCheckedStatusChange() {
-      const checkedCount = this.temp.statusId.length
+    handleCheckedStatusChange(value) {
+      const checkedCount = value.length
       this.checkAllStatus = checkedCount === this.statuses.length
-      this.status.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
+      this.status.isIndeterminate = checkedCount > 0 && checkedCount < this.statuses.length
     },
-    handleCheckedOrderTypeChange() {
-      const checkedCount = this.temp.orderTypeId.length
+    handleCheckedOrderTypeChange(value) {
+      const checkedCount = value.length
       this.checkAllType = checkedCount === this.orderTypes.length
-      this.orderType.isIndeterminate = checkedCount >= 0 && checkedCount < this.orderTypes.length
+      this.orderType.isIndeterminate = checkedCount > 0 && checkedCount < this.orderTypes.length
     },
     handleSearchCustomer() {
       this.customerDialog.visible = true
