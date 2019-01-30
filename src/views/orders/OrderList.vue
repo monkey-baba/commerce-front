@@ -137,6 +137,7 @@
       <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
       <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
       <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiver.label')" prop="receiver" />
       <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
       <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
       <el-table-column :label="$t('order.list.date.label')" prop="date">

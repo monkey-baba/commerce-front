@@ -251,6 +251,9 @@ export default {
       totalPrice: {
         label: '订单金额'
       },
+      receiver: {
+        label: '收件人'
+      },
       receiverPhone: {
         label: '手机号'
       },
