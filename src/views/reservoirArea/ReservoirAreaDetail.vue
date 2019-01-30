@@ -141,12 +141,12 @@ export default {
   }
   .owner{
     position: relative;
-    left: 30px;
+    left: 40px;
     top: 20px;
   }
   .contact{
     position: relative;
-    left: 107px;
+    left: 114px;
     top: 20px;
   }
   .address{

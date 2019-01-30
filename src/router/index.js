@@ -194,7 +194,7 @@ export const asyncRouterMap = [
         meta: { title: 'StoreList' }
       },
       {
-        path: 'list1',
+        path: 'storesDetail',
         component: () => import('@/views/stores/StoresDetail'),
         name: 'StoresDetail',
         meta: { title: 'StoresDetail' }
@@ -217,7 +217,7 @@ export const asyncRouterMap = [
         meta: { title: 'ReservoirAreaList' }
       },
       {
-        path: 'list1',
+        path: 'reservoirAreaDetail',
         component: () => import('@/views/reservoirArea/ReservoirAreaDetail'),
         name: 'ReservoirAreaDetail',
         meta: { title: 'ReservoirAreaDetail' }
