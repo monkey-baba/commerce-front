@@ -524,7 +524,20 @@ export default {
     },
     fetchSkuData() {
       getSkus(this.productid).then(response => {
-
+        this.specification = response.data
+        this.specification.forEach((item, index) => {
+          this.specs[index] = item.name
+          item.name = this.specMap[item.name]
+          this.fetchMetaData(index)
+          const specvalueid = []
+          item.value.forEach((v, inde) => {
+            specvalueid[inde] = v.specvalueid
+            this.skuEdit.form[inde].skuId = v.spacVoc.skuId
+            this.skuEdit.form[inde].skuName = v.spacVoc.skuName
+          })
+          this.specvalues[index] = specvalueid
+          this.$forceUpdate()
+        })
       }).catch((e) => {
       })
     },
@@ -629,6 +642,9 @@ export default {
         this.specification[index].name = this.specMap[this.specs[index]]
         this.specification[index].specid = this.specs[index]
       }
+      this.fetchMetaData(index)
+    },
+    fetchMetaData(index) {
       getSkuMeta(this.specs[index]).then(response => {
         const items = response.data
         this.specValueList[index] = items
