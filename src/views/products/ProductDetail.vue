@@ -107,61 +107,77 @@
         </ElForm>
       </el-tab-pane>
       <el-tab-pane label="SKU设置">
-        <ElForm
-          ref="updateSkuForm"
-          :rules="skuEdit.rules"
-          :model="skuEdit.form"
-          :inline="true"
-          label-position="left"
-          label-width="120px"
-        >
-          <ElRow>
-            <ElFormItem :label="$t('sku.spec.name')" prop="name">
-              <ElSelect v-model="skuEdit.form.name" auto-complete="on">
-                <el-option
-                  v-for="item in spec"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </ElSelect>
-            </ElFormItem>
-          </ElRow>
-          <ElRow>
-            <ElTable border>
-              <ElTableColumn :label="$t('sku.attributecode.name')" prop="endTime">
-                <template slot-scope="scope">
-                  <template>
-                    {{ scope.row.attibutecode }}
-                  </template>
-                </template>
-              </ElTableColumn>
-              <ElTableColumn :label="$t('sku.attributename.name')" prop="active">
-                <template slot-scope="scope">
-                  <template >
-                    {{ scope.row.attibutename }}
-                  </template>
-                </template>
-              </ElTableColumn>
-              <ElTableColumn :label="$t('sku.code.name')" prop="code">
-                <template slot-scope="scope">
-                  <ElInput v-model="scope.row.code" class="edit-input" size="mini" />
-                </template>
-              </ElTableColumn>
-              <ElTableColumn :label="$t('sku.code.name')" prop="name">
-                <template slot-scope="scope">
-                  <ElInput v-model="scope.row.name" class="edit-input" size="mini"/>
-                </template>
-              </ElTableColumn>
-            </ElTable>
-          </ElRow>
-          <ElRow >
-            <ElCol align="center">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="saveSku">
-                保存
-              </ElButton>
-            </ElCol>
-          </ElRow>
-        </ElForm>
+        <!-- 高级规格 -->
+        <div class="specification">
+          <div class="title">产品规格设置</div>
+          <ul class="spec-list">
+            <li v-for="(item,index) in specification" :key="index" class="item">
+              <div class="name">
+                <ElSelect v-model="specs[index]" @change="handleSpecSelect(index)">
+                  <el-option
+                    v-for="s in spec"
+                    :key="s.id"
+                    :label="s.name"
+                    :value="s.id"/>
+                </ElSelect>
+                <i class="icon el-icon-circle-close" @click="delSpec(index)"/>
+              </div>
+              <div class="values">
+                <el-checkbox-group v-model="specvalues[index]" @change="handleSpecValueSelect(index)">
+                  <el-checkbox-button
+                    v-for="s in specValueList[index]"
+                    :label="s.id"
+                    :key="s.id"
+                  >
+                    {{ s.name }}
+                  </el-checkbox-button>
+                </el-checkbox-group>
+                <div class="add-attr">
+                  <!--
+                  <el-input v-model="addValues[index]" size="small" placeholder="多个产品属性以空格隔开" icon="plus" @click="addSpecTag(index)" @keyup.native.enter="addSpecTag(index)"/>
+-->
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="add-spec">
+            <el-button :disabled="specification.length >= 5" size="small" type="info" @click="addSpec">添加规格项目</el-button>
+          </div>
+        </div>
+
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th v-for="item in specification" :key="item" >{{ item.name }}</th>
+              <th>sku编码</th>
+              <th>sku名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item,index) in countSum(0)" :key="index">
+              <td
+                v-for="(n, specIndex) in specification.length"
+                v-if="showTd(specIndex, index)"
+                :key="specIndex"
+                :rowspan="countSum(n)">
+                {{ getSpecAttr(specIndex, index) }}
+              </td>
+              <td>
+                <ElInput v-model="skuEdit.form[index].skuId" class="edit-input" size="mini"/>
+              </td>
+              <td>
+                <ElInput v-model="skuEdit.form[index].skuName" class="edit-input" size="mini" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ElRow >
+          <ElCol align="center">
+            <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="saveSku">
+              保存
+            </ElButton>
+          </ElCol>
+        </ElRow>
       </el-tab-pane>
       <el-tab-pane label="价格维护">
         <ElForm ref="priceRowQuery" :model="priceRowQuery" :inline="true">
@@ -320,7 +336,7 @@
 <script>
 import { getPrice } from '@/api/price'
 import { getPriceRows, getPriceType, createPriceRow } from '@/api/pricerow'
-import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr } from '@/api/product'
+import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr, getSkuMeta, saveSku } from '@/api/product'
 
 export default {
   name: 'ProductDetail',
@@ -330,7 +346,7 @@ export default {
       default: false
     }
   },
-  data() {
+  data: function() {
     return {
       visible: true,
       priceRowQuery: {
@@ -339,15 +355,46 @@ export default {
       },
       basicEdit: {
         visible: true,
-        rules: {
-        },
+        rules: {},
         form: {}
       },
       skuEdit: {
         visible: true,
-        rules: {
-        },
-        form: {}
+        rules: {},
+        form: [{
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }, {
+          skuId: '',
+          skuName: '',
+          meta: []
+        }
+        ]
       },
       priceRowTable: {
         loading: false,
@@ -356,13 +403,14 @@ export default {
       },
       priceRowCreate: {
         visible: false,
-        rules: {
-        },
+        rules: {},
         form: {}
       },
       channel: [],
       channelMap: {},
       priceList: [],
+      specValueList: [],
+      specValueMap: {},
       priceChannelList: '',
       approvedStatus: [],
       approvedStatusMap: {},
@@ -377,12 +425,17 @@ export default {
       dialogVisible: false,
       dialogImageUrl: '',
       limitNum: 5,
-      tempRoute: {}
+      tempRoute: {},
+      specification: [],
+      addValues: [], // 用来存储要添加的规格属性
+      specs: [],
+      specvalues: [[], [], [], [], []],
+      productid: ''
     }
   },
   created() {
-    const id = this.$route.params && this.$route.params.id
-    this.fetchData(id)
+    this.productid = this.$route.params && this.$route.params.id
+    this.fetchData(this.productid)
 
     // Why need to make a copy of this.$route here?
     // Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
@@ -530,7 +583,6 @@ export default {
     },
     saveBasic() {
       updateBasic(this.basicEdit.form).then(response => {
-        alert(this.basicEdit.form)
         this.$message({
           message: response.data,
           type: 'success'
@@ -545,7 +597,47 @@ export default {
       })
     },
     saveSku() {
-
+      for (let i = 0; i < this.countSum(0); i++) {
+        for (let j = 0; j < this.specification.length; j++) {
+          this.skuEdit.form[i].meta[j] = {
+            specId: this.specification[j].specid,
+            metaId: this.specification[j].value[parseInt(i / this.countSum(j + 1)) % this.specification[j].value.length].specvalueid
+          }
+        }
+      }
+      saveSku(this.productid, this.skuEdit.form).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '创建成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch((e) => {
+        this.$notify({
+          title: '失败',
+          message: 'sku保存失败' + e,
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    handleSpecSelect(index) {
+      if (this.specification[index] !== undefined) {
+        this.specification[index].name = this.specMap[this.specs[index]]
+        this.specification[index].specid = this.specs[index]
+      }
+      getSkuMeta(this.specs[index]).then(response => {
+        const items = response.data
+        this.specValueList[index] = items
+        this.specValueList[index].forEach(v => {
+          this.specValueMap[v.id] = v.name
+        })
+        this.$forceUpdate()
+      }).catch((e) => {
+      })
+    },
+    handleSpecValueSelect(index) {
+      this.addSpecValue(index)
     },
     // 上传文件之前的钩子
     handleBeforeUpload(file) {
@@ -566,7 +658,12 @@ export default {
     },
     // 文件超出个数限制时的钩子
     handleExceed(files, fileList) {
-
+      this.$notify({
+        title: '失败',
+        message: '文件数目超出限制',
+        type: 'error',
+        duration: 2000
+      })
     },
     // 文件列表移除文件时的钩子
     handleRemove(file, fileList) {
@@ -582,26 +679,179 @@ export default {
     },
     cancelEdit() {
       this.visible = false
+    },
+    // 添加规格项目
+    addSpec() {
+      if (this.specification.length < 5) {
+        this.specification.push({
+          name: '',
+          value: []
+        })
+      }
+    },
+
+    // 删除规格项目
+    delSpec(index) {
+      this.specification.splice(index, 1)
+      this.$forceUpdate()
+    },
+    // 添加规格属性
+    addSpecValue(index) {
+      this.$set(this.specification[index], 'value', [])
+      const arr = this.specvalues[index]
+      arr.forEach(item => {
+        this.specification[index].value.push({
+          specvalueid: item,
+          specParamName: this.specValueMap[item],
+          spacVoc: {
+            skuId: '', // sku
+            skuName: '' // sku名称
+          }
+        })
+      })
+      const res = new Map()
+      const newArr = this.specification[index].value.filter(key => !res.has(key.specParamName) && res.set(key.specParamName, 1) && !res.has(key.specvalueid) && res.set(key.specvalueid, 1))
+      this.$set(this.specification[index], 'value', newArr)
+      this.clearAddValues(index)
+      this.$forceUpdate()
+    },
+
+    // 清空 addValues
+    clearAddValues(index) {
+      this.$set(this.addValues, index, '')
+    },
+
+    /*
+      根据传入的属性值，拿到相应规格的属性
+      @params
+        specIndex 规格项目在 advancedSpecification 中的序号
+        index 所有属性在遍历时的序号
+    */
+    getSpecAttr(specIndex, index) {
+      // 获取当前规格项目下的属性值
+      const currentValues = this.specification[specIndex].value
+      let indexCopy
+
+      // 判断是否是最后一个规格项目
+      if (this.specification[specIndex + 1] && this.specification[specIndex + 1].value.length) {
+        indexCopy = index / this.countSum(specIndex + 1)
+      } else {
+        indexCopy = index
+      }
+
+      const i = indexCopy % currentValues.length
+      if (i.toString() !== 'NaN' && i % 1 === 0) {
+        return currentValues[i].specParamName
+      } else {
+        return ''
+      }
+    },
+
+    /*
+      计算属性的乘积
+      @params
+        specIndex 规格项目在 advancedSpecification 中的序号
+    */
+    countSum(specIndex) {
+      let num = 1
+      this.specification.forEach((item, index) => {
+        if (index >= specIndex && item.value.length) {
+          num *= item.value.length
+        }
+      })
+      return num
+    },
+
+    // 根据传入的条件，来判断是否显示该td
+    showTd(specIndex, index) {
+      // 如果当前项目下没有属性，则不显示
+      if (!this.specification[specIndex]) {
+        return false
+
+        // 自己悟一下吧
+      } else if (index % this.countSum(specIndex + 1) === 0) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .order-basic {
-    border: 1px solid #ebeef5;
-    margin: 10px auto;
-    border-radius: 4px;
-    .order-basic-header{
+  .title {
+    padding: 0 12px;
+    line-height: 1;
+    font-size: 18px;
+    border-left: 4px solid #50bfff;
+    color: #666;
+    margin: 0 0 16px 0;
+    font-weight: 400;
+  }
+  .example {
+    margin-top: 50px;
+  }
+  .specification {
+    display: inline-block;
+    vertical-align: top;
+    width: 480px;
+    .spec-list {
+      background-color: #fff;
+      border: 1px solid #d8d8d8;
       padding: 10px;
-      font-size: 16px;
-      font-weight: 500;
-      border-bottom: 1px solid #ebeef5;
-    }
-    .order-basic-body{
-      font-size: 13px;
+      .item {
+        margin-top: 5px;
+        &:first-child {
+          margin-top: 0;
+        }
+        .name {
+          background: #f3f6fb;
+          padding: 2px 8px;
+          overflow: hidden;
+          .el-input {
+            float: left;
+            width: 150px;
+          }
+          .icon {
+            display: none;
+            color: #929292;
+            cursor: pointer;
+            &:hover {
+              color: #880000;
+            }
+          }
+          &:hover {
+            .icon {
+              display: inline-block;
+            }
+          }
+        }
+        .values {
+          .el-tag {
+            margin: 8px 0 0 8px;
+          }
+          .add-attr {
+            display: inline-block;
+            vertical-align: top;
+            .el-input {
+              width: 200px;
+              margin: 2px 0 0 4px;
+            }
+          }
+        }
+      }
+      .add-spec {
+        font-size: 13px;
+      }
     }
   }
-  .row-bg {
-    padding: 10px 0;
+  .stock-table {
+    td,
+    th {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      width: 100px;
+      font-size: 14px;
+    }
   }
 </style>
