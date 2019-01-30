@@ -221,7 +221,7 @@
         </ElRow>
       </ElCard>
 
-      <ElTabs type="border-card" style="margin: 10px;box-shadow: none" >
+      <ElTabs type="border-card" style="box-shadow: none;margin: 10px 10px 50px;" >
         <ElTabPane label="商品信息">
           <ElRow>
             <ElTable
