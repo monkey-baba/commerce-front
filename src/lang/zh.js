@@ -991,7 +991,7 @@ export default {
       }
     }
   },
-  ReservoirArea: {
+  reservoirArea: {
     create: {
       title: '创建大仓',
       name: {
