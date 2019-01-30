@@ -336,7 +336,7 @@
 <script>
 import { getPrice } from '@/api/price'
 import { getPriceRows, getPriceType, createPriceRow } from '@/api/pricerow'
-import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr, getSkuMeta, saveSku } from '@/api/product'
+import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr, getSkuMeta, saveSku, getSkus } from '@/api/product'
 
 export default {
   name: 'ProductDetail',
@@ -515,10 +515,17 @@ export default {
       this.initPriceType()
       this.fetchBaicData(productId)
       this.fetchPriceData(productId)
+      this.fetchSkuData(productId)
     },
     fetchBaicData(id) {
       getBaicData(id).then(response => {
         this.basicEdit.form = response.data
+      })
+    },
+    fetchSkuData() {
+      getSkus(this.productid).then(response => {
+
+      }).catch((e) => {
       })
     },
     fetchPriceData(productId) {
@@ -550,12 +557,8 @@ export default {
     },
     fetchPriceRowData(priceId) {
       getPriceRows(priceId).then(response => {
-        const items = response.data.list
-        this.table.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
-          return v
-        })
+        const items = response.data
+        this.priceRowTable.data = items
       }).catch((e) => {
       })
     },
