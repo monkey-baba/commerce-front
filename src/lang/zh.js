@@ -66,7 +66,7 @@ export default {
     orderManage: '订单管理',
     OrderList: '订单列表',
     OrderCreate: '订单创建',
-    ConsignmentList: '发货单列表',
+    ConsignmentList: '配货单列表',
     OrderDetail: '订单详情',
     account: '账户管理',
     accountUser: '用户管理',
@@ -1146,6 +1146,143 @@ export default {
     },
     name: {
       label: 'SKU名称'
+    }
+  },
+  consignment: {
+    list: {
+      date: {
+        name: '下单日期'
+      },
+      datetime: {
+        name: '下单时间'
+      },
+      pos: {
+        name: '下单门店'
+      },
+      customerId: {
+        name: '会员编号'
+      },
+      deliveryDate: {
+        name: '发货日期'
+      },
+      deliveryDateTime: {
+        name: '发货时间'
+      },
+      ecsOrderId: {
+        name: '平台订单号'
+      },
+      store: {
+        name: '店铺'
+      },
+      carrier: {
+        name: '承运商'
+      },
+      receiverAddress: {
+        name: '收件地址'
+      },
+      receiver: {
+        name: '收货人'
+      },
+      receiverPhone: {
+        name: '收货手机号'
+      },
+      orderCoe: {
+        name: '订单编号'
+      },
+      orderTotalPrice: {
+        name: '订单金额'
+      },
+      expressNum: {
+        name: '运单号'
+      },
+      consignmentCode: {
+        name: '配货单号'
+      },
+      consignmentStatus: {
+        name: '配货单状态'
+      },
+      pointofservice: {
+        name: '门店'
+      },
+      deliveryType: {
+        name: '配送方式'
+      }
+    },
+    detail: {
+      ecsOrderId: {
+        name: '平台订单号'
+      },
+      consignmentCode: {
+        name: '配货单号'
+      },
+      consignmentStatus: {
+        name: '配货单状态'
+      },
+      deliveryType: {
+        name: '配送方式'
+      },
+      customer: {
+        name: '客户'
+      },
+      deliveryPos: {
+        name: '发货仓库'
+      },
+      carrier: {
+        name: '快递公司'
+      },
+      expressNum: {
+        name: '运单号'
+      },
+      date: {
+        name: '下单日期'
+      },
+      deliveryDate: {
+        name: '发货日期'
+      },
+      consignmentTotalPrice: {
+        name: '配货单金额'
+      },
+      deliveryCost: {
+        name: '运费金额'
+      },
+      receiver: {
+        name: '收件人'
+      },
+      receiverPhone: {
+        name: '手机'
+      },
+      receiverAddress: {
+        name: '地址'
+      },
+      remark: {
+        name: '买家备注'
+      },
+      sellRemark: {
+        name: '客服备注',
+        date: {
+          name: '添加时间'
+        },
+        userName: {
+          name: '添加人'
+        },
+        remark: {
+          name: '备注'
+        }
+      },
+      entries: {
+        skuCode: {
+          name: 'SKU编码'
+        },
+        skuName: {
+          name: '商品名称'
+        },
+        quantity: {
+          name: '数量'
+        },
+        shippedQuantity: {
+          name: '已发数量'
+        }
+      }
     }
   }
 }

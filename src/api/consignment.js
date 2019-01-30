@@ -14,3 +14,14 @@ export function getConsignmentStatus() {
     'method': 'get'
   })
 }
+
+export function getConsignmentDetail(id) {
+  const param = {
+    id: id
+  }
+  return request({
+    'url': '/order/api/v1/consignment/detail',
+    'method': 'get',
+    'params': param
+  })
+}

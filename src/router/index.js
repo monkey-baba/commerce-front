@@ -145,7 +145,7 @@ export const asyncRouterMap = [
         }
       },
       {
-        path: ':consignmentCode',
+        path: 'consignmentDetail/:consignmentId',
         hidden: true,
         name: 'ConsignmentDetail',
         component: () => import('@/views/orders/ConsignmentDetail'),
