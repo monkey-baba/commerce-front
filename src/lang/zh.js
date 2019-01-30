@@ -91,6 +91,8 @@ export default {
     reservoirAreaManage: '大仓管理',
     ReservoirAreaDetail: '大仓详情',
     ReservoirAreaList: '大仓列表',
+    StorePosList: '网店关联供货点',
+    StorePosManage: '网店关联供货点管理',
     PriceList: '价目表管理',
     dictList: '枚举管理',
     DictionaryManage: '枚举管理',
@@ -1123,6 +1125,18 @@ export default {
       label: '门店名称'
     }
   },
+  storePos: {
+    posId: {
+      title: '门店搜索'
+    },
+    code: {
+      label: '门店编码'
+    },
+    name: {
+      label: '门店名称'
+    }
+  },
+
   sku_search: {
     search: {
       title: 'SKU搜索'
