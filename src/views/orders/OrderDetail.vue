@@ -7,45 +7,79 @@
         </div>
         <ElRow>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.type.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.ecsOrderId.label')+':'" >
+              {{ data.ecsOrderId }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.code.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.status.label')+':'" >
+              {{ data.status }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.platform.label')">
-              111
+            <ElFormItem :label="$t('order.detail.orderType.label')+':'">
+              {{ data.orderType }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.store.label')">
-              111
+            <ElFormItem :label="$t('order.detail.deliveryType.label')+':'">
+              {{ data.deliveryType }}
             </ElFormItem>
           </ElCol>
         </ElRow>
         <ElRow>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.deliveryType.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.customer.label')+':'" >
+              {{ data.customer }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.carrier.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.platform.label')+':'" >
+              {{ data.platform }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.customer.label')" >
-              111
+            <ElFormItem :label="$t('order.detail.store.label')+':'" >
+              {{ data.platform }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.pos.label')">
-              111
+            <ElFormItem :label="$t('order.detail.pos.label')+':'">
+              {{ data.pos }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.date.label')+':'" >
+              {{ data.date }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.paymentDate.label')+':'" >
+              {{ data.paymentDate }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.totalPrice.label')+':'" >
+              {{ data.totalPrice }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.deliveryCost.label')+':'">
+              {{ data.deliveryCost }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.orderSource.label')+':'" >
+              {{ data.orderSource }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.channel.label')+':'" >
+              {{ data.channel }}
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -56,23 +90,89 @@
         </div>
         <ElRow>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.receiver.label')">
-              111
+            <ElFormItem :label="$t('order.detail.receiver.label')+':'">
+              {{ data.receiver }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.receiverPhone.label')">
-              111
+            <ElFormItem :label="$t('order.detail.receiverPhone.label')+':'">
+              {{ data.receiverPhone }}
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.pcd.label')">
-              111
+            <ElFormItem :label="$t('order.detail.address.label')+':'">
+              <div v-if="data.address">
+                <address-line v-model="data.address.address"/> {{ data.address.detail }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow style="display: none">
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.code.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.code }}
+              </div>
             </ElFormItem>
           </ElCol>
           <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.address.label')">
-              111
+            <ElFormItem :label="$t('order.detail.pointPos.name.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.name }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.address.label')+':'">
+              <div v-if="data.pointPos">
+                <address-line v-model="data.pointPos.pcd"/> {{ data.pointPos.detailAddress }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.phone.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.contact }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">发票信息</span>
+        </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoice.label')+':'" >
+              <div v-if="data.invoice">
+                <!-- TODO -->
+                {{ data.invoice.applied }}
+              </div>
+              <div v-else>
+                否
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceType.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.type }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceTitle.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.title }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceAmount.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.amount }}
+              </div>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -82,40 +182,34 @@
           <span class="title">备注信息</span>
         </div>
         <ElRow>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.remark.label')">
-              111
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.remark.label')+':'">
+              <div class="remark">
+                {{ data.remark }}
+              </div>
             </ElFormItem>
           </ElCol>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.sellerRemark.label')" >
-              111
-            </ElFormItem>
-          </ElCol>
-        </ElRow>
-      </ElCard>
-      <ElCard shadow="never" style="margin: 10px">
-        <div slot="header" class="clearfix">
-          <span class="title">平台发票信息</span>
-        </div>
-        <ElRow>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoice.label')" >
-              111
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoiceType.label')">
-              1111
-            </ElFormItem>
-          </ElCol>
-          <ElCol :span="6">
-            <ElFormItem :label="$t('order.detail.invoiceTitle.label')">
-              111
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.sellerRemark.label')+':'" >
+              <ElTable
+                v-loading="loading"
+                :data="data.sellerRemarks"
+                :header-cell-style="valueHeaderStyle"
+                border
+                fit
+                stripe
+                highlight-current-row
+                max-height="300"
+                style="width: 600px">
+                <ElTableColumn :label="$t('order.detail.sellerRemark.date.label')" prop="date" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.user.label')" prop="user" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.remark.label')" prop="remark" />
+              </ElTable>
             </ElFormItem>
           </ElCol>
         </ElRow>
       </ElCard>
+
       <ElTabs type="border-card" style="margin: 10px;box-shadow: none" >
         <ElTabPane label="商品信息">
           <ElRow>
@@ -164,7 +258,7 @@
   </div>
 </template>
 <script>
-import { getSkuSpecs } from '@/api/order'
+import { getSkuSpecs, getOrderDetail } from '@/api/order'
 import AddressLine from '@/components/Address/addressLine'
 export default {
   name: 'OrderCreate',
@@ -179,30 +273,7 @@ export default {
   },
   data() {
     return {
-      form: {
-        orderType: '',
-        code: '',
-        platform: '',
-        store: '',
-        deliveryType: '',
-        carrier: '',
-        customer: '',
-        pos: '',
-        receiver: '',
-        receiverPhone: '',
-        address: '',
-        pcd: [],
-        remark: '',
-        sellerRemark: '',
-        invoice: false,
-        invoiceType: '',
-        invoiceTitle: '',
-        totalPrice: 0.00,
-        deliveryCost: '',
-        paymentTotal: 0.00,
-        payments: [],
-        entries: []
-      },
+      data: {},
       sku: {
         table: {
           loading: false,
@@ -219,16 +290,31 @@ export default {
       },
       skuSpec: {
         options: []
-      }
+      },
+      loading: true
     }
   },
   created() {
     this.getOptions()
+    this.getOrderData()
   },
   methods: {
     getOptions() {
       getSkuSpecs().then((response) => {
         this.skuSpec.options = response.data
+      })
+    },
+    getOrderData() {
+      getOrderDetail(this.$route.params.id).then((response) => {
+        this.data = response.data
+        this.loading = false
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取订单详情失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
       })
     },
     valueHeaderStyle() {
@@ -249,5 +335,13 @@ export default {
     border: 0;
     border-bottom: 1px solid #eaeaea;
     height: 1px;
+  }
+  .remark{
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    display: block;
+    width: 400px;
+    min-height: 100px;
+    padding-left: 10px;
   }
 </style>

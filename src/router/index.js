@@ -118,7 +118,7 @@ export const asyncRouterMap = [
         meta: { title: 'OrderCreate' }
       },
       {
-        path: 'order',
+        path: 'list',
         component: () => import('@/views/orders/OrderList'),
         name: 'OrderList',
         meta: { title: 'OrderList' }
@@ -136,7 +136,7 @@ export const asyncRouterMap = [
         meta: { title: 'OrderRouterRules' }
       },
       {
-        path: ':code',
+        path: 'detail/:id',
         hidden: false,
         name: 'OrderDetail',
         component: () => import('@/views/orders/OrderDetail'),
