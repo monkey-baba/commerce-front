@@ -147,7 +147,7 @@
             <ElFormItem :label="$t('order.detail.invoice.label')+':'" >
               <div v-if="data.invoice">
                 <!-- TODO -->
-                {{ data.invoice.applied }}
+                {{ data.invoice.applied | invoiceFilter }}
               </div>
               <div v-else>
                 否
@@ -298,6 +298,10 @@ export default {
       const realVal = parseFloat(value).toFixed(2)
       // num.toFixed(2)获取的是字符串
       return realVal
+    },
+    invoiceFilter(value) {
+      console.log(value)
+      return !value ? '否' : '是'
     }
   },
   data() {
