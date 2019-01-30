@@ -300,7 +300,6 @@ export default {
       return realVal
     },
     invoiceFilter(value) {
-      console.log(value)
       return !value ? '否' : '是'
     }
   },
