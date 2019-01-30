@@ -1,14 +1,5 @@
 import request from '@/utils/request'
 
-export function getStores(param) {
-  const data = param
-  return request({
-    'url': '/stock/api/v1/store/info',
-    'method': 'post',
-    data
-  })
-}
-
 export function getPosList(query) {
   return request({
     'url': '/stock/api/v1/storePos/pos/list',
@@ -17,46 +8,43 @@ export function getPosList(query) {
   })
 }
 
-export function createStore(store) {
-  const data = store
+export function getBaseStoreData() {
   return request({
-    url: '/stock/api/v1/store/add',
+    url: '/stock/api/v1/storePos/baseStore',
+    method: 'get'
+  })
+}
+
+export function createStorePos(storePos) {
+  const data = storePos
+  return request({
+    url: '/stock/api/v1/storePos/add',
     method: 'post',
     data
   })
 }
 
-export function getClassifyData() {
+export function getPosTypeData() {
   return request({
-    url: '/stock/api/v1/store/classify',
+    url: '/stock/api/v1/storePos/posType',
     method: 'get'
   })
 }
 
-export function getStatusData() {
+export function getStorePos(param) {
+  const data = param
   return request({
-    url: '/stock/api/v1/store/status',
-    method: 'get'
-  })
-}
-
-export function updateStore(store) {
-  const data = store
-  return request({
-    url: '/stock/api/v1/store/update',
-    method: 'post',
+    'url': '/stock/api/v1/storePos/info',
+    'method': 'post',
     data
   })
 }
 
-export function getStoresDetail(storeId) {
-  console.log('storeId----' + storeId)
-  const param = {
-    id: storeId
-  }
+export function deleteStorePos(storePos) {
+  const data = storePos
   return request({
-    url: '/stock/api/v1/store/detail',
-    method: 'get',
-    params: param
+    url: '/stock/api/v1/storePos/delete',
+    method: 'post',
+    data
   })
 }

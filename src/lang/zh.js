@@ -1141,7 +1141,8 @@ export default {
   },
   storePos: {
     posId: {
-      title: '门店搜索'
+      title: '门店搜索',
+      placeholder: '请选择供货点'
     },
     code: {
       label: '门店编码'

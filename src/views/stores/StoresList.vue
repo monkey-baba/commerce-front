@@ -278,7 +278,8 @@ export default {
       },
       table: {
         loading: false,
-        data: null
+        data: null,
+        select: []
       },
       options: [],
       optionsStatus: [],

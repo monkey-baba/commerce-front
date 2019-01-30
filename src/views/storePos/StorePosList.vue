@@ -2,20 +2,25 @@
   <div class="app-container">
     <div class="filter-container">
 
-      <ElForm ref="storeQuery" :model="storeQuery" :inline="true">
+      <ElForm ref="storeQuery" :model="storePosQuery" :inline="true">
         <ElRow>
           <ElCol>
-            <ElFormItem :label=" $t('store.name.name')+':' " prop="name">
-              <ElInput v-model="storeQuery.name" />
+            <ElFormItem label="网店编码" prop="storecode">
+              <ElInput v-model="storePosQuery.storecode"/>
             </ElFormItem>
-            <ElFormItem :label=" $t('store.code.code')+':' " prop="code">
-              <ElInput v-model="storeQuery.code"/>
+            <ElFormItem label="网店名字" prop="storename">
+              <ElInput v-model="storePosQuery.storename" />
             </ElFormItem>
           </ElCol>
           <ElCol>
-
-            <el-form-item label="门店分类:" prop="classification">
-              <el-select v-model="storeQuery.classification" auto-complete="on">
+            <ElFormItem label="供货点编码" prop="poscode">
+              <ElInput v-model="storePosQuery.poscode"/>
+            </ElFormItem>
+            <ElFormItem label="供货点名字" prop="posname">
+              <ElInput v-model="storePosQuery.posname" />
+            </ElFormItem>
+            <el-form-item label="供货点类型:" prop="classification">
+              <el-select v-model="storePosQuery.classification" auto-complete="on">
                 <el-option
                   v-for="item in options"
                   :key="item.id"
@@ -23,20 +28,6 @@
                   :value="item.id"/>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="门店状态:" prop="status">
-              <el-select v-model="storeQuery.status" auto-complete="on">
-                <el-option
-                  v-for="item in optionsStatus"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
-
-            <ElFormItem :label=" $t('store.people.name')+':' " prop="people">
-              <ElInput v-model="storeQuery.people"/>
-            </ElFormItem>
           </ElCol>
         </ElRow>
         <ElRow>
@@ -53,7 +44,10 @@
     </div>
     <hr>
     <div class="filter-container">
-      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">新建门店</ElButton>
+      <ElButton type="primary" class="blue-btn" size="small" @click="handleCreate">新建</ElButton>
+      <ElButton :loading="downloadLoading" type="primary" class="el-icon-delete" size="small" @click="handleDeletes">
+        删除
+      </ElButton>
       <ElButton :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">
         导出
       </ElButton>
@@ -68,78 +62,12 @@
       @selection-change="handleSelectionChange">
 
       <ElTableColumn type="selection"/>
-
-      <ElTableColumn label="门店名字" prop="name">
-        <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.name" class="edit-input" size="mini"/>
-          <template v-else>
-            <router-link :to="{name:'StoresDetail',params: {id: scope.row.id ,name:scope.row.name,paddress:scope.row.paddress,contact:scope.row.contact}}" class="link-type"> {{ scope.row.name }}</router-link>
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="门店地址" prop="paddress" min-width="200px" position="absolute">
-        <template slot-scope="scope">
-          <address-select v-if="scope.row.edit" v-model="scope.row.paddress" class="edit-input"/>
-          <el-input v-if="scope.row.edit" v-model="scope.row.detailaddress" class="edit-input" size="mini"/>
-          <el-input v-if="scope.row.edit" v-model="scope.row.id" class="edit-input" size="mini" style="display:none"/>
-          <el-input v-if="scope.row.edit" v-model="scope.row.contact" class="edit-input" size="mini" style="display:none"/>
-          <template v-else>
-            <address-line v-model="scope.row.paddress"/>
-            <span style="margin-left: 10px">{{ scope.row.detailaddress }}</span>
-            <span style="display:none">{{ scope.row.id }}</span>
-            <span style="display:none">{{ scope.row.contact }}</span>
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="门店状态" prop="pstatus">
-        <template slot-scope="scope">
-          <el-select v-if="scope.row.edit" v-model="scope.row.status" auto-complete="on" size="mini">
-            <el-option
-              v-for="item in optionsStatus"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"/>
-          </el-select>
-          <template v-else>
-            {{ scope.row.pstatus }}
-            <span style="display:none">{{ scope.row.status }}</span>
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="负责人" prop="owner">
-        <template slot-scope="scope">
-          <el-input v-if="scope.row.edit" v-model="scope.row.owner" class="edit-input" size="mini"/>
-          <template v-else>
-            {{ scope.row.owner }}
-          </template>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="操作" >
-        <template slot-scope="scope">
-          <div>
-            <template v-if="scope.row.edit">
-              <ElButton type="primary" size="mini" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">
-                保存
-              </ElButton>
-              <ElButton
-                class="cancel-btn"
-                size="mini"
-                icon="el-icon-refresh"
-                type="warning"
-                @click="cancelEdit(scope.row)"
-              >
-                取消
-              </ElButton>
-            </template>
-            <template v-else>
-              <ElButton type="primary" size="mini" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">
-                编辑
-              </ElButton>
-            </template>
-          </div>
-
-        </template>
-      </ElTableColumn>
+      <ElTableColumn :label="$t('general.index')" type="index"/>
+      <ElTableColumn label="网店编码" prop="storeCode" />
+      <ElTableColumn label="网店名称" prop="storeName"/>
+      <ElTableColumn label="供货点编码" prop="posCode" />
+      <ElTableColumn label="供货点名称" prop="posName"/>
+      <ElTableColumn label="供货点类型" prop="posTypeName" />
     </ElTable>
 
     <ElPagination
@@ -166,14 +94,14 @@
         <el-form-item label="网店" prop="store">
           <el-select v-model="storePosCreate.form.store" auto-complete="on">
             <el-option
-              v-for="item in options"
+              v-for="item in optionStore"
               :key="item.id"
               :label="item.name"
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('order.posId.label')+':'" prop="posId">
-          <el-input :placeholder="$t('order.posId.placeholder')" :value="pos.name" readonly @click.native="handleSearchPos" >
+        <el-form-item label="供货点" prop="posId">
+          <el-input :placeholder="$t('storePos.posId.placeholder')" :value="pos.name" readonly @click.native="handleSearchPos" >
             <i slot="suffix" class="el-icon-close" @click="deleteSelectPos" @click.stop/>
           </el-input>
         </el-form-item>
@@ -192,10 +120,10 @@
         <el-form ref="posQuery" :model="posQuery" :inline="true">
           <el-row>
             <el-col>
-              <el-form-item :label=" $t('pos.code.label')+':' " prop="code">
+              <el-form-item label="供货点编码： " prop="code">
                 <el-input v-model="posQuery.code" auto-complete="on"/>
               </el-form-item>
-              <el-form-item :label=" $t('pos.name.label')+':' " prop="name">
+              <el-form-item label=" 供货点名称：" prop="name">
                 <el-input v-model="posQuery.name" auto-complete="on"/>
               </el-form-item>
             </el-col>
@@ -248,11 +176,9 @@
 </template>
 
 <script>
-import { getStores, getClassifyData, getStatusData, createStore, updateStore } from '@/api/store'
 import AddressSelect from '@/components/Address/addressSelect'
 import AddressLine from '../../components/Address/addressLine'
-import { isEmpty } from '@/utils/validate'
-import { getPosList } from '@/api/storePos'
+import { getPosList, getBaseStoreData, createStorePos, getPosTypeData, getStorePos, deleteStorePos } from '@/api/storePos'
 
 export default {
   name: 'StoreList',
@@ -271,13 +197,12 @@ export default {
   },
   data() {
     return {
-      storeQuery: {
-        code: '',
-        name: '',
-        classification: '',
-        pstatus: '',
-        people: '',
-        status: '',
+      storePosQuery: {
+        storecode: '',
+        storename: '',
+        poscode: '',
+        posname: '',
+        posTypeName: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -292,7 +217,8 @@ export default {
       },
       table: {
         loading: false,
-        data: null
+        data: null,
+        select: []
       },
       pos: {
         name: ''
@@ -320,18 +246,14 @@ export default {
         pageSizes: [10, 20, 50]
       },
       options: [],
+      optionStore: [],
       optionsStatus: [],
       paddress: [],
       storePosCreate: {
         visible: false,
         rules: {
-          name: [{ required: true, message: '用户姓名不能为空', trigger: 'change' }],
-          code: [{ required: true, message: '编码不能为空', trigger: 'change' }],
-          status: [{ required: true, message: '门店状态不能为空', trigger: 'change' }],
-          classification: [{ required: true, message: '门店分类不能为空', trigger: 'change' }],
-          detailaddress: [{ required: true, message: '门店详细地址不能为空', trigger: 'change' }],
-          contact: [{ required: true, message: '联系方式不能为空', trigger: 'change' }],
-          owner: [{ required: true, message: '负责人不能为空', trigger: 'change' }]
+          store: [{ required: true, message: '用户姓名不能为空', trigger: 'change' }],
+          pos: [{ required: true, message: '编码不能为空', trigger: 'change' }]
         },
         form: {}
       },
@@ -342,8 +264,8 @@ export default {
   },
   created() {
     this.getData()
-    this.getClassifysData()
-    this.getStatusListData()
+    this.getPosTypeData()
+    this.getStoreData()
   },
 
   methods: {
@@ -353,37 +275,54 @@ export default {
     handleSizeChange(val) {
       this.storeQuery.pageSize = val
       this.getData()
-      this.getClassifysData()
-      this.getStatusListData()
+      this.getStoreData()
     },
     handleCurrentChange(val) {
       this.storeQuery.pageNum = val
       this.getData()
-      this.getClassifysData()
-      this.getStatusListData()
+      this.getStoreData()
     },
 
     handleCreate() {
       this.storePosCreate.form = {
-        code: '',
-        name: '',
-        status: '',
-        classification: '',
-        paddress: [],
-        owner: '',
-        detailaddress: '',
-        contact: ''
+        store: '',
+        pos: ''
       }
       this.storePosCreate.visible = true
       this.$nextTick(() => {
         this.$refs['createStoreForm'].clearValidate()
       })
     },
-
+    handleDeletes() {
+      if (this.table.select.length <= 0) {
+        this.$message({
+          message: '请选择网店关联供货点',
+          type: 'error',
+          duration: 2 * 1000
+        })
+        return
+      }
+      deleteStorePos(this.table.select).then((response) => {
+        this.getData()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '删除失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
     createData() {
       this.$refs['createStoreForm'].validate((valid) => {
         if (valid) {
-          createStore(this.storePosCreate.form).then((response) => {
+          createStorePos(this.storePosCreate.form).then((response) => {
             this.table.data.unshift(response.data)
             this.pagination.total = this.pagination.total + 1
             this.getData()
@@ -397,7 +336,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '门店创建失败',
+              message: '创建失败',
               type: 'error',
               duration: 2000
             })
@@ -408,14 +347,13 @@ export default {
 
     getData() {
       this.table.loading = true
-      getStores(this.storeQuery).then(response => {
+      getStorePos(this.storePosQuery).then(response => {
         const items = response.data.list
         this.table.data = items.map(v => {
           this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
           v.original = JSON.stringify(v) //  will be used when user click the cancel botton
           return v
         })
-
         this.pagination.total = Number.parseInt(response.data.total)
         this.table.loading = false
         this.search.loading = false
@@ -425,11 +363,10 @@ export default {
       })
     },
 
-    getClassifysData() {
+    getPosTypeData() {
       this.table.loading = true
-      getClassifyData().then(response => {
+      getPosTypeData().then(response => {
         this.options = response.data
-        console.log(this.options)
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {
@@ -438,17 +375,31 @@ export default {
       })
     },
 
-    getStatusListData() {
-      this.table.loading = true
-      getStatusData().then(response => {
-        this.optionsStatus = response.data
-        console.log(this.optionsStatus)
+    getStoreData() {
+      getBaseStoreData().then(response => {
+        this.optionStore = response.data
         this.table.loading = false
         this.search.loading = false
       }).catch(() => {
         this.table.loading = false
         this.search.loading = false
       })
+    },
+    handlePosSizeChange(val) {
+      this.posQuery.pageSize = val
+      this.getPosData()
+    },
+    handlePosCurrentChange(val) {
+      this.posQuery.pageNum = val
+      this.getPosData()
+    },
+    resetPosQuery() {
+      this.$refs['posQuery'].resetFields()
+    },
+    queryPos() {
+      this.posSearch.loading = true
+      this.posQuery.pageNum = 1
+      this.getPosData()
     },
     handleSearchPos() {
       this.posDialog.visible = true
@@ -467,14 +418,14 @@ export default {
     handleSelectPos() {
       if (this.currentRow == null) {
         this.$message({
-          message: '请选择客户',
+          message: '请选择供货点',
           type: 'error',
           duration: 2 * 1000
         })
         return
       }
       this.pos.name = this.currentRow.name
-      this.orderQuery.posId = this.currentRow.id
+      this.storePosCreate.form.pos = this.currentRow.id
       this.posDialog.visible = false
     },
 
@@ -500,66 +451,11 @@ export default {
       this.search.loading = true
       this.storeQuery.pageNum = 1
       this.getData()
-      this.getClassifysData()
-      this.getStatusListData()
-    },
-    cancelEdit(row) {
-      const originRow = JSON.parse(row.original)
-      row.name = originRow.name
-      row.paddress = originRow.paddress
-      row.detailaddress = originRow.detailaddress
-      row.pstatus = originRow.pstatus
-      row.owner = originRow.owner
-      row.edit = false
-    },
-    confirmEdit(row) {
-      if (isEmpty(row.owner)) {
-        this.$message({
-          message: '负责人不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
-
-      if (isEmpty(row.detailaddress)) {
-        this.$message({
-          message: '门店详细地址不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
-      if (isEmpty(row.name)) {
-        this.$message({
-          message: '门店名字不能为空',
-          type: 'error',
-          duration: 5 * 1000
-        })
-        return
-      }
-      updateStore(row).then(response => {
-        this.$message({
-          message: response.data,
-          type: 'success'
-        })
-        this.getData()
-        row.original = JSON.stringify(row)
-        row.edit = false
-      }).catch(e => {
-        this.$notify({
-          title: '失败',
-          message: '登录名已存在',
-          type: 'error',
-          duration: 2000
-        })
-        this.cancelEdit(row)
-      })
     },
     handleExport() {
       if (this.table.select.length <= 0) {
         this.$message({
-          message: '请选择门店',
+          message: '请选择网店关联供货点',
           type: 'error',
           duration: 2 * 1000
         })
@@ -567,8 +463,8 @@ export default {
       }
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['门店名称', '门店地址', '门店状态', '负责人']
-          const filterVal = ['name', 'detailaddress', 'pstatus', 'owner']
+          const tHeader = ['网店编码', '网店名称', '供货点编码', '供货点名称', '供货点类型']
+          const filterVal = ['storeCode', 'storeName', 'posCode', 'posName', 'posTypeName']
 
           const data = this.table.select.map(u => filterVal.map(field => {
             return u[field]
@@ -576,7 +472,7 @@ export default {
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: '门店列表'
+            filename: '网店关联供货点列表'
           })
           this.downloadLoading = false
         })

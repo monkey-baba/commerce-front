@@ -225,6 +225,23 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/storePos',
+    component: Layout,
+    name: 'storePosListManage',
+    meta: {
+      title: 'StorePosManage',
+      icon: 'tab'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/storePos/StorePosList'),
+        name: 'StorePosList',
+        meta: { title: 'StorePosList' }
+      }
+    ]
+  },
+  {
     path: '/customers',
     component: Layout,
     name: 'CustomerManage',

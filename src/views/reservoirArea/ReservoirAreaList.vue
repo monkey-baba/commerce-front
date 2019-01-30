@@ -165,13 +165,13 @@
         <ElFormItem label="大仓名字" prop="name">
           <ElInput
             v-model="storeCreate.form.name"
-            :placeholder="$t('store.create.name.placeholder')"
+            :placeholder="$t('reservoirArea.create.name.placeholder')"
           />
         </ElFormItem>
         <ElFormItem label="大仓编码" prop="code">
           <ElInput
             v-model="storeCreate.form.code"
-            :placeholder="$t('store.create.code.placeholder')"
+            :placeholder="$t('reservoirArea.create.code.placeholder')"
           />
         </ElFormItem>
 
@@ -182,14 +182,14 @@
         <ElFormItem label="详细地址" prop="detailaddress">
           <ElInput
             v-model="storeCreate.form.detailaddress"
-            :placeholder="$t('store.create.detailaddress.placeholder')"
+            :placeholder="$t('reservoirArea.create.detailaddress.placeholder')"
           />
         </ElFormItem>
 
         <ElFormItem label="联系方式" prop="contact">
           <ElInput
             v-model="storeCreate.form.contact"
-            :placeholder="$t('store.create.contact.placeholder')"
+            :placeholder="$t('reservoirArea.create.contact.placeholder')"
           />
         </ElFormItem>
 
@@ -278,7 +278,8 @@ export default {
       },
       table: {
         loading: false,
-        data: null
+        data: null,
+        select: []
       },
       options: [],
       optionsStatus: [],
