@@ -114,10 +114,11 @@ export const asyncRouterMap = [
         path: 'create',
         component: () => import('@/views/orders/OrderCreate'),
         name: 'OrderCreate',
+        hidden: true,
         meta: { title: 'OrderCreate' }
       },
       {
-        path: 'order',
+        path: 'list',
         component: () => import('@/views/orders/OrderList'),
         name: 'OrderList',
         meta: { title: 'OrderList' }
@@ -135,8 +136,8 @@ export const asyncRouterMap = [
         meta: { title: 'OrderRouterRules' }
       },
       {
-        path: ':code',
-        hidden: false,
+        path: 'detail/:id',
+        hidden: true,
         name: 'OrderDetail',
         component: () => import('@/views/orders/OrderDetail'),
         meta: {
@@ -144,7 +145,7 @@ export const asyncRouterMap = [
         }
       },
       {
-        path: ':consignmentCode',
+        path: 'consignmentDetail/:consignmentId',
         hidden: true,
         name: 'ConsignmentDetail',
         component: () => import('@/views/orders/ConsignmentDetail'),
@@ -193,7 +194,7 @@ export const asyncRouterMap = [
         meta: { title: 'StoreList' }
       },
       {
-        path: 'list1',
+        path: 'storesDetail',
         component: () => import('@/views/stores/StoresDetail'),
         name: 'StoresDetail',
         meta: { title: 'StoresDetail' }
@@ -216,7 +217,7 @@ export const asyncRouterMap = [
         meta: { title: 'ReservoirAreaList' }
       },
       {
-        path: 'list1',
+        path: 'reservoirAreaDetail',
         component: () => import('@/views/reservoirArea/ReservoirAreaDetail'),
         name: 'ReservoirAreaDetail',
         meta: { title: 'ReservoirAreaDetail' }

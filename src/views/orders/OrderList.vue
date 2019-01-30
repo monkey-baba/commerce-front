@@ -114,7 +114,7 @@
     </div>
     <hr>
     <div class="filter-container">
-      <el-button type="primary" class="blue-btn" size="small">创建订单</el-button>
+      <el-button type="primary" class="blue-btn" size="small" @click="toOrderCreate" >创建订单</el-button>
       <el-button :loading="downloadLoading" type="primary" class="green-btn" size="small" @click="handleExport">导出列表</el-button>
     </div>
     <el-table
@@ -130,13 +130,14 @@
       <el-table-column :label="$t('order.list.storeName.label')" prop="storeName" />
       <el-table-column :label="$t('order.list.code.label')" prop="code" >
         <template slot-scope="scope">
-          <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
+          <router-link :to="{name:'OrderDetail',params: {id: scope.row.id }}" class="link-type"> {{ scope.row.code }}</router-link>
         </template>
       </el-table-column>
       <el-table-column :label="$t('order.list.posId.label')" prop="posName" />
       <el-table-column :label="$t('order.list.orderTypeName.label')" prop="orderTypeName" />
       <el-table-column :label="$t('order.list.statusName.label')" prop="statusName" />
       <el-table-column :label="$t('order.list.totalPrice.label')" prop="totalPrice"/>
+      <el-table-column :label="$t('order.list.receiver.label')" prop="receiver" />
       <el-table-column :label="$t('order.list.receiverPhone.label')" prop="receiverPhone" />
       <el-table-column :label="$t('order.list.addressName.label')" prop="addressName" />
       <el-table-column :label="$t('order.list.date.label')" prop="date">
@@ -381,10 +382,10 @@ export default {
       checkAllStatus: false,
       checkAllType: false,
       status: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       orderType: {
-        isIndeterminate: true
+        isIndeterminate: false
       },
       allStatusId: [],
       allOrderTypeId: [],
@@ -436,8 +437,14 @@ export default {
     },
     getData() {
       this.table.loading = true
+      this.statuses.forEach((v, index) => {
+        this.orderQuery['statusId[' + index + ']'] = null
+      })
       this.temp.statusId.forEach((v, index) => {
         this.orderQuery['statusId[' + index + ']'] = this.statusMap[v]
+      })
+      this.orderTypes.forEach((v, index) => {
+        this.orderQuery['orderTypeId[' + index + ']'] = null
       })
       this.temp.orderTypeId.forEach((v, index) => {
         this.orderQuery['orderTypeId[' + index + ']'] = this.orderTypeMap[v]
@@ -461,12 +468,7 @@ export default {
     getCustomerData() {
       this.customerTable.loading = true
       getCustomers(this.customerQuery).then(response => {
-        const items = response.data.list
-        this.customerTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.customerTable.data = response.data.list
         this.customerPagination.total = Number.parseInt(response.data.total)
         this.customerTable.loading = false
         this.customerSearch.loading = false
@@ -478,12 +480,7 @@ export default {
     getPosData() {
       this.posTable.loading = true
       getPosList(this.posQuery).then(response => {
-        const items = response.data.list
-        this.posTable.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when user click the cancel botton
-          return v
-        })
+        this.posTable.data = response.data.list
         this.posPagination.total = Number.parseInt(response.data.total)
         this.posTable.loading = false
         this.posSearch.loading = false
@@ -521,36 +518,29 @@ export default {
         console.log('查询失败')
       })
     },
-    handleCheckAllStatusChange() {
-      this.temp.statusId = this.status.isIndeterminate ? this.allStatusId : []
-      if (this.temp.statusId.length === 0) {
-        this.status.isIndeterminate = true
-      } else {
-        this.status.isIndeterminate = false
-      }
+    handleCheckAllStatusChange(val) {
+      this.temp.statusId = val ? this.allStatusId : []
+      this.status.isIndeterminate = false
     },
-    handleCheckAllTypeChange() {
-      this.temp.orderTypeId = this.orderType.isIndeterminate ? this.allOrderTypeId : []
-      if (this.temp.orderTypeId.length === 0) {
-        this.orderType.isIndeterminate = true
-      } else {
-        this.orderType.isIndeterminate = false
-      }
+    handleCheckAllTypeChange(val) {
+      this.temp.orderTypeId = val ? this.allOrderTypeId : []
+      this.orderType.isIndeterminate = false
     },
-    handleCheckedStatusChange() {
-      const checkedCount = this.temp.statusId.length
+    handleCheckedStatusChange(value) {
+      const checkedCount = value.length
       this.checkAllStatus = checkedCount === this.statuses.length
-      this.status.isIndeterminate = checkedCount >= 0 && checkedCount < this.statuses.length
+      this.status.isIndeterminate = checkedCount > 0 && checkedCount < this.statuses.length
     },
-    handleCheckedOrderTypeChange() {
-      const checkedCount = this.temp.orderTypeId.length
+    handleCheckedOrderTypeChange(value) {
+      const checkedCount = value.length
       this.checkAllType = checkedCount === this.orderTypes.length
-      this.orderType.isIndeterminate = checkedCount >= 0 && checkedCount < this.orderTypes.length
+      this.orderType.isIndeterminate = checkedCount > 0 && checkedCount < this.orderTypes.length
     },
     handleSearchCustomer() {
       this.customerDialog.visible = true
       this.customerQuery.code = ''
       this.customerQuery.name = ''
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     deleteSelectCustomer() {
@@ -577,6 +567,7 @@ export default {
       this.posDialog.visible = true
       this.posQuery.code = ''
       this.posQuery.name = ''
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     deleteSelectPos() {
@@ -609,10 +600,12 @@ export default {
     },
     queryCustomer() {
       this.customerSearch.loading = true
+      this.customerQuery.pageNum = 1
       this.getCustomerData()
     },
     queryPos() {
       this.posSearch.loading = true
+      this.posQuery.pageNum = 1
       this.getPosData()
     },
     handleSelectionChange(val) {
@@ -642,6 +635,9 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+    toOrderCreate() {
+      this.$router.push({ path: '/order/create' })
     }
   }
 }

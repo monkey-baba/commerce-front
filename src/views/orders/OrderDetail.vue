@@ -1,202 +1,379 @@
 <template>
-  <div class="app-container">
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>订单头信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>平台订单号：000001</div></el-col>
-              <el-col :span="6"><div>订单状态：已完成</div></el-col>
-              <el-col :span="6"><div>订单类型：线上销售订单</div></el-col>
-              <el-col :span="6"><div>配送方式：快递</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>客户ID：18980893892</div></el-col>
-              <el-col :span="6"><div>平台：天猫</div></el-col>
-              <el-col :span="6"><div>店铺：ECCO爱步官方旗舰店</div></el-col>
-              <el-col :span="6"><div>下单门店：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>下单日期：2019/1/22</div></el-col>
-              <el-col :span="6"><div>付款日期：2019/1/22</div></el-col>
-              <el-col :span="6"><div>订单金额：1599</div></el-col>
-              <el-col :span="6"><div>运费金额：0</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>订单来源：天猫接口</div></el-col>
-              <el-col :span="6"><div>销售渠道：线上-天猫</div></el-col>
-            </el-row>
-          </div>
+  <div class="order-detail">
+    <ElForm ref="createForm" :inline="true">
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">订单头信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>收件人信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>收件人：梁月</div></el-col>
-              <el-col :span="6"><div>手机：18980893892</div></el-col>
-              <el-col :span="6"><div>地址：上海市浦东新区杨高路211号</div></el-col>
-              <el-col :span="6"><div>电话：</div></el-col>
-            </el-row>
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>指定发货点编码：</div></el-col>
-              <el-col :span="6"><div>指定发货点名称：</div></el-col>
-              <el-col :span="6"><div>地址：</div></el-col>
-              <el-col :span="6"><div>联系电话：</div></el-col>
-            </el-row>
-          </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.ecsOrderId.label')+':'" >
+              {{ data.ecsOrderId }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.status.label')+':'" >
+              {{ data.status }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.orderType.label')+':'">
+              {{ data.orderType }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.deliveryType.label')+':'">
+              {{ data.deliveryType }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.customer.label')+':'" >
+              {{ data.customer }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.platform.label')+':'" >
+              {{ data.platform }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.store.label')+':'" >
+              {{ data.platform }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pos.label')+':'">
+              {{ data.pos }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.date.label')+':'" >
+              {{ data.date }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.paymentDate.label')+':'" >
+              {{ data.paymentDate }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.totalPrice.label')+':'" >
+              {{ data.totalPrice }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.deliveryCost.label')+':'">
+              {{ data.deliveryCost }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.orderSource.label')+':'" >
+              {{ data.orderSource }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.channel.label')+':'" >
+              {{ data.channel }}
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px;overflow: visible">
+        <div slot="header" class="clearfix">
+          <span class="title">收件人信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>发票信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="6"><div>申请开票：是</div></el-col>
-              <el-col :span="6"><div>发票类型：增值税普通发票</div></el-col>
-              <el-col :span="6"><div>发票抬头：梁月</div></el-col>
-              <el-col :span="6"><div>发票金额：1599</div></el-col>
-            </el-row>
-          </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.receiver.label')+':'">
+              {{ data.receiver }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.receiverPhone.label')+':'">
+              {{ data.receiverPhone }}
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.address.label')+':'">
+              <div v-if="data.address">
+                <address-line v-model="data.address.address"/> {{ data.address.detail }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+        <ElRow style="display: none">
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.code.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.code }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.name.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.name }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.address.label')+':'">
+              <div v-if="data.pointPos">
+                <address-line v-model="data.pointPos.pcd"/> {{ data.pointPos.detailAddress }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.pointPos.phone.label')+':'">
+              <div v-if="data.pointPos">
+                {{ data.pointPos.contact }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">发票信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col>
-        <div class="order-basic" >
-          <div class="order-basic-header clearfix">
-            <span>备注信息</span>
-          </div>
-          <div class="order-basic-body">
-            <el-row :gutter="20" class="row-bg">
-              <el-col :span="12">
-                <div>买家留言</div>
-              </el-col>
-              <el-col :span="12">
-                <div class="order-basic" >
-                  <div class="order-basic-header clearfix">
-                    <span>客服信息</span>
-                  </div>
-                  <div class="order-basic-body">
-                    <el-table
-                      border
-                      fit
-                      stripe
-                      highlight-current-row>
-                      <el-table-column label="添加时间" prop="" />
-                      <el-table-column label="添加人" prop="" />
-                      <el-table-column label="备注" prop="" />
-                    </el-table>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
+        <ElRow>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoice.label')+':'" >
+              <div v-if="data.invoice">
+                <!-- TODO -->
+                {{ data.invoice.applied }}
+              </div>
+              <div v-else>
+                否
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceType.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.type }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceTitle.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.title }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="6">
+            <ElFormItem :label="$t('order.detail.invoiceAmount.label')+':'">
+              <div v-if="data.invoice">
+                {{ data.invoice.amount }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+      <ElCard shadow="never" style="margin: 10px">
+        <div slot="header" class="clearfix">
+          <span class="title">备注信息</span>
         </div>
-      </el-col>
-    </el-row>
-    <el-tabs type="border-card">
-      <el-tab-pane label="商品信息">
-        <el-table
-          border
-          fit
-          stripe
-          highlight-current-row>
-          <el-table-column label="行号" prop="" />
-          <el-table-column label="SKU" prop="code" >
-            <template slot-scope="scope">
-              <router-link :to="{name:'OrderDetail',params: {code: scope.row.code }}" class="link-type"> {{ scope.row.code }}</router-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="商品名称" prop="" />
-          <el-table-column label="颜色" prop="" />
-          <el-table-column label="尺码" prop="" />
-          <el-table-column label="数量" prop="" />
-          <el-table-column label="已发货数量" prop=""/>
-          <el-table-column label="原价" prop="" />
-          <el-table-column label="优惠" prop="" />
-          <el-table-column label="销售价" prop="" />
-          <el-table-column label="金额小计" prop="" />
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="支付信息">
-        <el-table
-          border
-          fit
-          stripe
-          highlight-current-row>
-          <el-table-column label="行号" prop="" />
-          <el-table-column label="支付方式" prop="" />
-          <el-table-column label="支付金额" prop="" />
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="配货信息">
-        <el-table
-          border
-          fit
-          stripe
-          highlight-current-row>
-          <el-table-column label="配货单号" prop="" />
-          <el-table-column label="配货单状态" prop="" />
-          <el-table-column label="快递公司" prop="" />
-          <el-table-column label="快递单号" prop="" />
-        </el-table>
-      </el-tab-pane>
-    </el-tabs>
+        <ElRow>
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.remark.label')+':'">
+              <div class="remark">
+                {{ data.remark }}
+              </div>
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem :label="$t('order.detail.sellerRemark.label')+':'" >
+              <ElTable
+                v-loading="loading"
+                :data="data.sellerRemarks"
+                :header-cell-style="valueHeaderStyle"
+                border
+                fit
+                stripe
+                highlight-current-row
+                max-height="200"
+                style="width: 600px">
+                <ElTableColumn :label="$t('order.detail.sellerRemark.date.label')" prop="date" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.user.label')" prop="user" />
+                <ElTableColumn :label="$t('order.detail.sellerRemark.remark.label')" prop="remark" />
+              </ElTable>
+              <ElRow>
+                <ElCol :span="20">
+                  <ElInput v-model="remark" style="margin-top: 5px " />
+                </ElCol>
+                <ElCol :span="1">
+                  <blockquote />
+                </ElCol>
+                <ElCol :span="3">
+                  <ElButton style="margin-top: 5px" type="primary" @click="handleRemark">添加备注</ElButton>
+                </ElCol>
+              </ElRow>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
+      </ElCard>
+
+      <ElTabs type="border-card" style="box-shadow: none;margin: 10px 10px 50px;" >
+        <ElTabPane label="商品信息">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="data.entries"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('order.detail.entries.sku.label')" prop="code" />
+              <ElTableColumn :label="$t('order.detail.entries.name.label')" prop="name" />
+              <ElTableColumn v-for="item in skuSpec.options" :label="item.name" :prop="'meta.'+[item.id]" :key="item.id" />
+              <ElTableColumn :label="$t('order.detail.entries.quantity.label')" prop="quantity" />
+              <ElTableColumn :label="$t('order.detail.entries.shippedQuantity.label')" prop="shippedQuantity" />
+              <ElTableColumn :label="$t('order.detail.entries.basePrice.label')" prop="basePrice" />
+              <ElTableColumn :label="$t('order.detail.entries.discount.label')" prop="discount" />
+              <ElTableColumn :label="$t('order.detail.entries.price.label')" prop="sellPrice" />
+              <ElTableColumn :label="$t('order.detail.entries.totalPrice.label')" prop="totalPrice" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+        <ElTabPane label="支付信息">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="data.payments"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('general.index')" type="index" width="55px"/>
+              <ElTableColumn :label="$t('order.detail.payment.type.label')" prop="type" />
+              <ElTableColumn :label="$t('order.detail.payment.amount.label')" prop="amount" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+        <ElTabPane label="配货信息">
+          <ElRow>
+            <ElTable
+              v-loading="loading"
+              :data="data.consignments"
+              :header-cell-style="valueHeaderStyle"
+              max-height="300"
+              border
+              fit
+              stripe
+              highlight-current-row>
+              <ElTableColumn :label="$t('order.detail.consignment.code.label')" prop="code" />
+              <ElTableColumn :label="$t('order.detail.consignment.status.label')" prop="status" />
+              <ElTableColumn :label="$t('order.detail.consignment.carrier.label')" prop="carrier" />
+              <ElTableColumn :label="$t('order.detail.consignment.expressNum.label')" prop="expressNum" />
+            </ElTable>
+          </ElRow>
+        </ElTabPane>
+      </ElTabs>
+    </ElForm>
   </div>
 </template>
 <script>
+import { getSkuSpecs, getOrderDetail, addRemark } from '@/api/order'
+import AddressLine from '@/components/Address/addressLine'
+import { isEmpty } from '@/utils/validate'
+
 export default {
   name: 'OrderDetail',
+  components: { AddressLine },
   filters: {
-    stepFilter: (value) => {
-      const stepMap = {
-        'CREATED': '1',
-        'PENDING': '2',
-        'APPROVED': '3',
-        'SHIPPED': '4',
-        'COMPLETED': '5'
-      }
-      return stepMap[value]
+    numFilter(value) {
+      // 截取当前数据到小数点后两位
+      const realVal = parseFloat(value).toFixed(2)
+      // num.toFixed(2)获取的是字符串
+      return realVal
     }
   },
   data() {
     return {
-      order: {
-        status: 'COMPLETED'
+      data: {},
+      skuSpec: {
+        options: []
+      },
+      loading: true,
+      remark: ''
+    }
+  },
+  created() {
+    this.getOptions()
+    this.getOrderData()
+  },
+  methods: {
+    getOptions() {
+      getSkuSpecs().then((response) => {
+        this.skuSpec.options = response.data
+      })
+    },
+    getOrderData() {
+      getOrderDetail(this.$route.params.id).then((response) => {
+        this.data = response.data
+        this.loading = false
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '获取订单详情失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
+    },
+    valueHeaderStyle() {
+      return 'padding:5px'
+    },
+    handleRemark() {
+      if (isEmpty(this.remark)) {
+        return
       }
+      addRemark(this.$route.params.id, this.remark).then((response) => {
+        this.data.sellerRemarks.push(response.data)
+        this.remark = ''
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '创建失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
   }
 }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .order-basic {
-    border: 1px solid #ebeef5;
-    margin: 10px auto;
-    border-radius: 4px;
-    .order-basic-header{
-      padding: 10px;
-      font-size: 16px;
-      font-weight: 500;
-      border-bottom: 1px solid #ebeef5;
-    }
-    .order-basic-body{
-      font-size: 13px;
-    }
+<style>
+  .order-detail .el-form-item__label{
+    font-weight: 400;
   }
-  .row-bg {
-    padding: 10px 0;
+  .order-detail .el-form-item{
+    margin-bottom: 0 !important;
+  }
+  hr {
+    display: block;
+    border: 0;
+    border-bottom: 1px solid #eaeaea;
+    height: 1px;
+  }
+  .remark{
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    display: block;
+    width: 400px;
+    min-height: 100px;
+    padding-left: 10px;
   }
 </style>

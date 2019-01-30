@@ -303,7 +303,7 @@ export default {
           }).catch(() => {
             this.$notify({
               title: '失败',
-              message: '创建失败',
+              message: '创建失败，请检查编码或稍后再试',
               type: 'error',
               duration: 2000
             })

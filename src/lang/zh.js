@@ -66,7 +66,7 @@ export default {
     orderManage: '订单管理',
     OrderList: '订单列表',
     OrderCreate: '订单创建',
-    ConsignmentList: '发货单列表',
+    ConsignmentList: '配货单列表',
     OrderDetail: '订单详情',
     account: '账户管理',
     accountUser: '用户管理',
@@ -251,6 +251,9 @@ export default {
       totalPrice: {
         label: '订单金额'
       },
+      receiver: {
+        label: '收件人'
+      },
       receiverPhone: {
         label: '手机号'
       },
@@ -316,7 +319,7 @@ export default {
         label: '买家留言',
         placeholder: '买家留言'
       },
-      buyerRemark: {
+      sellerRemark: {
         label: '卖家备注',
         placeholder: '卖家备注'
       },
@@ -338,6 +341,14 @@ export default {
       deliveryCost: {
         label: '运费金额',
         placeholder: '运费金额'
+      },
+      paymentTotal: {
+        label: '支付总额',
+        placeholder: '支付总额'
+      },
+      totalDiff: {
+        label: '支付差额',
+        placeholder: '支付差额'
       },
       entries: {
         title: '创建订单行',
@@ -373,6 +384,173 @@ export default {
           placeholder: '金额小计'
         }
 
+      },
+      payment: {
+        title: '创建支付信息',
+        type: {
+          label: '支付方式',
+          placeholder: '支付方式'
+        },
+        amount: {
+          label: '支付金额',
+          placeholder: '支付金额'
+        }
+      }
+    },
+    detail: {
+      ecsOrderId: {
+        label: '平台订单号'
+      },
+      status: {
+        label: '订单状态'
+      },
+      orderType: {
+        label: '订单类型'
+      },
+      code: {
+        label: '订单号'
+      },
+      platform: {
+        label: '平台'
+      },
+      store: {
+        label: '店铺'
+      },
+      deliveryType: {
+        label: '配送方式'
+      },
+      carrier: {
+        label: '承运商'
+      },
+      customer: {
+        label: '客户'
+      },
+      pos: {
+        label: '下单门店'
+      },
+      date: {
+        label: '下单时间'
+      },
+      paymentDate: {
+        label: '付款时间'
+      },
+      orderSource: {
+        label: '订单来源'
+      },
+      channel: {
+        label: '销售渠道'
+      },
+      receiver: {
+        label: '收件人'
+      },
+      receiverPhone: {
+        label: '联系方式'
+      },
+      address: {
+        label: '地址'
+      },
+      pointPos: {
+        name: {
+          label: '指定发货点名称'
+        },
+        code: {
+          label: '指定发货点编码'
+        },
+        address: {
+          label: '地址'
+        },
+        phone: {
+          label: '联系方式'
+        }
+
+      },
+      remark: {
+        label: '买家留言'
+      },
+      sellerRemark: {
+        label: '卖家备注',
+        date: {
+          label: '添加时间'
+        },
+        user: {
+          label: '添加人'
+        },
+        remark: {
+          label: '备注'
+        }
+      },
+      invoice: {
+        label: '申请开票'
+      },
+      invoiceType: {
+        label: '发票类型'
+      },
+      invoiceTitle: {
+        label: '发票抬头'
+      },
+      invoiceAmount: {
+        label: '发票金额'
+      },
+      totalPrice: {
+        label: '结算总金额'
+      },
+      deliveryCost: {
+        label: '运费金额'
+      },
+      paymentTotal: {
+        label: '支付总额'
+      },
+      totalDiff: {
+        label: '支付差额'
+      },
+      entries: {
+        sku: {
+          label: 'SKU编码'
+        },
+        name: {
+          label: '产品名称'
+        },
+        quantity: {
+          label: '数量'
+        },
+        shippedQuantity: {
+          label: '已发数量'
+        },
+        basePrice: {
+          label: '原价'
+        },
+        discount: {
+          label: '优惠'
+        },
+        price: {
+          label: '销售价'
+        },
+        totalPrice: {
+          label: '金额小计'
+        }
+
+      },
+      payment: {
+        type: {
+          label: '支付方式'
+        },
+        amount: {
+          label: '支付金额'
+        }
+      },
+      consignment: {
+        code: {
+          label: '配货单号'
+        },
+        status: {
+          label: '配货单状态'
+        },
+        carrier: {
+          label: '快递公司'
+        },
+        expressNum: {
+          label: '快递单号'
+        }
       }
     }
   },
@@ -872,6 +1050,36 @@ export default {
       }
     }
   },
+  reservoirArea: {
+    create: {
+      title: '创建大仓',
+      name: {
+        label: '大仓名字',
+        placeholder: '请输入大仓名称'
+      },
+      code: {
+        label: '大仓编码',
+        placeholder: '请输入大仓编码'
+      },
+      address: {
+        label: '门店地址',
+        placeholder: '请输入大仓地址'
+      },
+      contact: {
+        label: '联系方式',
+        placeholder: '请输入大仓联系方式'
+      },
+      owner: {
+        label: '联系人',
+        placeholder: '请输入大仓联系人'
+      },
+      detailaddress: {
+        label: '详细地址',
+        placeholder: '请输入大仓详细地址'
+      }
+    }
+  },
+
   store: {
     name: {
       name: '门店名称'
@@ -909,7 +1117,7 @@ export default {
       },
       owner: {
         label: '门店联系人',
-        placeholder: '请输入门店联系联系人'
+        placeholder: '请输入门店联系人'
       },
       detailaddress: {
         label: '详细地址',
@@ -917,6 +1125,7 @@ export default {
       }
     }
   },
+
   pos: {
     search: {
       title: '门店搜索'
@@ -926,6 +1135,154 @@ export default {
     },
     name: {
       label: '门店名称'
+    }
+  },
+  sku_search: {
+    search: {
+      title: 'SKU搜索'
+    },
+    code: {
+      label: 'SKU编码'
+    },
+    name: {
+      label: 'SKU名称'
+    }
+  },
+  consignment: {
+    list: {
+      date: {
+        name: '下单日期'
+      },
+      datetime: {
+        name: '下单时间'
+      },
+      pos: {
+        name: '下单门店'
+      },
+      customerId: {
+        name: '会员编号'
+      },
+      deliveryDate: {
+        name: '发货日期'
+      },
+      deliveryDateTime: {
+        name: '发货时间'
+      },
+      ecsOrderId: {
+        name: '平台订单号'
+      },
+      store: {
+        name: '店铺'
+      },
+      carrier: {
+        name: '承运商'
+      },
+      receiverAddress: {
+        name: '收件地址'
+      },
+      receiver: {
+        name: '收货人'
+      },
+      receiverPhone: {
+        name: '收货手机号'
+      },
+      orderCoe: {
+        name: '订单编号'
+      },
+      orderTotalPrice: {
+        name: '订单金额'
+      },
+      expressNum: {
+        name: '运单号'
+      },
+      consignmentCode: {
+        name: '配货单号'
+      },
+      consignmentStatus: {
+        name: '配货单状态'
+      },
+      pointofservice: {
+        name: '门店'
+      },
+      deliveryType: {
+        name: '配送方式'
+      }
+    },
+    detail: {
+      ecsOrderId: {
+        name: '平台订单号'
+      },
+      consignmentCode: {
+        name: '配货单号'
+      },
+      consignmentStatus: {
+        name: '配货单状态'
+      },
+      deliveryType: {
+        name: '配送方式'
+      },
+      customer: {
+        name: '客户'
+      },
+      deliveryPos: {
+        name: '发货仓库'
+      },
+      carrier: {
+        name: '快递公司'
+      },
+      expressNum: {
+        name: '运单号'
+      },
+      date: {
+        name: '下单日期'
+      },
+      deliveryDate: {
+        name: '发货日期'
+      },
+      consignmentTotalPrice: {
+        name: '配货单金额'
+      },
+      deliveryCost: {
+        name: '运费金额'
+      },
+      receiver: {
+        name: '收件人'
+      },
+      receiverPhone: {
+        name: '手机'
+      },
+      receiverAddress: {
+        name: '地址'
+      },
+      remark: {
+        name: '买家备注'
+      },
+      sellRemark: {
+        name: '客服备注',
+        date: {
+          name: '添加时间'
+        },
+        userName: {
+          name: '添加人'
+        },
+        remark: {
+          name: '备注'
+        }
+      },
+      entries: {
+        skuCode: {
+          name: 'SKU编码'
+        },
+        skuName: {
+          name: '商品名称'
+        },
+        quantity: {
+          name: '数量'
+        },
+        shippedQuantity: {
+          name: '已发数量'
+        }
+      }
     }
   }
 }

@@ -254,6 +254,7 @@ export default {
     },
     query() {
       this.search.loading = true
+      this.categoryQuery.pageNum = 1
       this.getData()
     },
     handleCreate(category, type) {

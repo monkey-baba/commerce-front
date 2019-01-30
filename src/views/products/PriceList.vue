@@ -311,6 +311,7 @@ export default {
     },
     query() {
       this.search.loading = true
+      this.priceQuery.pageNum = 1
       this.getData()
     },
     cancelEdit(row) {
