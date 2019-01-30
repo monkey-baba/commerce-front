@@ -119,3 +119,10 @@ export function saveSku(productid, skus) {
   })
 }
 
+export function getSkus(productid) {
+  return request({
+    'url': '/product/api/v1/sku/list/' + productid,
+    'method': 'get'
+  })
+}
+

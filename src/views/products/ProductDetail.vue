@@ -336,7 +336,7 @@
 <script>
 import { getPrice } from '@/api/price'
 import { getPriceRows, getPriceType, createPriceRow } from '@/api/pricerow'
-import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr, getSkuMeta, saveSku } from '@/api/product'
+import { getApprovedStatus, getChannel, getUnit, getSpec, getBaicData, updateBasic, getAttr, getSkuMeta, saveSku, getSkus } from '@/api/product'
 
 export default {
   name: 'ProductDetail',
@@ -515,10 +515,30 @@ export default {
       this.initPriceType()
       this.fetchBaicData(productId)
       this.fetchPriceData(productId)
+      this.fetchSkuData(productId)
     },
     fetchBaicData(id) {
       getBaicData(id).then(response => {
         this.basicEdit.form = response.data
+      })
+    },
+    fetchSkuData() {
+      getSkus(this.productid).then(response => {
+        this.specification = response.data
+        this.specification.forEach((item, index) => {
+          this.specs[index] = item.name
+          item.name = this.specMap[item.name]
+          this.fetchMetaData(index)
+          const specvalueid = []
+          item.value.forEach((v, inde) => {
+            specvalueid[inde] = v.specvalueid
+            this.skuEdit.form[inde].skuId = v.spacVoc.skuId
+            this.skuEdit.form[inde].skuName = v.spacVoc.skuName
+          })
+          this.specvalues[index] = specvalueid
+          this.$forceUpdate()
+        })
+      }).catch((e) => {
       })
     },
     fetchPriceData(productId) {
@@ -550,12 +570,8 @@ export default {
     },
     fetchPriceRowData(priceId) {
       getPriceRows(priceId).then(response => {
-        const items = response.data.list
-        this.table.data = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-          v.original = JSON.stringify(v) //  will be used when price click the cancel botton
-          return v
-        })
+        const items = response.data
+        this.priceRowTable.data = items
       }).catch((e) => {
       })
     },
@@ -626,6 +642,9 @@ export default {
         this.specification[index].name = this.specMap[this.specs[index]]
         this.specification[index].specid = this.specs[index]
       }
+      this.fetchMetaData(index)
+    },
+    fetchMetaData(index) {
       getSkuMeta(this.specs[index]).then(response => {
         const items = response.data
         this.specValueList[index] = items
