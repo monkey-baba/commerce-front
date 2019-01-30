@@ -199,12 +199,23 @@
                 fit
                 stripe
                 highlight-current-row
-                max-height="300"
+                max-height="200"
                 style="width: 600px">
                 <ElTableColumn :label="$t('order.detail.sellerRemark.date.label')" prop="date" />
                 <ElTableColumn :label="$t('order.detail.sellerRemark.user.label')" prop="user" />
                 <ElTableColumn :label="$t('order.detail.sellerRemark.remark.label')" prop="remark" />
               </ElTable>
+              <ElRow>
+                <ElCol :span="20">
+                  <ElInput v-model="remark" style="margin-top: 5px " />
+                </ElCol>
+                <ElCol :span="1">
+                  <blockquote />
+                </ElCol>
+                <ElCol :span="3">
+                  <ElButton style="margin-top: 5px" type="primary" @click="handleRemark">添加备注</ElButton>
+                </ElCol>
+              </ElRow>
             </ElFormItem>
           </ElCol>
         </ElRow>
@@ -274,8 +285,10 @@
   </div>
 </template>
 <script>
-import { getSkuSpecs, getOrderDetail } from '@/api/order'
+import { getSkuSpecs, getOrderDetail, addRemark } from '@/api/order'
 import AddressLine from '@/components/Address/addressLine'
+import { isEmpty } from '@/utils/validate'
+
 export default {
   name: 'OrderDetail',
   components: { AddressLine },
@@ -293,7 +306,8 @@ export default {
       skuSpec: {
         options: []
       },
-      loading: true
+      loading: true,
+      remark: ''
     }
   },
   created() {
@@ -321,6 +335,22 @@ export default {
     },
     valueHeaderStyle() {
       return 'padding:5px'
+    },
+    handleRemark() {
+      if (isEmpty(this.remark)) {
+        return
+      }
+      addRemark(this.$route.params.id, this.remark).then((response) => {
+        this.data.sellerRemarks.push(response.data)
+        this.remark = ''
+      }).catch(() => {
+        this.$notify({
+          title: '失败',
+          message: '创建失败，请稍后再试',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
   }
 }
