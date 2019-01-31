@@ -113,11 +113,13 @@
               <el-date-picker
                 v-model="consignmentQuery.startDate"
                 type="date"
+                value-format="yyyy-MM-dd 00:00:00"
                 placeholder="选择开始日期"/>
               ~
               <el-date-picker
                 v-model="consignmentQuery.endDate"
                 type="date"
+                value-format="yyyy-MM-dd 23:59:59"
                 placeholder="选择结束日期"/>
             </el-form-item>
           </el-col>
